@@ -116,7 +116,7 @@ export default {
   methods: {
     async onSubmit(values) {
         console.log(values, 'ommmo');
-        this.$router.push('/app/markeplace')
+        this.$router.push('/app/marketplace')
     //   this.isLoading = true
     //   try {
     //     let res = await this.$request.post(`auth/signin`, values)
