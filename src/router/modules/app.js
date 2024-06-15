@@ -1,15 +1,15 @@
 const routes = [
-  {
-    path: '/',
-    redirect: 'app/marketplace',
-    name: 'home',
-    meta: {
-      layout: 'Dashboard',
-      requiresAuth: false,
-      parent: 'marketplace',
-      name: 'home'
-    }
-  },
+  // {
+  //   path: '/',
+  //   redirect: 'app/marketplace',
+  //   name: 'home',
+  //   meta: {
+  //     layout: 'Dashboard',
+  //     requiresAuth: false,
+  //     parent: 'marketplace',
+  //     name: 'home'
+  //   }
+  // },
 
   {
     path: '/app/marketplace',

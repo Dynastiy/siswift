@@ -6,7 +6,7 @@ import InputCode from '@/modules/App/Auth/InputCode.vue'
 
 const routes = [
   {
-    path: '/login',
+    path: '/',
     name: 'login',
     component: Login,
     meta: {
