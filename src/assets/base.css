@@ -1,0 +1,23 @@
+:root {
+  ---secondary-color: #41CF35;
+  ---primary-color: #31A113;
+  ---accent-color: #42cf3532;
+  
+
+  /* Shades  */
+  --info-color: #3899ff;
+  --success-color: #40c700;
+  --warning-color: #ffa500;
+  --error-color: #df5060;
+
+  /* Black and White  */
+  ---black1: #000;
+  ---black2:#333;
+  ---black3: #2d2f30;
+  ---white: #fff;
+
+  /* Gray Shades  */
+   ---gray1: #EAEAEA;
+   ---gray-bg: rgba(249, 248, 249, 0.44);
+   ---gray2: #959595;
+}
