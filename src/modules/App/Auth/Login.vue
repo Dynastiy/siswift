@@ -1,5 +1,14 @@
 <template>
   <div class="flex flex-col justify-between">
+    <div class="mb-5">
+      <img
+        src="@/assets/BrandLogos/logo.png"
+        class="lg:w-36 md:w-36 w-36"
+        alt="Siswift logo"
+        @click="$router.push('/app/marketplace')"
+        role="button"
+      />
+    </div>
     <div class="">
       <h3 class="lg:text-2xl md:text-2xl text-xl font-bold mb-0">Welcome back</h3>
       <span class="text-[15px] block font-regular text-gray2"
@@ -11,6 +20,7 @@
         item
       }}</span>
     </div> -->
+   
     <vForm
       @submit="onSubmit"
       v-slot="{ meta }"
@@ -115,55 +125,55 @@ export default {
 
   methods: {
     async onSubmit(values) {
-        console.log(values, 'ommmo');
-        this.$router.push('/app/marketplace')
-    //   this.isLoading = true
-    //   try {
-    //     let res = await this.$request.post(`auth/signin`, values)
-    //     console.log(res.data)
-    //     let userData = res.data
-    //     let token = res.data.token
-    //     this.$store.commit('auth/login', {
-    //       token,
-    //       user: userData.user
-    //     })
-    //     this.$toastify({
-    //       text: `Welcome back, ${userData.user.first_name}`,
-    //       gravity: 'top',
-    //       position: 'center',
-    //       style: {
-    //         fontSize: '13px',
-    //         borderRadius: '4px',
-    //         background: '#333'
-    //       }
-    //     }).showToast()
-    //     console.log(userData, 'ommmo')
-    //     const route = this.$route.query.redirectFrom
-    //     console.log(route)
-    //     if (route) {
-    //       this.$router.push(route).catch(() => {})
-    //     } else {
-    //       if (userData.user.role === 'buyer') {
-    //         this.$router.push('/user').catch(() => {})
-    //       } else {
-    //         this.$router.push('/vendor/dashboard').catch(() => {})
-    //       }
-    //     }
-    //   } catch (error) {
-    //     console.log(error)
-    //     this.$toastify({
-    //       text: `User not logged in`,
-    //       gravity: 'top',
-    //       position: 'center',
-    //       style: {
-    //         fontSize: '13px',
-    //         borderRadius: '4px',
-    //         background: 'red'
-    //       }
-    //     }).showToast()
-    //   } finally {
-    //     this.isLoading = false
-    //   }
+      console.log(values, 'ommmo')
+      this.$router.push('/app/marketplace')
+      //   this.isLoading = true
+      //   try {
+      //     let res = await this.$request.post(`auth/signin`, values)
+      //     console.log(res.data)
+      //     let userData = res.data
+      //     let token = res.data.token
+      //     this.$store.commit('auth/login', {
+      //       token,
+      //       user: userData.user
+      //     })
+      //     this.$toastify({
+      //       text: `Welcome back, ${userData.user.first_name}`,
+      //       gravity: 'top',
+      //       position: 'center',
+      //       style: {
+      //         fontSize: '13px',
+      //         borderRadius: '4px',
+      //         background: '#333'
+      //       }
+      //     }).showToast()
+      //     console.log(userData, 'ommmo')
+      //     const route = this.$route.query.redirectFrom
+      //     console.log(route)
+      //     if (route) {
+      //       this.$router.push(route).catch(() => {})
+      //     } else {
+      //       if (userData.user.role === 'buyer') {
+      //         this.$router.push('/user').catch(() => {})
+      //       } else {
+      //         this.$router.push('/vendor/dashboard').catch(() => {})
+      //       }
+      //     }
+      //   } catch (error) {
+      //     console.log(error)
+      //     this.$toastify({
+      //       text: `User not logged in`,
+      //       gravity: 'top',
+      //       position: 'center',
+      //       style: {
+      //         fontSize: '13px',
+      //         borderRadius: '4px',
+      //         background: 'red'
+      //       }
+      //     }).showToast()
+      //   } finally {
+      //     this.isLoading = false
+      //   }
     }
   }
 }

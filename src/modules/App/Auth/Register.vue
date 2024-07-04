@@ -1,5 +1,14 @@
 <template>
   <div class="flex flex-col justify-between">
+    <div class="mb-5">
+      <img
+        src="@/assets/BrandLogos/logo.png"
+        class="lg:w-36 md:w-36 w-36"
+        alt="Siswift logo"
+        @click="$router.push('/app/marketplace')"
+        role="button"
+      />
+    </div>
     <div class="">
       <h3 class="lg:text-2xl md:text-2xl text-xl font-bold mb-0">Hello, Welcome</h3>
       <span class="text-[15px] block font-regular text-gray2">Let's Explore the Phoneverse</span>
