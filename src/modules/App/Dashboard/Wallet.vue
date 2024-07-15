@@ -1,9 +1,13 @@
 <template>
   <div>
+    <div>
+      {{user}}
+    </div>
     <div class="p-6 flex flex-col justify-between rounded-md h-[200px] bg-white wallet lg:w-5/12 md:w-6/12 w-full">
       <div class="flex flex-col gap-3">
         <span class="text-gray-400 text-sm font-medium">Wallet Balance</span>
-        <h4 class="font-semibold text-4xl">$120,000.00</h4>
+        <span>{{ user?.wallet.balance }}</span>
+        <h4 class="font-semibold text-4xl" v-if="user?.wallet">{{ $currencyFormat(user?.wallet?.balance) }}</h4>
       </div>
       <div class="flex gap-4">
         <button class="brand-btn-md brand-primary flex gap-1 items-center">
@@ -36,6 +40,12 @@ export default {
         { field: 'status', header: 'Status' }
       ],
       items: []
+    }
+  },
+
+  computed: {
+    user(){
+      return this.$store.getters['auth/getUser']
     }
   }
 }

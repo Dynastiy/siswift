@@ -36,7 +36,7 @@
                       name="name"
                       class="w-full"
                       id="name"
-                      placeholder="Enter name"
+                      placeholder="Jone Doe"
                       v-bind="field"
                     />
                   </span>
@@ -57,7 +57,7 @@
                       name="email"
                       class="w-full"
                       id="email"
-                      placeholder="Enter Email"
+                      placeholder="john@xxx.com"
                       v-bind="field"
                     />
                   </span>
@@ -99,7 +99,7 @@
                       name="phone"
                       class="w-full"
                       id="phone"
-                      placeholder="Enter phone number"
+                      placeholder="08012345678"
                       v-bind="field"
                     />
                   </span>
