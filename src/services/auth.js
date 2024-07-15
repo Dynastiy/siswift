@@ -2,13 +2,25 @@ import $request from '@/axios/index'
 import { catchAxiosError, catchAxiosSuccess } from './response'
 
 export default {
-  async createAccount(formData) {
+  async login(formData) {
     try {
-      let res = await $request.post(`/auth/signup`, formData)
-      catchAxiosSuccess(res)
+      let res = await $request.post(`login`, formData)
+      console.log(res.data);
+      catchAxiosSuccess('Login Succesful')
       return res.data
     } catch (error) {
-      catchAxiosError(error)
+      catchAxiosError("Login Error")
+      throw error
+    }
+  },
+
+  async createAccount(formData) {
+    try {
+      let res = await $request.post(`register`, formData)
+      catchAxiosSuccess("Account created successfully")
+      return res.data
+    } catch (error) {
+      catchAxiosError("Account Creation Error")
       // return error
       throw error
     }
@@ -41,7 +53,7 @@ export default {
 
   async getProfile() {
     try {
-      let res = await $request.get(`/auth/user-profile`)
+      let res = await $request.get(`/profile`)
       // catchAxiosSuccess(res)
       return res.data
     } catch (error) {

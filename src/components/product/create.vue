@@ -44,7 +44,7 @@
               <ErrorMessage name="phone" class="text-xs text-error"></ErrorMessage>
             </div>
 
-            <div>
+            <!-- <div>
               <vField name="description" v-slot="{ field }" class="input">
                 <label for="">Store Description</label>
                 <div class="input-field">
@@ -60,40 +60,28 @@
                 </div>
               </vField>
               <ErrorMessage name="description" class="text-xs text-error"></ErrorMessage>
-            </div>
+            </div> -->
 
             <div>
-              <vField name="country" v-slot="{ field }" class="input">
-                <label for="">Country</label>
+              <vField name="address" v-slot="{ field }" class="input">
+                <label for="">Address</label>
                 <div class="input-field">
                   <input
                     type="text"
-                    name="country"
+                    name="address"
                     class="w-full"
                     id="name"
-                    placeholder="Enter Country"
+                    placeholder="Enter Address"
                     v-bind="field"
                   />
                 </div>
               </vField>
-              <ErrorMessage name="country" class="text-xs text-error"></ErrorMessage>
+              <ErrorMessage name="address" class="text-xs text-error"></ErrorMessage>
             </div>
 
             <div>
-              <vField name="state" v-slot="{ field }" class="input">
-                <label for="">State</label>
-                <div class="input-field">
-                  <input
-                    type="text"
-                    name="state"
-                    class="w-full"
-                    id="name"
-                    placeholder="Enter State"
-                    v-bind="field"
-                  />
-                </div>
-              </vField>
-              <ErrorMessage name="state" class="text-xs text-error"></ErrorMessage>
+              <label for="">Store Photo</label>
+              <vField name="profile_picture" type="file" class="input"> </vField>
             </div>
           </div>
         </template>
@@ -118,6 +106,23 @@
             </div>
 
             <div>
+              <vField name="model" v-slot="{ field }" class="input">
+                <label for="">Product Model</label>
+                <div class="input-field">
+                  <input
+                    type="text"
+                    name="model"
+                    class="w-full"
+                    id="name"
+                    placeholder="Enter Product Model"
+                    v-bind="field"
+                  />
+                </div>
+              </vField>
+              <ErrorMessage name="model" class="text-xs text-error"></ErrorMessage>
+            </div>
+
+            <div>
               <vField name="location" v-slot="{ field }" class="input">
                 <label for="">Location</label>
                 <div class="input-field">
@@ -134,8 +139,34 @@
               <ErrorMessage name="location" class="text-xs text-error"></ErrorMessage>
             </div>
 
+            <div class="w-full">
+              <!-- <vField name="category_id" v-slot="{ field }" class="input"> -->
+              <label for="">Product Categories</label>
+              <!-- <div class="input-field">
+                    <input
+                      type="text"
+                      name="category_id"
+                      class="w-full"
+                      id="name"
+                      placeholder="Enter Product Brand"
+                      v-bind="field"
+                    /> -->
+              <MultiSelect
+                v-model="category_id"
+                display="chip"
+                :options="categories"
+                optionLabel="name"
+                class="input text-[13px] py-[4px]"
+                placeholder="Select Categories"
+                :maxSelectedLabels="3"
+              />
+              <!-- </div> -->
+              <!-- </vField> -->
+              <!-- <ErrorMessage name="category_id" class="text-xs text-error"></ErrorMessage> -->
+            </div>
+
             <div class="flex gap-3">
-              <div>
+              <div class="w-full">
                 <vField name="product_price" v-slot="{ field }" class="input">
                   <label for="">Product Price</label>
                   <div class="input-field">
@@ -151,21 +182,16 @@
                 </vField>
                 <ErrorMessage name="product_price" class="text-xs text-error"></ErrorMessage>
               </div>
-              <div>
-                <vField name="product_brand" v-slot="{ field }" class="input">
-                  <label for="">Product Brand</label>
-                  <div class="input-field">
-                    <input
-                      type="text"
-                      name="product_brand"
-                      class="w-full"
-                      id="name"
-                      placeholder="Enter Product Brand"
-                      v-bind="field"
-                    />
-                  </div>
+
+              <div class="w-full">
+                <label for="">Product Brand</label>
+                <vField name="brand_id" as="select" class="input">
+                  <option selected disabled value="">--Select Brand--</option>
+                  <option v-for="item in categories" :key="item?.id" :value="item?.id">
+                    {{ item?.name }}
+                  </option>
                 </vField>
-                <ErrorMessage name="product_brand" class="text-xs text-error"></ErrorMessage>
+                <ErrorMessage name="brand_id" class="text-xs text-error"></ErrorMessage>
               </div>
             </div>
             <div>
@@ -222,6 +248,10 @@
 <script>
 import * as yup from 'yup'
 export default {
+  props: {
+    mainImage: Object,
+    productImages: Array
+  },
   components: {},
   data() {
     return {
@@ -233,23 +263,21 @@ export default {
       schemas: [
         yup.object({
           name: yup.string().required(),
-          //   email: yup.string().required().email(),
-          description: yup.string().required(),
-          country: yup.string().required(),
-          state: yup.string().required(),
+          address: yup.string().required(),
           phone: yup
             .string()
             .required()
             .matches(/^[0-9]+$/, 'Must be numeric')
         }),
         yup.object({
-            product_name: yup.string().required(),
+          product_name: yup.string().required(),
+          model: yup.string().required(),
           location: yup.string().required(),
           product_price: yup
             .string()
             .required()
             .matches(/^[0-9]+$/, 'Must be numeric'),
-          product_brand: yup.string().required(),
+          brand_id: yup.string(),
           product_description: yup.string().required()
         })
         // yup.object({
@@ -262,70 +290,44 @@ export default {
         // yup.object({
         //   terms: yup.bool().required().equals([true])
         // })
-      ]
+      ],
+      category_id: [],
+      categories: [],
+      brands: [],
+      product_image: null,
+      photos: null
     }
   },
 
   methods: {
-    async onSubmit(values) {
-      console.log(values, 'ommmo')
-      //   this.isLoading = true
-      //   try {
-      //     let res = await this.$request.post(`auth/signin`, values)
-      //     console.log(res.data)
-      //     let userData = res.data
-      //     let token = res.data.token
-      //     this.$store.commit('auth/login', {
-      //       token,
-      //       user: userData.user
-      //     })
-      //     this.$toastify({
-      //       text: `Welcome back, ${userData.user.first_name}`,
-      //       gravity: 'top',
-      //       position: 'center',
-      //       style: {
-      //         fontSize: '13px',
-      //         borderRadius: '4px',
-      //         background: '#333'
-      //       }
-      //     }).showToast()
-      //     console.log(userData, 'ommmo')
-      //     const route = this.$route.query.redirectFrom
-      //     console.log(route)
-      //     if (route) {
-      //       this.$router.push(route).catch(() => {})
-      //     } else {
-      //       if (userData.user.role === 'buyer') {
-      //         this.$router.push('/user').catch(() => {})
-      //       } else {
-      //         this.$router.push('/vendor/dashboard').catch(() => {})
-      //       }
-      //     }
-      //   } catch (error) {
-      //     console.log(error)
-      //     this.$toastify({
-      //       text: `User not logged in`,
-      //       gravity: 'top',
-      //       position: 'center',
-      //       style: {
-      //         fontSize: '13px',
-      //         borderRadius: '4px',
-      //         background: 'red'
-      //       }
-      //     }).showToast()
-      //   } finally {
-      //     this.isLoading = false
-      //   }
+    async create(values) {
+      const formdata = new FormData()
+      formdata.append('name', values.product_name)
+      formdata.append('brand_id', values.brand_id)
+      formdata.append('base_price', values.product_price)
+      this.category_id.forEach((elem) => {
+        formdata.append('categories[]', elem.id)
+      })
+      this.photos.forEach((elem) => {
+        formdata.append('photos[]', elem)
+      })
+      formdata.append('main_image', this.mainImage)
+      formdata.append('location', values.location)
+      formdata.append('description', values.product_description)
+      formdata.append('model', values.model)
+      this.$products.create(formdata).then((res) => {
+        console.log(res)
+        this.$router.push('/app/my-store')
+        return
+      })
     },
 
     nextStep(values) {
       if (this.currentStep === 1) {
-        console.log('Done: ', JSON.stringify(values, null, 2))
-        alert('Product Created Successfully')
+        this.create(values)
         return
       }
-      this.currentStep++
-      this.$emit('nextStep')
+      this.createShop(values)
     },
 
     prevStep() {
@@ -334,12 +336,71 @@ export default {
       }
       this.currentStep--
       this.$emit('prevStep')
+    },
+
+    getSetting() {
+      this.$config.getSettings().then((res) => {
+        console.log('settings:', res)
+        this.categories = res.categories
+        this.brands = res.brands
+      })
+    },
+
+    createShop(values) {
+      const formdata = new FormData()
+      formdata.append('name', values.name)
+      formdata.append('phone', values.phone)
+      formdata.append('address', values.address)
+      formdata.append('image', values.profile_picture)
+      this.$config.createStore(formdata).then((res) => {
+        console.log(res)
+        this.currentStep++
+        this.$emit('nextStep')
+        this.$emit('refresh')
+      })
+    }
+  },
+
+  beforeMount() {
+    this.getSetting()
+  },
+
+  watch: {
+    mainImage: {
+      handler(val) {
+        if (val) {
+          this.product_image = val
+        }
+      },
+      immediate: true
+    },
+    productImages: {
+      handler(val) {
+        if (val) {
+          this.photos = val
+        }
+      },
+      immediate: true
+    },
+    user: {
+      handler(val) {
+        if(!val.seller_id) {
+          this.currentStep = 0
+        }
+        else {
+          this.currentStep = 1
+        }
+      },
+      immediate: true
     }
   },
 
   computed: {
     currentSchema() {
       return this.schemas[this.currentStep]
+    },
+    user(){
+      return this.$store.getters['auth/getUser']
     }
   }
 }

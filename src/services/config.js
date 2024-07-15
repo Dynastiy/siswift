@@ -1,6 +1,6 @@
 import $request from '@/axios/index'
-// import { catchAxiosError, catchAxiosSuccess } from './response'
-import { catchAxiosError } from './response'
+import { catchAxiosError, catchAxiosSuccess } from './response'
+// import { catchAxiosError } from './response'
 import { useToast } from "vue-toastification";
 const toast = useToast();
 
@@ -19,12 +19,13 @@ export default {
     }
   },
 
-    async getCategories() {
+    async createStore(formData) {
         try {
-          let res = await $request.get(`all-categories`)
+          let res = await $request.post(`shops`, formData)
+          catchAxiosSuccess("Store Created Succesfully")
           return res.data
         } catch (error) {
-          catchAxiosError(error)
+          catchAxiosError("Store Not created")
           throw error
         }
       },
@@ -69,9 +70,9 @@ export default {
         }
       },
 
-      async getSubCategories() {
+      async getSettings() {
         try {
-          let res = await $request.get(`all-subcategories`)
+          let res = await $request.get(`general-setting`)
           return res.data
         } catch (error) {
           catchAxiosError(error)

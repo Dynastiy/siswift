@@ -2,6 +2,52 @@ import $request from '@/axios/index'
 import { catchAxiosError, catchAxiosSuccess } from './response'
 
 export default {
+
+  async cartList() {
+    try {
+      let res = await $request.get(`/carts`)
+      // catchAxiosSuccess(res)
+      return res.data
+    } catch (error) {
+      catchAxiosError("Cart items not retrieved")
+      throw error
+    }
+  },
+
+  async list() {
+    try {
+      let res = await $request.get(`/seller-products`)
+      // catchAxiosSuccess()
+      return res.data
+    } catch (error) {
+      catchAxiosError("Seller Products not found")
+      throw error
+    }
+  },
+
+  async messages() {
+    try {
+      let res = await $request.get(`/messages`)
+      // catchAxiosSuccess(res)
+      return res.data
+    } catch (error) {
+      catchAxiosError('Messages not retrieved')
+      throw error
+    }
+  },
+
+  async getMessages(ID) {
+    try {
+      let res = await $request.get(`/messages/${ID}`)
+      // catchAxiosSuccess(res)
+      return res.data
+    } catch (error) {
+      catchAxiosError("user not gotten")
+      throw error
+    }
+  },
+
+
   async addToCart(payload) {
     try {
       let res = await $request.post(`/add-to-cart`, payload)
@@ -80,41 +126,7 @@ export default {
     }
   },
 
-  async vendorApplications(status, page) {
-    try {
-      let res = await $request.get(`/my-vendor-applications?status=${status}&page=${page}`, )
-      // catchAxiosSuccess(res)
-      return res.data
-    } catch (error) {
-      // catchAxiosError(error)
-      return error
-      // throw error
-    }
-  },
-
-  async viewVendorApplication(params) {
-    try {
-      let res = await $request.get(`/find-vendor-application/${params}`, )
-      // catchAxiosSuccess(res)
-      return res.data
-    } catch (error) {
-      // catchAxiosError(error)
-      return error
-      // throw error
-    }
-  },
-
-  async submitApplication(formData) {
-    try {
-      let res = await $request.post(`/create-vendor-application`, formData)
-      catchAxiosSuccess(res)
-      return res.data
-    } catch (error) {
-      catchAxiosError(error)
-      // return error
-      throw error
-    }
-  },
+  
 
   async addAddress(payload) {
     try {
@@ -152,39 +164,6 @@ export default {
   async removeOrder(id) {
     try {
       let res = await $request.post(`/delete-user-order/${id}`)
-      catchAxiosSuccess(res)
-      return res.data
-    } catch (error) {
-      catchAxiosError(error)
-      throw error
-    }
-  },
-
-  async PayWithUSDT(payload) {
-    try {
-      let res = await $request.post(`/crypto-pay`, payload)
-      catchAxiosSuccess(res)
-      return res.data
-    } catch (error) {
-      catchAxiosError(error)
-      throw error
-    }
-  },
-
-  async PayWithUSD(payload) {
-    try {
-      let res = await $request.post(`/pay-usd`, payload)
-      catchAxiosSuccess(res)
-      return res.data
-    } catch (error) {
-      catchAxiosError(error)
-      throw error
-    }
-  },
-
-  async PayWithNGN(payload) {
-    try {
-      let res = await $request.post(`/paystack/pay`, payload)
       catchAxiosSuccess(res)
       return res.data
     } catch (error) {

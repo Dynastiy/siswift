@@ -1,7 +1,7 @@
 <template>
   <div
     id="app-drawer"
-    class="lg:z-2 pb-8 mb-8 bg-white md:z-2 lg:fixed md:fixed absolute lg:left-0 md:left-0 top-20 h-screen overflow-y-auto w-[250px] gap-24"
+    class="lg:z-2 pb-8 mb-8 bg-white md:z-2 lg:fixed md:fixed absolute lg:left-0 md:left-0 top-16 h-screen overflow-y-auto w-[250px] gap-24"
   >
     <div>
       <ul class="p-0 pt-6 px-8 flex flex-col min-h-[75vh] justify-between">

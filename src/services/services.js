@@ -1,13 +1,13 @@
-import product from './product';
-import customer from './customer';
+import products from './product';
+import user from './customer';
 import vendor from './vendor'
 import response from './response'
 import config from './config'
 import auth from './auth'
 
 export const services = {
-  product,
-  customer,
+  products,
+  user,
   vendor,
   response,
   config,

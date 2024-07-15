@@ -165,7 +165,9 @@ import Editor from 'primevue/editor'
 import ProgressBar from 'primevue/progressbar'
 import Dropdown from 'primevue/dropdown'
 import Dialog from 'primevue/dialog'
+import MultiSelect from 'primevue/multiselect';
 
+app.component('MultiSelect', MultiSelect)
 app.component('Dropdown', Dropdown)
 app.component('ProgressBar', ProgressBar)
 app.component('Rating', Rating)

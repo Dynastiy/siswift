@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="grid grid-cols-3 gap-4">
-      <chatlist/>
-      <pane  class="col-span-2"/>
+      <chatlist @selectMessage="selectMessage($event)"/>
+      <pane :userMessage="message" class="col-span-2"/>
     </div>
   </div>
 </template>
@@ -14,6 +14,18 @@ export default {
   components: {
     Pane,
     Chatlist
+  },
+
+  data(){
+    return {
+      message: {}
+    }
+  },
+
+  methods: {
+    selectMessage(e) {
+      this.message = e
+    }
   }
 }
 </script>

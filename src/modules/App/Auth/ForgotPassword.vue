@@ -67,53 +67,19 @@ export default {
     async onSubmit(values) {
       console.log(values, 'ommmo')
       this.$router.push('/input-code')
-      //   this.isLoading = true
-      //   try {
-      //     let res = await this.$request.post(`auth/signin`, values)
-      //     console.log(res.data)
-      //     let userData = res.data
-      //     let token = res.data.token
-      //     this.$store.commit('auth/login', {
-      //       token,
-      //       user: userData.user
-      //     })
-      //     this.$toastify({
-      //       text: `Welcome back, ${userData.user.first_name}`,
-      //       gravity: 'top',
-      //       position: 'center',
-      //       style: {
-      //         fontSize: '13px',
-      //         borderRadius: '4px',
-      //         background: '#333'
-      //       }
-      //     }).showToast()
-      //     console.log(userData, 'ommmo')
-      //     const route = this.$route.query.redirectFrom
-      //     console.log(route)
-      //     if (route) {
-      //       this.$router.push(route).catch(() => {})
-      //     } else {
-      //       if (userData.user.role === 'buyer') {
-      //         this.$router.push('/user').catch(() => {})
-      //       } else {
-      //         this.$router.push('/vendor/dashboard').catch(() => {})
-      //       }
-      //     }
-      //   } catch (error) {
-      //     console.log(error)
-      //     this.$toastify({
-      //       text: `User not logged in`,
-      //       gravity: 'top',
-      //       position: 'center',
-      //       style: {
-      //         fontSize: '13px',
-      //         borderRadius: '4px',
-      //         background: 'red'
-      //       }
-      //     }).showToast()
-      //   } finally {
-      //     this.isLoading = false
-      //   }
+      this.isLoading = true
+      let payload = {
+        email: values.email,
+        password: values.password
+      }
+      this.$auth
+        .forgotPassword(payload)
+        .then((res) => {
+          console.log(res.data, 'from login')
+        })
+        .finally(() => {
+          this.isLoading = false
+        })
     }
   }
 }

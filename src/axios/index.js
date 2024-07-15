@@ -3,12 +3,18 @@
 // import Cookies from "js-cookie";
 import axios from "axios";
 import config from "./config";
-import store from "@/store"
+// import store from "@/store"
+
 // import router from "./router";
+// import { decodeToken } from '@/utils/auth';
+
+// console.log(`Bearer ${decodeToken()}`)
 
 const $axios = axios.create({
   baseURL: config.apiUrl, // Set api base url from .env
+
   // timeout: 30000, // default is `0` milliseconds (no timeout)
+
   headers: {
     // Accept: "application/json",
     //"Content-Type": "application/json",
@@ -19,12 +25,12 @@ const $axios = axios.create({
 });
 // Add access token to header if any
 // const accessToken = Cookies.get(config.accessTokenStorageKey);
-const accessToken = store.getters['auth/getToken'];
+const token = localStorage.getItem('_user_token')
+const accessToken = `Bearer ${token}`;
 if (accessToken) {
-  $axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
+  $axios.defaults.headers.common["Authorization"] = accessToken;
 } else {
-  $axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
-//   delete $axios.defaults.headers.common["authorization"];
+  $axios.defaults.headers.common["Authorization"] = accessToken;
 }
 
 // Add a request interceptor
@@ -33,11 +39,12 @@ $axios.interceptors.request.use(
     NProgress.start();
     // Add access token to header before request is sent if any
     // const accessToken = Cookies.get(config.accessTokenStorageKey);
-    const accessToken = store.getters['auth/getToken'];
+    const token = localStorage.getItem('_user_token')
+    const accessToken = `Bearer ${token}`;
     if (accessToken) {
-      axiosConfig.headers.authorization = "Bearer " + accessToken;
+      axiosConfig.headers.authorization = accessToken;
     } else {
-        $axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
+        $axios.defaults.headers.common["Authorization"] = accessToken;
     //   delete axiosConfig.headers.Authorization;
     }
     return axiosConfig;

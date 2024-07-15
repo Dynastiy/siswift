@@ -1,6 +1,6 @@
 <template>
   <div class="" id="mobile-drawer">
-    <div class="py-6 bg-white px-6 w-full lg:z-10 md:z-10">
+    <div class="py-4 bg-white px-6 w-full lg:z-10 md:z-10">
       <div class="flex justify-between items-center">
         <!-- <span class="font-bold" role="button" @click="$router.push('/')">Top Header</span> -->
         <span role="button" class="lg:hidden md:hidden" @click="drawer = !drawer">
@@ -11,10 +11,10 @@
         </span> -->
 
         <div class="flex justify-center items-center">
-          <div class="flex lg:w-[250px] md:w-[250px] w-full">
+          <div class="flex lg:w-[250px] md:w-[250px] justify-center w-full">
             <img
               src="@/assets/BrandLogos/logo.png"
-              class="lg:w-36 md:w-36 w-36"
+              class="lg:w-28 md:w-28 w-24"
               alt="Siswift logo"
               @click="$router.push('/app/marketplace')"
               role="button"

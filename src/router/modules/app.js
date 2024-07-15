@@ -5,7 +5,7 @@ const routes = [
   //   name: 'home',
   //   meta: {
   //     layout: 'Dashboard',
-  //     requiresAuth: false,
+  //     requiresAuth: true,
   //     parent: 'marketplace',
   //     name: 'home'
   //   }
@@ -17,19 +17,19 @@ const routes = [
     component: () => import('@/modules/App/Dashboard/Index.vue'),
     meta: {
       layout: 'Dashboard',
-      requiresAuth: false,
+      requiresAuth: true,
       parent: 'marketplace',
       name: 'home'
     }
   },
 
   {
-    path: '/app/product/ID',
+    path: '/app/product/:id',
     name: 'product-details',
     component: () => import('@/modules/App/Dashboard/product/_UUID.vue'),
     meta: {
       layout: 'Dashboard',
-      requiresAuth: false,
+      requiresAuth: true,
       parent: 'marketplace',
       name: 'home'
     }
@@ -41,7 +41,7 @@ const routes = [
     component: () => import('@/modules/App/Dashboard/product/create.vue'),
     meta: {
       layout: 'Dashboard',
-      requiresAuth: false,
+      requiresAuth: true,
       parent: 'my-store',
       name: 'home'
     }
@@ -53,7 +53,7 @@ const routes = [
     component: () => import('@/modules/App/Dashboard/Cart.vue'),
     meta: {
       layout: 'Dashboard',
-      requiresAuth: false,
+      requiresAuth: true,
       parent: 'my-cart',
       name: 'home'
     }
@@ -65,9 +65,21 @@ const routes = [
     component: () => import('@/modules/App/Dashboard/Store.vue'),
     meta: {
       layout: 'Dashboard',
-      requiresAuth: false,
+      requiresAuth: true,
       parent: 'my-store',
       name: 'home'
+    }
+  },
+
+  {
+    path: '/app/my-store/analysis',
+    name: 'app-store-analysis',
+    component: () => import('@/modules/App/Dashboard/StoreAnalysis.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'my-store',
+      name: 'store analysis'
     }
   },
 
@@ -77,7 +89,7 @@ const routes = [
     component: () => import('@/modules/App/Dashboard/Messages.vue'),
     meta: {
       layout: 'Dashboard',
-      requiresAuth: false,
+      requiresAuth: true,
       parent: 'app-messages',
       name: 'home'
     }
@@ -89,7 +101,7 @@ const routes = [
     component: () => import('@/modules/App/Dashboard/Wallet.vue'),
     meta: {
       layout: 'Dashboard',
-      requiresAuth: false,
+      requiresAuth: true,
       parent: 'app-wallet',
       name: 'home'
     }
@@ -101,7 +113,7 @@ const routes = [
     component: () => import('@/modules/App/Dashboard/Setting.vue'),
     meta: {
       layout: 'Dashboard',
-      requiresAuth: false,
+      requiresAuth: true,
       parent: 'setting',
       name: 'home'
     }
@@ -113,7 +125,7 @@ const routes = [
     component: () => import('@/modules/App/Dashboard/utility_pages/Notifications.vue'),
     meta: {
       layout: 'Dashboard',
-      requiresAuth: false,
+      requiresAuth: true,
       parent: 'notifications',
       name: 'notifications'
     }
@@ -125,7 +137,7 @@ const routes = [
     component: () => import('@/modules/App/Dashboard/utility_pages/Profile.vue'),
     meta: {
       layout: 'Dashboard',
-      requiresAuth: false,
+      requiresAuth: true,
       parent: 'profile',
       name: 'user-profile'
     }
@@ -137,7 +149,7 @@ const routes = [
     component: () => import('@/modules/App/Dashboard/Support.vue'),
     meta: {
       layout: 'Dashboard',
-      requiresAuth: false,
+      requiresAuth: true,
       parent: 'support',
       name: 'home'
     }
@@ -149,7 +161,7 @@ const routes = [
     component: () => import('@/modules/App/Dashboard/support/Call.vue'),
     meta: {
       layout: 'Dashboard',
-      requiresAuth: false,
+      requiresAuth: true,
       parent: 'support',
       name: 'home',
       subName: 'call'
@@ -162,7 +174,7 @@ const routes = [
     component: () => import('@/modules/App/Dashboard/support/Mail.vue'),
     meta: {
       layout: 'Dashboard',
-      requiresAuth: false,
+      requiresAuth: true,
       parent: 'support',
       name: 'home',
       subName: 'mail'
@@ -175,7 +187,7 @@ const routes = [
     component: () => import('@/modules/App/Dashboard/Legal.vue'),
     meta: {
       layout: 'Dashboard',
-      requiresAuth: false,
+      requiresAuth: true,
       parent: 'legal',
       name: 'home'
     }

@@ -2,21 +2,33 @@
   <div class="bg-white rounded-md">
     <span class="px-4 py-3 flex justify-between items-center">
       <div class="flex gap-2 items-center">
-        <img
+        <!-- <img
           src="https://www.cnet.com/a/img/resize/690ad0a97cf8fc98f3cf851e7b149d2ffc5b171e/hub/2023/05/04/31dfdcf2-1ac3-4320-b40c-4c356300f06e/google-pixel-7a-phone-14.jpg?auto=webp&height=500"
           alt=""
           role="button"
           class="h-[28px] w-[28px] rounded-full object-cover object-center"
-        />
-        <h4 class="font-semibold">Bukki Store</h4>
+        /> -->
+        <span
+          class="p-2 rounded-md font-bold"
+          v-if="userData"
+          :class="userData?.receiver?.firstname.charAt(0)"
+        >
+          {{ userData?.receiver?.firstname.charAt(0) }}
+        </span>
+        <!-- <div>
+          {{ userData }}
+        </div> -->
+        <h4 class="font-semibold">
+          {{ `${userData?.receiver?.firstname} ${userData?.receiver?.lastname}` }}
+        </h4>
       </div>
       <span class="flex gap-2 items-center">
-        <i-icon icon="ph:phone" class="form-icon text-gray-600" role="button" />
-        <i-icon icon="pajamas:ellipsis-v" class="form-icon text-gray-600" role="button" />
+        <a :href="dynamicLink" ><i-icon icon="ph:phone" class="form-icon text-gray-600" role="button" /></a>
+        <!-- <i-icon icon="pajamas:ellipsis-v" class="form-icon text-gray-600" role="button" /> -->
       </span>
     </span>
     <hr />
-    <div class="p-4 bg-white flex justify-between items-end">
+    <!-- <div class="p-4 bg-white flex justify-between items-end">
       <div class="flex gap-2 items-center">
         <img
           src="https://www.cnet.com/a/img/resize/690ad0a97cf8fc98f3cf851e7b149d2ffc5b171e/hub/2023/05/04/31dfdcf2-1ac3-4320-b40c-4c356300f06e/google-pixel-7a-phone-14.jpg?auto=webp&height=500"
@@ -30,11 +42,10 @@
         </div>
       </div>
       <span class="text-[12px] text-gray-500"> Location: Uyo, Akwa Ibom State </span>
-    </div>
+    </div> -->
     <div class="flex flex-col justify-between bg-accent h-[68vh] overflow-y-auto p-4">
       <div class="">
         <div></div>
-        
       </div>
 
       <span class="flex gap-4 items-center">
@@ -63,12 +74,12 @@
               class="w-full"
               id="enter-message"
               placeholder="Enter Message"
-              v-model="message"
+              v-model="content"
             />
           </span>
-          <span class="password-iccon" role="button">
+          <!-- <span class="password-iccon" role="button">
             <i-icon icon="icomoon-free:attachment" class="form-icon text-black2" />
-          </span>
+          </span> -->
         </div>
         <span class="password-iccon bg-primary p-2 text-white rounded-full" role="button">
           <i-icon icon="lets-icons:send" class="form-icon text-2xl" />
@@ -85,10 +96,16 @@ export default {
   components: {
     // EmojiPicker
   },
+  props: {
+    userMessage: Object
+  },
   data() {
     return {
-      message: '',
-      emojiBox: false
+      content: '',
+      emojiBox: false,
+      messages: [],
+      userData: {},
+      dynamicLink: ""
     }
   },
 
@@ -98,7 +115,26 @@ export default {
       let text = this.message
       var curPos = document.getElementById('enter-message').selectionStart
       let text_to_insert = emoji.i
-      this.message = text.slice(0, curPos) + text_to_insert + text.slice(curPos)
+      this.content = text.slice(0, curPos) + text_to_insert + text.slice(curPos)
+    },
+
+    getMessages() {
+      this.$user.getMessages(this.userData.sender_id).then((res) => {
+        console.log(res)
+      })
+    }
+  },
+
+  watch: {
+    userMessage: {
+      handler(val) {
+        if (val) {
+          this.userData = val
+          // this.getMessages()
+          // this.dynamicLink = `tel:${val.sender.mobile}`
+        }
+      },
+      immediate: true
     }
   }
 }

@@ -4,7 +4,8 @@
       <h4 class="font-semibold p-4">Product Image</h4>
       <hr class="" />
       <div class="p-4">
-        <photo-upload />
+        <main-photo @uploadMainImage="uploadMainImage"/>
+        <photo-upload @uploadImage="uploadImage" />
       </div>
     </div>
 
@@ -26,7 +27,7 @@
       </h4>
       <hr class="" />
       <div class="p-6">
-        <create @prevStep="prevStep" @nextStep="nextStep" />
+        <create @prevStep="prevStep" @nextStep="nextStep" :mainImage="mainImage" :productImages="productImages"  @refresh="getUser"/>
       </div>
     </div>
   </div>
@@ -35,11 +36,16 @@
 <script>
 import create from '@/components/product/create.vue'
 import PhotoUpload from '@/components/product/photoUpload.vue'
+import MainPhoto from '@/components/product/mainPhoto.vue'
 export default {
-  components: { create, PhotoUpload },
+  components: { create, PhotoUpload, 
+    MainPhoto 
+  },
   data() {
     return {
-      currentStep: 0
+      currentStep: 0,
+      mainImage: null,
+      productImages: null
     }
   },
 
@@ -50,7 +56,27 @@ export default {
 
     prevStep() {
       this.currentStep--
+    },
+    
+    getUser(){
+      this.$auth.getProfile()
+      .then((res)=> {
+        console.log(res.profile)
+        this.$store.commit('auth/setUser', res.profile)
+      })
+    },
+
+    uploadImage(e){
+      this.productImages = e
+    },
+
+    uploadMainImage(e){
+      this.mainImage = e
     }
+  },
+
+  beforeMount(){
+    this.getUser()
   }
 }
 </script>

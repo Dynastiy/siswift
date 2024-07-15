@@ -1,40 +1,39 @@
 import $request from '@/axios/index'
 import { catchAxiosError, catchAxiosSuccess } from './response'
+// import { catchAxiosError } from './response'
 
 export default {
-  async getProductBySlug(slug) {
+  async getRecord(id) {
     try {
-      let res = await $request.get(`show-product/${slug}`)
+      let res = await $request.get(`products/${id}`)
       // catchAxiosSuccess(res)
       return res.data
     } catch (error) {
-      catchAxiosError(error)
+      catchAxiosError("product not found")
       throw error
     }
   },
 
 
-  async getProducts({url, type, page}) {
+  async list(params) {
     try {
-      let res = await $request.get(`${url}?page=${page}&type=${type}`)
+      let res = await $request.get(`products`, params)
       // catchAxiosSuccess(res)
       return res.data
     } catch (error) {
-      catchAxiosError(error)
+      catchAxiosError("products not found")
       throw error
     }
   },
 
-  async adultProducts({url, type, page}) {
+  async create(formdata) {
     try {
-      let res = await $request.get(`${url}?page=${page}&type=${type}`)
-      catchAxiosSuccess(res)
+      let res = await $request.post(`products`, formdata)
+      catchAxiosSuccess("Product Created Successfully")
       return res.data
     } catch (error) {
-      catchAxiosError(error)
+      catchAxiosError('Product Creation Error')
       throw error
     }
-  },
-
-  // filte
+  }
 }

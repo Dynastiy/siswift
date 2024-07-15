@@ -1,8 +1,8 @@
 <template>
-  <div class="main">
+  <div class="main grid grid-cols-5 gap-2 mt-4">
     <div>
       <div
-        class="dropzone-container flex flex-col items-center justify-center text-center"
+        class="dropzone-container flex flex-col items-center justify-center rounded-md text-center h-12"
         @dragover="dragover"
         @dragleave="dragleave"
         @drop="drop"
@@ -10,21 +10,20 @@
         <input
           type="file"
           multiple
-          name="file"
-          id="fileInput"
+          name="file2"
+          id="fileInput2"
           class="hidden-input"
-          @change="onChange"
-          ref="file"
-          accept=".png,.jpg,.svg,.jpeg,.webp"
+          @change="onChange2"
+          ref="file2"
+          accept=".png,.jpg,.jpeg"
         />
 
-        <label for="fileInput" class="file-label mb-0 flex flex-col items-center">
-          <i-icon icon="ph:upload-simple-fill" class="text-[30px]" />
-          <div v-if="isDragging">Release to drop files here.</div>
+        <label for="fileInput2" class="file-label mb-0 flex flex-col items-center">
+          <i-icon icon="akar-icons:plus" class="text-[17px]" />
+          <!-- <div v-if="isDragging">Release to drop files here.</div>
           <div v-else class="text-[16px] font-medium mb-0">
             Upload <span class="text-primary font-semibold">Phone Photo</span>
-          </div>
-          <!-- <span class="text-xs text-neutral-700">Supported format xlsx, csv, txt</span> -->
+          </div> -->
         </label>
       </div>
       <!-- <div class="flex justify-between my-3">
@@ -32,10 +31,11 @@
         <span class="text-[13.4px] text-neutral-700 underline cursor-pointer">Download Sample</span>
       </div> -->
     </div>
-    <div class="grid grid-cols-5 gap-2 mt-4" >
-      <div v-for="(item, idx) in files" :key="idx">
+    <div class="col-span-4">
+      <div class="grid grid-cols-4 gap-2" >
+      <div v-for="(item, idx) in photos" :key="idx">
         <div class="relative">
-          <img :src="generateURL(item)" alt="" class="h-12 w-full rounded-lg object-fit-cover" />
+          <img :src="generateURL(item)" alt="" class="h-12 w-full rounded-md object-fit-cover" />
           <div class="flex justify-end gap-2 absolute top-1 right-1">
             <span
               role="button"
@@ -43,11 +43,11 @@
               @click="removePhoto(idx)"
             >
               <i-icon icon="fluent:delete-12-regular" />
-              <!-- Remove -->
             </span>
           </div>
         </div>
       </div>
+    </div>
     </div>
   </div>
 </template>
@@ -57,15 +57,15 @@ export default {
   data() {
     return {
       isDragging: false,
-      files: [],
+      photos: [],
       hasPreview: false
     }
   },
   methods: {
-    onChange() {
-      this.files.push(...this.$refs.file.files)
-      console.log(this.files, 'from:photo Upload')
-      this.$emit('uploadImage', this.files)
+    onChange2() {
+      this.photos.push(...this.$refs.file2.files)
+      console.log(this.photos, 'from:photo Upload')
+      this.$emit('uploadImage', this.photos)
     },
 
     dragover(e) {
@@ -79,7 +79,7 @@ export default {
 
     drop(e) {
       e.preventDefault()
-      this.$refs.file.files = e.dataTransfer.files
+      this.$refs.file2.photos = e.dataTransfer.photos
       this.onChange()
       this.isDragging = false
     },
@@ -93,8 +93,8 @@ export default {
     },
 
     removePhoto(value) {
-      if (this.files.length !== 0) {
-        this.files.splice(value, 1)
+      if (this.photos.length !== 0) {
+        this.photos.splice(value, 1)
       }
     }
   }
@@ -111,12 +111,12 @@ export default {
 } */
 
 .dropzone-container {
-  height: 200px;
-  width: 100%;
+  /* height: 60px; */
+  /* width: 100%; */
   background: var(---gray1);
   border: 2px solid var(---primary-color);
   /* border-style: ; */
-  border-radius: 12px;
+  /* border-radius: 12px; */
 }
 
 .hidden-input {

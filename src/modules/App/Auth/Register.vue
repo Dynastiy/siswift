@@ -203,20 +203,13 @@
                   ? 'brand-primary bg-primary'
                   : 'bg-gray1 text-black1'
             ]"
-            class="brand-btn w-full"
+            class="brand-btn w-full flex justify-center items-center gap-2"
             v-if="currentStep === 1"
             type="submit"
           >
+          <i-icon v-if="isLoading" icon="eos-icons:three-dots-loading" class="text-xl text-gray2" />
             Register
           </button>
-          <!-- <button
-            class="text-primary border rounded-md border-primary w-full p-3"
-            v-if="currentStep !== 0"
-            type="button"
-            @click="prevStep"
-          >
-            Previous
-          </button> -->
           <div class="mt-3">
             <span class="flex justify-center gap-1 text-[14.5px]">
               <span class="font-medium text-gray2">Already have an account?</span>
@@ -326,8 +319,23 @@ export default {
 
     nextStep(values) {
       if (this.currentStep === 1) {
-        console.log('Done: ', JSON.stringify(values, null, 2))
-        this.$router.push('/login')
+        this.isLoading = true
+        const formdata = new FormData()
+        formdata.append('fullname', values.name)
+        formdata.append('email', values.email)
+        formdata.append('mobile', values.phone)
+        formdata.append('password', values.password)
+        formdata.append('password_confirmation', values.confirmPassword)
+        formdata.append('address', values.address)
+
+        this.$auth.createAccount(formdata).then((res) => {
+          console.log('register res:', res)
+          this.$router.push('/login')
+        })
+        .finally(()=> {
+          this.isLoading = false
+        })
+
         return
       }
       this.currentStep++

@@ -2,57 +2,90 @@
   <div>
     <el-skeleton :loading="loading" animated>
       <template #template>
-        <div class="grid lg:grid-cols-3 md:grid-cols-3 grid-cols-1 gap-4 mt-4">
-          <div v-for="item in 5" :key="item">
-            <el-skeleton-item variant="image" style="height: 250px; border-radius: 10px" />
+        <div class="grid lg:grid-cols-4 md:grid-cols-4 grid-cols-2 gap-4 mt-4">
+          <div v-for="item in 8" :key="item">
+            <el-skeleton-item variant="image" style="height: 200px; border-radius: 10px" />
           </div>
         </div>
       </template>
       <template #default>
         <div>
-          <div>
-            <div role="button" @click="$router.push('/app/product/ID')">
-              <!-- <div v-for="(item, idx) in products" :key="idx"> -->
-              <div class="rounded-md">
-                <!-- <div class="ribbon" v-if="item.availability !== 'in-stock'">
-                  <span class="ribbon__content font-semibold text-[12px]">sold out</span>
-                </div> -->
-                <div>
-                  <!-- <span class="percentage" v-if="item.discount !== undefined && item.discount !== null">
-                    {{ `${item.discount.percentage}% OFF` }}
-                  </span> -->
+          <div
+            class="grid grid-cols-2 gap-4"
+            :class="[
+              isFilterOpen ? 'lg:grid-cols-3 md:grid-cols-3' : 'lg:grid-cols-4 md:grid-cols-4'
+            ]"
+          >
+            <div v-for="(item, idx) in products" :key="idx" class="hover:shadow">
+              <div>
+                <div class="" @click="viewProduct(item)">
                   <img
-                    src="https://www.cnet.com/a/img/resize/690ad0a97cf8fc98f3cf851e7b149d2ffc5b171e/hub/2023/05/04/31dfdcf2-1ac3-4320-b40c-4c356300f06e/google-pixel-7a-phone-14.jpg?auto=webp&height=500"
+                    :src="imgUrl + item?.main_image"
                     alt=""
                     role="button"
+                    class="w-full h-[150px] object-contain"
                   />
                 </div>
               </div>
-              <div class="mt-2 flex flex-col gap-1">
-                <h6
+              <div class="mt-2 flex flex-col justify-between px-4 p-3">
+                <div class="flex justify-between items-center">
+                  <h6
                   role="button"
                   class="text-black1 capitalize text-md font-semibold"
                   @click="viewProduct(item)"
                 >
-                  hello World
+                  {{ item?.name }}
                 </h6>
-                <small class="text-xs block text-gray-500"> Bukki Stores </small>
-                <small class="text-xs block text-gray-500"> 218GB hug gbhr </small>
-               <div class="flex justify-between items-center mt-3">
-                <span class="text-primary font-bold text-md block text-sm leading-tight">
-                  {{ $currencyFormat(45000) }}
-                </span>
-                <span class="text-xs flex gap-1">
-                  <i-icon icon="mingcute:star-fill" class="text-secondary text-xs"/>
-                  4.5
-                </span>
-               </div>
-                
+
+                <el-dropdown trigger="click" placement="bottom-end" v-if="user.seller_id === item?.seller_id">
+                  <span class="el-dropdown-link flex items-center">
+                    <i-icon icon="pepicons-pencil:dots-y" width="20px" />
+                  </span>
+                  <template #dropdown>
+                    <div class="p-4 w-[150px]">
+                      <div class="mt-3 flex flex-col gap-4">
+                        <span>Hello</span>
+                      </div>
+                    </div>
+                  </template>
+                </el-dropdown>
+                </div>
+
+                <small class="text-xs block text-gray-500" v-if="item?.shop">
+                  Seller:{{ item?.shop?.name }}
+                </small>
+                <!-- <small class="text-xs block text-gray-500"> {{ item?.brand?.name }} </small> -->
+
+                <div class="flex justify-between items-center mt-3">
+                  <span
+                    class="text-primary font-bold lg:text-sm md:text-sm text-xs block leading-tight"
+                  >
+                    {{ $currencyFormat(item?.base_price) }}
+                  </span>
+                  <!-- <span class="text-xs flex gap-1">
+                    <i-icon icon="mingcute:star-fill" class="text-secondary text-xs" />
+                    4.5
+                  </span> -->
+                </div>
               </div>
             </div>
           </div>
-          <div v-if="!loading && products.length === 0">
-            <slot name="empty"></slot>
+          <div v-if="!loading && products.length === 0" class="flex justify-center">
+            <div class="text-center flex flex-col gap-4">
+              <span
+                class="bg-accent block h-[200px] w-[200px] rounded-full flex justify-center items-center"
+              >
+                <i-icon :icon="iconType" class="text-[100px]" />
+              </span>
+              <h5>{{ emptyText }}</h5>
+              <button
+                v-if="hasButton"
+                class="brand-btn-md text-sm brand-primary mx-auto w-fit flex gap-1 items-center"
+                @click="$router.push(btnUrl)"
+              >
+                {{ btnText }}
+              </button>
+            </div>
           </div>
           <!-- <div class="flex justify-end">
             <wxPagination :meta="meta" @next="filter($event)" />
@@ -73,12 +106,28 @@ export default {
     loading: {
       type: Boolean,
       default: false
-    }
+    },
+    isFilterOpen: {
+      type: Boolean,
+      default: false
+    },
+    isHomePage: {
+      type: Boolean,
+      default: false
+    },
+    hasButton: {
+      type: Boolean,
+      default: true
+    },
+    iconType: String,
+    btnText: String,
+    btnUrl: String,
+    emptyText: String
   },
 
   methods: {
     viewProduct(item) {
-      return this.$router.push(`/product/${item.slug}/view`)
+      this.$emit('viewProduct', item)
     },
 
     cartFunc(e, value) {
