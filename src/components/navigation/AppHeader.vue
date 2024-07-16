@@ -43,15 +43,24 @@
                 <div class="p-4 w-[350px]">
                   <span class="flex justify-between items-center">
                     <h4 class="font-semibold text-[14px]">Notification</h4>
-                    <span class="text-primary font-semibold text-sm" role="button" @click="$router.push('/app/notifications')">See All</span>
+                    <span
+                      class="text-primary font-semibold text-sm"
+                      role="button"
+                      @click="$router.push('/app/notifications')"
+                      >See All</span
+                    >
                   </span>
                   <div class="mt-3 flex flex-col gap-4">
-                    <wx-notification v-for="item in 5" :key="item"/>
+                    <wx-notification v-for="item in 5" :key="item" />
                   </div>
                 </div>
               </template>
             </el-dropdown>
           </div>
+
+          <span @click="$router.push('/app/my-store')">
+            <i-icon icon="entypo:shop" width="20px"/>
+          </span>
 
           <el-dropdown trigger="click" placement="bottom-end">
             <span class="el-dropdown-link flex items-center">
@@ -66,13 +75,21 @@
                 <h4 class="font-semibold text-[14px]">My Account</h4>
                 <ul class="mt-2 p-0">
                   <li>
-                    <span @click="$router.push('/app/profile')" class="flex gap-2 items-center text-[13px] p-2 hover:bg-accent rounded-md" role="button">
+                    <span
+                      @click="$router.push('/app/profile')"
+                      class="flex gap-2 items-center text-[13px] p-2 hover:bg-accent rounded-md"
+                      role="button"
+                    >
                       <i-icon icon="solar:user-bold" />
                       <span>Profile</span>
                     </span>
                   </li>
                   <li>
-                    <span @click="logout" role="button" class="flex gap-2 items-center text-[13px] p-2 hover:bg-accent rounded-md">
+                    <span
+                      @click="logout"
+                      role="button"
+                      class="flex gap-2 items-center text-[13px] p-2 hover:bg-accent rounded-md"
+                    >
                       <i-icon icon="ri:logout-circle-r-fill" />
                       <span>Logout</span>
                     </span>

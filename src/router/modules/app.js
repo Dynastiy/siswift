@@ -82,6 +82,30 @@ const routes = [
   },
 
   {
+    path: '/app/my-listings',
+    name: 'app-listings',
+    component: () => import('@/modules/App/Dashboard/Listings.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'my-listings',
+      name: 'home'
+    }
+  },
+
+  {
+    path: '/app/my-orders',
+    name: 'app-orders',
+    component: () => import('@/modules/App/Dashboard/Orders.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'my-orders',
+      name: 'home'
+    }
+  },
+
+  {
     path: '/app/my-store',
     name: 'app-store',
     component: () => import('@/modules/App/Dashboard/Store.vue'),

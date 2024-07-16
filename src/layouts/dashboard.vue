@@ -50,14 +50,31 @@ export default {
           isLink: true,
           isBottom: false
         },
+        // {
+        //   title: 'My Store',
+        //   icon: 'entypo:shop',
+        //   url: '/app/my-store',
+        //   parent: 'my-store',
+        //   isLink: true,
+        //   isBottom: false
+        // },
         {
-          title: 'My Store',
-          icon: 'entypo:shop',
-          url: '/app/my-store',
-          parent: 'my-store',
+          title: 'My Orders',
+          icon: 'flowbite:messages-solid',
+          url: '/app/my-orders',
+          parent: 'my-orders',
           isLink: true,
           isBottom: false
         },
+        {
+          title: 'My Listings',
+          icon: 'flowbite:messages-solid',
+          url: '/app/my-listings',
+          parent: 'my-listings',
+          isLink: true,
+          isBottom: false
+        },
+        
         {
           title: 'Messages',
           icon: 'flowbite:messages-solid',
@@ -75,7 +92,7 @@ export default {
           isBottom: false
         },
         {
-          title: 'Setting',
+          title: 'Settings',
           icon: 'mingcute:settings-1-fill',
           url: '/app/setting',
           parent: 'setting',
