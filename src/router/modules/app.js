@@ -12,6 +12,28 @@ const routes = [
   // },
 
   {
+    path: '/',
+    name: "home",
+    component: () => import('@/modules/App/Home.vue'),
+    meta: {
+      layout: 'Home',
+      requiresAuth: false,
+      name: "home"
+    }
+  },
+
+  {
+    path: '/terms',
+    name: "terms",
+    component: () => import('@/modules/App/Terms.vue'),
+    meta: {
+      layout: 'Home',
+      requiresAuth: false,
+      name: "terms"
+    }
+  },
+
+  {
     path: '/app/marketplace',
     name: 'app-marketplace',
     component: () => import('@/modules/App/Dashboard/Index.vue'),

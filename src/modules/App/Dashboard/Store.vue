@@ -10,7 +10,7 @@
               class="brand-btn-md text-sm brand-primary flex gap-1 items-center"
               @click="$router.push('/app/product/new')"
             >
-              Add Product
+              Create Ad
             </button>
             <button
               class="brand-btn-md text-sm brand-primary flex gap-1 items-center"
