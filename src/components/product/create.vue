@@ -11,146 +11,20 @@
         <template v-if="currentStep === 0">
           <div class="flex flex-col gap-2">
             <div>
-              <vField name="name" v-slot="{ field }" class="input">
-                <label for="">Shop Name</label>
-                <div class="input-field">
-                  <input
-                    type="text"
-                    name="name"
-                    class="w-full"
-                    id="name"
-                    placeholder="Enter shop name"
-                    v-bind="field"
-                  />
-                </div>
-              </vField>
-              <ErrorMessage name="name" class="text-xs text-error"></ErrorMessage>
-            </div>
-
-            <div>
-              <vField name="phone" v-slot="{ field }" class="input">
-                <label for="">Phone Number</label>
-                <div class="input-field">
-                  <input
-                    type="tel"
-                    name="phone"
-                    class="w-full"
-                    id="name"
-                    placeholder="Enter Phone Number"
-                    v-bind="field"
-                  />
-                </div>
-              </vField>
-              <ErrorMessage name="phone" class="text-xs text-error"></ErrorMessage>
-            </div>
-
-            <!-- <div>
-              <vField name="description" v-slot="{ field }" class="input">
-                <label for="">Store Description</label>
-                <div class="input-field">
-                  <textarea
-                    name="description"
-                    class="w-full bg-transparent py-2"
-                    id="description"
-                    placeholder="Enter Store Description"
-                    v-bind="field"
-                    cols="30"
-                    rows="4"
-                  ></textarea>
-                </div>
-              </vField>
-              <ErrorMessage name="description" class="text-xs text-error"></ErrorMessage>
-            </div> -->
-
-            <div>
-              <vField name="address" v-slot="{ field }" class="input">
-                <label for="">Address</label>
-                <div class="input-field">
-                  <input
-                    type="text"
-                    name="address"
-                    class="w-full"
-                    id="name"
-                    placeholder="Enter Address"
-                    v-bind="field"
-                  />
-                </div>
-              </vField>
-              <ErrorMessage name="address" class="text-xs text-error"></ErrorMessage>
-            </div>
-
-            <div>
-              <label for="">Store Photo</label>
-              <vField name="profile_picture" type="file" class="input"> </vField>
-            </div>
-          </div>
-        </template>
-
-        <template v-if="currentStep === 1">
-          <div class="flex flex-col gap-2">
-            <div>
-              <vField name="product_name" v-slot="{ field }" class="input">
-                <label for="">Product Name</label>
-                <div class="input-field">
-                  <input
-                    type="text"
-                    name="product_name"
-                    class="w-full"
-                    id="name"
-                    placeholder="Enter Product Name"
-                    v-bind="field"
-                  />
-                </div>
-              </vField>
+              <label for="">Product Name</label>
+              <vField name="product_name" placeholder="Enter Product Name" class="input"> </vField>
               <ErrorMessage name="product_name" class="text-xs text-error"></ErrorMessage>
             </div>
 
             <div>
-              <vField name="model" v-slot="{ field }" class="input">
-                <label for="">Product Model</label>
-                <div class="input-field">
-                  <input
-                    type="text"
-                    name="model"
-                    class="w-full"
-                    id="name"
-                    placeholder="Enter Product Model"
-                    v-bind="field"
-                  />
-                </div>
+              <label for="">Product Model</label>
+              <vField name="model" type="text" class="input" placeholder="Enter Product Model">
               </vField>
               <ErrorMessage name="model" class="text-xs text-error"></ErrorMessage>
             </div>
 
-            <div>
-              <vField name="location" v-slot="{ field }" class="input">
-                <label for="">Location</label>
-                <div class="input-field">
-                  <input
-                    type="text"
-                    name="location"
-                    class="w-full"
-                    id="name"
-                    placeholder="Enter Location"
-                    v-bind="field"
-                  />
-                </div>
-              </vField>
-              <ErrorMessage name="location" class="text-xs text-error"></ErrorMessage>
-            </div>
-
             <div class="w-full">
-              <!-- <vField name="category_id" v-slot="{ field }" class="input"> -->
               <label for="">Product Categories</label>
-              <!-- <div class="input-field">
-                    <input
-                      type="text"
-                      name="category_id"
-                      class="w-full"
-                      id="name"
-                      placeholder="Enter Product Brand"
-                      v-bind="field"
-                    /> -->
               <MultiSelect
                 v-model="category_id"
                 display="chip"
@@ -160,25 +34,17 @@
                 placeholder="Select Categories"
                 :maxSelectedLabels="3"
               />
-              <!-- </div> -->
-              <!-- </vField> -->
-              <!-- <ErrorMessage name="category_id" class="text-xs text-error"></ErrorMessage> -->
             </div>
 
-            <div class="flex gap-3">
+            <div class="flex lg:flex-row md:flex-row flex-col gap-3">
               <div class="w-full">
-                <vField name="product_price" v-slot="{ field }" class="input">
-                  <label for="">Product Price</label>
-                  <div class="input-field">
-                    <input
-                      type="tel"
-                      name="product_price"
-                      class="w-full"
-                      id="name"
-                      placeholder="Enter Product Price"
-                      v-bind="field"
-                    />
-                  </div>
+                <label for="">Product Price</label>
+                <vField
+                  name="product_price"
+                  type="tel"
+                  placeholder="Enter Product Price"
+                  class="input"
+                >
                 </vField>
                 <ErrorMessage name="product_price" class="text-xs text-error"></ErrorMessage>
               </div>
@@ -194,27 +60,205 @@
                 <ErrorMessage name="brand_id" class="text-xs text-error"></ErrorMessage>
               </div>
             </div>
+
             <div>
-              <vField name="product_description" v-slot="{ field }" class="input">
-                <label for="">Description</label>
-                <div class="input-field">
-                  <textarea
-                    name="product_description"
-                    class="w-full bg-transparent py-2"
-                    id="description"
-                    placeholder="Enter Description"
-                    v-bind="field"
-                    cols="30"
-                    rows="4"
-                  ></textarea>
+              <label for="">Bulk Pricing</label>
+              <div class="flex gap-2">
+                <input
+                  type="text"
+                  v-model="bulk_size"
+                  placeholder="Enter Bulk Size"
+                  class="input"
+                />
+                <input
+                  type="text"
+                  v-model="price_per_piece"
+                  placeholder="Price Per Piece*"
+                  class="input"
+                />
+                <span class="brand-btn bg-primary" @click="addBulkPrice">Save</span>
+              </div>
+              <div class="flex flex-col gap-[5px] mt-[10px]">
+                <div class="bg-accent p-[6px]" v-for="(obj, i) in bulk_prices" :key="i">
+                  <span class="text-sm block">
+                    <b>{{ `From ${obj.qty} pieces:` }}</b>
+                    {{ `${$currencyFormat(obj.price)}/piece` }}</span
+                  >
+                  <span></span>
                 </div>
+              </div>
+            </div>
+
+            <div>
+              <label for="">Description</label>
+              <Editor v-model="product_description" editorStyle="height: 200px;">
+                <template #toolbar>
+                  <span class="ql-formats">
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
+                    <button class="ql-link"></button>
+                    <button class="ql-align"></button>
+                    <button class="ql-align" value="right"></button>
+                    <button class="ql-align" value="center"></button>
+                    <button class="ql-align" value="justify"></button>
+                    <button class="ql-script" value="sub"></button>
+                    <button class="ql-script" value="super"></button>
+                    <select class="ql-header">
+                      <option selected></option>
+                      <option value="1"></option>
+                      <option value="2"></option>
+                      <option value="3"></option>
+                      <option value="4"></option>
+                      <option value="5"></option>
+                      <option value="6"></option>
+                    </select>
+                  </span>
+                </template>
+              </Editor>
+            </div>
+          </div>
+        </template>
+
+        <template v-if="currentStep === 1">
+          <div class="flex flex-col gap-2">
+            <div class="flex lg:flex-row md:flex-row flex-col items-center gap-2">
+              <div class="w-full">
+                <label for="">State</label>
+                <vField name="state" as="select" v-model="selectedState" class="input">
+                  <option selected disabled value="">--Select State--</option>
+                  <option v-for="item in states" :key="item" :value="item">
+                    {{ item }}
+                  </option>
+                </vField>
+                <ErrorMessage name="state" class="text-xs text-error"></ErrorMessage>
+              </div>
+
+              <div class="w-full">
+                <label for="">City</label>
+                <vField name="city" as="select" class="input">
+                  <option selected disabled value="">--Select City--</option>
+                  <option v-for="item in lgas" :key="item" :value="item">
+                    {{ item }}
+                  </option>
+                </vField>
+                <ErrorMessage name="city" class="text-xs text-error"></ErrorMessage>
+              </div>
+            </div>
+
+            <div>
+              <label for="">Location</label>
+              <vField name="location" placeholder="Enter Address" class="input"> </vField>
+              <ErrorMessage name="location" class="text-xs text-error"></ErrorMessage>
+            </div>
+            <div>
+              <div class="flex gap-[3px] items-center">
+                <label for="">Condition</label>
+                <span class="text-red-500 text-sm" role="button" @click="visible = true">
+                  <i-icon icon="material-symbols:info-outline" />
+                </span>
+              </div>
+              <vField name="condition" as="select" class="input">
+                <option selected disabled value="">--Select Condition--</option>
+                <option
+                  v-for="item in [
+                    'new',
+                    'like_new',
+                    'refurbished',
+                    'used-good',
+                    'used-fair',
+                    'used-poor'
+                  ]"
+                  class="capitalize"
+                  :key="item"
+                  :value="item"
+                >
+                  {{ item.split('_').join(' ') }}
+                </option>
               </vField>
-              <ErrorMessage name="product_description" class="text-xs text-error"></ErrorMessage>
+              <ErrorMessage name="condition" class="text-xs text-error"></ErrorMessage>
+            </div>
+
+            <div>
+              <label for="">RAM Size</label>
+              <vField name="ram_size" as="select" class="input">
+                <option selected disabled value="">--Select RAM Size--</option>
+                <option
+                  v-for="item in ['16GB', '32GB', '64GB', '128GB', 'Other']"
+                  :key="item"
+                  :value="item"
+                >
+                  {{ item }}
+                </option>
+              </vField>
+              <ErrorMessage name="ram_size" class="text-xs text-error"></ErrorMessage>
+            </div>
+
+            <div>
+              <label for="">SIM</label>
+              <vField name="sim" as="select" class="input">
+                <option selected disabled value="">--Select Number of Sims--</option>
+                <option
+                  v-for="item in ['single_sim', 'dual_sim']"
+                  class="capitalize"
+                  :key="item"
+                  :value="item"
+                >
+                  {{ item.split('_').join(' ') }}
+                </option>
+              </vField>
+              <ErrorMessage name="sim" class="text-xs text-error"></ErrorMessage>
+            </div>
+
+            <div>
+              <label for="">Color</label>
+              <div class="input-container flex justify-between flex-wrap items-center">
+                <span class="colors-list flex gap-2 flex-wrap w-full">
+                  <span
+                    class="colors w-6 h-6 p-2 cursor-pointer rounded-full"
+                    v-for="item in colors"
+                    :key="item.uuid"
+                    :style="{
+                      backgroundColor: item.name,
+                      borderColor: item.border
+                    }"
+                    :class="[color === item.name ? 'ring-2 ring-offset-2 ring-primary' : '']"
+                    @click="addColor(item.name)"
+                  ></span>
+                </span>
+
+                <div class="w-full">
+                  <input
+                    v-if="add_color"
+                    type="color"
+                    name=""
+                    v-model="new_color"
+                    id=""
+                    @change="uploadColor"
+                  />
+                  <button
+                    @click="addNewColor"
+                    v-else
+                    class="text-primary flex items-center text-sm font-semibold"
+                  >
+                    <i-icon icon="material-symbols:add" />
+                    <span class="block">Add Color</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </template>
 
         <div class="flex flex-col gap-4 mt-7">
+          <button
+            class="brand-btn w-full bg-primary"
+            v-if="currentStep > 0 "
+            type="submit"
+            @click="prevStep"
+          >
+            Previous
+          </button>
           <button
             class="brand-btn w-full"
             v-if="currentStep !== 1"
@@ -242,44 +286,53 @@
         </div>
       </vForm>
     </div>
+
+    <vDialog v-model:visible="visible" modal header="Conditions" :style="{ width: '20rem' }">
+      <Condition />
+    </vDialog>
   </div>
 </template>
 
 <script>
 import * as yup from 'yup'
+import Condition from '@/components/utils/Condition.vue'
+import { debounce } from 'lodash'
+import colors from '@/utils/colors.js'
 export default {
   props: {
     mainImage: Object,
     productImages: Array
   },
-  components: {},
+  components: { Condition },
   data() {
     return {
+      visible: false,
       typePassword: true,
       typePassword2: true,
       isLoading: false,
       validationErrors: {},
       currentStep: 0,
+      bulk_size: '',
+      price_per_piece: '',
       schemas: [
-        yup.object({
-          name: yup.string().required(),
-          address: yup.string().required(),
-          phone: yup
-            .string()
-            .required()
-            .matches(/^[0-9]+$/, 'Must be numeric')
-        }),
         yup.object({
           product_name: yup.string().required(),
           model: yup.string().required(),
-          location: yup.string().required(),
           product_price: yup
             .string()
             .required()
             .matches(/^[0-9]+$/, 'Must be numeric'),
-          brand_id: yup.string(),
-          product_description: yup.string().required()
+          brand_id: yup.string()
+        }),
+        yup.object({
+          location: yup.string().required(),
+          ram_size: yup.string(),
+          condition: yup.string().required(),
+          sim: yup.string(),
+          state: yup.string().required(),
+          city: yup.string().required()
         })
+
         // yup.object({
         //   address: yup.string().required(),
         //   postalCode: yup
@@ -294,8 +347,17 @@ export default {
       category_id: [],
       categories: [],
       brands: [],
+      states: [],
+      lgas: [],
+      bulk_prices: [],
+      colors: colors,
+      selectedState: '',
       product_image: null,
-      photos: null
+      photos: null,
+      new_color: '',
+      add_color: false,
+      color: '',
+      product_description: ''
     }
   },
 
@@ -313,13 +375,74 @@ export default {
       })
       formdata.append('main_image', this.mainImage)
       formdata.append('location', values.location)
-      formdata.append('description', values.product_description)
+      formdata.append('description', this.product_description)
       formdata.append('model', values.model)
+      formdata.append('condition', values.condition)
+      formdata.append('ram', values.ram_size)
+      formdata.append('sim', values.sim)
+      formdata.append('colour', this.color)
+      formdata.append('bulk_price', JSON.stringify(this.bulk_prices))
+      // if (this.bulk_prices) {
+      //   this.bulk_prices.forEach((elem) => {
+      //     formdata.append('bulk_price', (`${elem.qty},${elem.price}`))
+      //   })
+      // }
+      formdata.append('state', values.state)
+      formdata.append('lga', values.city)
       this.$products.create(formdata).then((res) => {
         console.log(res)
-        this.$router.push('/app/my-store')
+        this.$router.push('/app/my-listings')
         return
       })
+    },
+
+    addColor(color) {
+      this.color = color
+    },
+
+    addNewColor() {
+      this.add_color = !this.add_color
+    },
+
+    removeColor(color) {
+      this.colors = this.colors.filter((item) => item !== color)
+    },
+
+    addBulkPrice() {
+      this.bulk_prices.push({
+        qty: this.bulk_size,
+        price: this.price_per_piece
+      })
+    },
+
+    uploadColor() {
+      this.add_color = false
+      this.colors.push({
+        id: this.colors.length,
+        name: this.new_color
+      })
+    },
+
+    async getStates() {
+      try {
+        const req = await this.$axios.get('https://nga-states-lga.onrender.com/fetch')
+        console.log(req.data)
+        this.states = req.data
+      } catch (res) {
+        console.log(res)
+      }
+    },
+
+    async getLGA() {
+      try {
+        const req = await this.$axios.get(
+          `https://nga-states-lga.onrender.com/?state=${this.selectedState}`
+        )
+        console.log(req.data)
+        this.lgas = req.data
+      } catch (res) {
+        console.log(res)
+      }
     },
 
     nextStep(values) {
@@ -327,7 +450,8 @@ export default {
         this.create(values)
         return
       }
-      this.createShop(values)
+      this.currentStep++
+      this.$emit('nextStep')
     },
 
     prevStep() {
@@ -344,25 +468,12 @@ export default {
         this.categories = res.categories
         this.brands = res.brands
       })
-    },
-
-    createShop(values) {
-      const formdata = new FormData()
-      formdata.append('name', values.name)
-      formdata.append('phone', values.phone)
-      formdata.append('address', values.address)
-      formdata.append('image', values.profile_picture)
-      this.$config.createStore(formdata).then((res) => {
-        console.log(res)
-        this.currentStep++
-        this.$emit('nextStep')
-        this.$emit('refresh')
-      })
     }
   },
 
   beforeMount() {
     this.getSetting()
+    this.getStates()
   },
 
   watch: {
@@ -382,24 +493,29 @@ export default {
       },
       immediate: true
     },
-    user: {
-      handler(val) {
-        if(!val.seller_id) {
-          this.currentStep = 0
-        }
-        else {
-          this.currentStep = 1
-        }
-      },
-      immediate: true
+    selectedState: {
+      handler: debounce(function () {
+        this.getLGA()
+      }, 500)
     }
+    // user: {
+    //   handler(val) {
+    //     if(!val.seller_id) {
+    //       this.currentStep = 0
+    //     }
+    //     else {
+    //       this.currentStep = 1
+    //     }
+    //   },
+    //   immediate: true
+    // }
   },
 
   computed: {
     currentSchema() {
       return this.schemas[this.currentStep]
     },
-    user(){
+    user() {
       return this.$store.getters['auth/getUser']
     }
   }

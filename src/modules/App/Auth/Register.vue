@@ -208,7 +208,7 @@
             type="submit"
           >
           <i-icon v-if="isLoading" icon="eos-icons:three-dots-loading" class="text-xl text-gray2" />
-            Register
+            <span v-else>Register</span>
           </button>
           <div class="mt-3">
             <span class="flex justify-center gap-1 text-[14.5px]">
@@ -330,7 +330,14 @@ export default {
 
         this.$auth.createAccount(formdata).then((res) => {
           console.log('register res:', res)
-          this.$router.push('/login')
+          
+          let userData = res.data
+          this.$store.commit('auth/login', {
+            token: userData.access_token,
+            user: userData.user
+          })
+          localStorage.setItem('_user_token', userData.access_token)
+          this.$router.push('/verify-email')
         })
         .finally(()=> {
           this.isLoading = false

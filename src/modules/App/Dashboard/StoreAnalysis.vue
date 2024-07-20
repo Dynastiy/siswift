@@ -43,6 +43,19 @@ export default {
         }
       ]
     }
+  },
+
+  methods: {
+    getStats(){
+      this.$user.getStoreAnalysis()
+      .then((res)=> {
+        console.log(res)
+      })
+    }
+  },
+
+  beforeMount(){
+    this.getStats()
   }
 }
 </script>

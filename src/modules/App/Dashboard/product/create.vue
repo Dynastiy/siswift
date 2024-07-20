@@ -17,11 +17,14 @@
             class="block h-[8px] bg-secondary rounded-full"
             :class="[currentStep === 0 ? 'w-[25px]' : 'w-[8px]']"
             role="button"
+            @click="prevStep"
           >
           </span>
           <span
             class="block h-[8px] bg-secondary rounded-full"
             :class="[currentStep === 1 ? 'w-[25px]' : 'w-[8px]']"
+            role="button"
+            @click="nextStep"
           ></span>
         </div>
       </h4>

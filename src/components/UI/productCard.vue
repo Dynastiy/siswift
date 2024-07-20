@@ -16,11 +16,11 @@
               isFilterOpen ? 'lg:grid-cols-3 md:grid-cols-3' : 'lg:grid-cols-4 md:grid-cols-4'
             ]"
           >
-            <div v-for="(item, idx) in products" :key="idx" class="hover:shadow">
+            <div v-for="(item, idx) in products" :key="idx" class="hover:shadow bg-white">
               <div>
                 <div class="" @click="viewProduct(item)">
                   <img
-                    :src="imgUrl + item?.main_image"
+                    :src="imgUrl + 'product/' + item?.main_image"
                     alt=""
                     role="button"
                     class="w-full h-[150px] object-contain"
@@ -30,42 +30,76 @@
               <div class="mt-2 flex flex-col justify-between px-4 p-3">
                 <div class="flex justify-between items-center">
                   <h6
-                  role="button"
-                  class="text-black1 capitalize text-md font-semibold"
-                  @click="viewProduct(item)"
-                >
-                  {{ item?.name }}
-                </h6>
+                    role="button"
+                    class="text-black1 capitalize text-md font-semibold"
+                    @click="viewProduct(item)"
+                  >
+                    {{ item?.name }}
+                  </h6>
 
-                <el-dropdown trigger="click" placement="bottom-end" v-if="user.seller_id === item?.seller_id">
-                  <span class="el-dropdown-link flex items-center">
-                    <i-icon icon="pepicons-pencil:dots-y" width="20px" />
-                  </span>
-                  <template #dropdown>
-                    <div class="p-4 w-[150px]">
-                      <div class="mt-3 flex flex-col gap-4">
-                        <span>Hello</span>
+                  <el-dropdown
+                    trigger="click"
+                    placement="bottom-end"
+                    v-if="user.id === item?.shop.user_id"
+                  >
+                    <span class="el-dropdown-link flex items-center">
+                      <i-icon icon="pepicons-pencil:dots-y" width="20px" />
+                    </span>
+                    <template #dropdown>
+                      <div class="p-4 w-[150px]">
+                        <div class="mt-3 flex flex-col gap-4">
+                          <span>Hello</span>
+                        </div>
                       </div>
-                    </div>
-                  </template>
-                </el-dropdown>
+                    </template>
+                  </el-dropdown>
                 </div>
 
                 <small class="text-xs block text-gray-500" v-if="item?.shop">
-                  Seller:{{ item?.shop?.name }}
+                  Seller: {{ item?.shop?.user?.firstname + ' ' + item?.shop?.user?.lastname }}
                 </small>
-                <!-- <small class="text-xs block text-gray-500"> {{ item?.brand?.name }} </small> -->
+
+                <span
+                  class="text-[13px] block mt-2 bg-primary text-white w-fit rounded-sm px-[6px] py-[2px] block"
+                >
+                  {{ item?.condition }}</span
+                >
 
                 <div class="flex justify-between items-center mt-3">
-                  <span
-                    class="text-primary font-bold lg:text-sm md:text-sm text-xs block leading-tight"
-                  >
-                    {{ $currencyFormat(item?.base_price) }}
-                  </span>
-                  <!-- <span class="text-xs flex gap-1">
+                  <div class="flex flex-col">
+                    <span
+                      class="text-primary font-bold lg:text-sm md:text-sm text-xs block leading-tight"
+                      :class="{ 'line-through font-light': item?.offer_price }"
+                    >
+                      {{ $currencyFormat(item?.base_price) }}
+                    </span>
+                    <span
+                      class="text-primary font-bold lg:text-sm md:text-sm text-xs block leading-tight"
+                    >
+                      {{ $currencyFormat(item?.offer_price) }}
+                    </span>
+                  </div>
+                  <span class="text-xs flex gap-[2px]">
                     <i-icon icon="mingcute:star-fill" class="text-secondary text-xs" />
-                    4.5
-                  </span> -->
+                    {{ avgRating(item) }}
+                  </span>
+                </div>
+
+                <div class="flex justify-between items-center" v-if="isCart">
+                  <div>
+                    <span v-if="!item?.status" :class="{ pending: item?.status == 0 }"
+                      >Pending</span
+                    >
+                    <div v-else>
+                      <span v-if="item?.status === 2" :class="{ canceled: item?.status == 2 }"
+                        >Cancelled</span
+                      >
+                      <button @click="$emit('checkOut', item)" v-else class="brand-btn w-full brand-primary py-1">Checkout</button>
+                    </div>
+                  </div>
+                  <span class="text-red-500" role="button" @click="$emit('removeFromCart', item)">
+                    <i-icon icon="material-symbols:delete" />
+                  </span>
                 </div>
               </div>
             </div>
@@ -78,18 +112,23 @@
                 <i-icon :icon="iconType" class="text-[100px]" />
               </span>
               <h5>{{ emptyText }}</h5>
-              <button
-                v-if="hasButton"
-                class="brand-btn-md text-sm brand-primary mx-auto w-fit flex gap-1 items-center"
-                @click="$router.push(btnUrl)"
-              >
-                {{ btnText }}
-              </button>
+              <div>
+                <button
+                  v-if="hasButton"
+                  class="brand-btn-md text-sm brand-primary mx-auto w-fit flex gap-1 items-center"
+                  @click="$router.push(btnUrl)"
+                >
+                  {{ btnText }}
+                </button>
+                <router-link
+                  class="text-sm text-primary font-semibold"
+                  v-if="hasHelper"
+                  :to="helperURL"
+                  >{{ helperText }}</router-link
+                >
+              </div>
             </div>
           </div>
-          <!-- <div class="flex justify-end">
-            <wxPagination :meta="meta" @next="filter($event)" />
-          </div> -->
         </div>
       </template>
     </el-skeleton>
@@ -122,7 +161,17 @@ export default {
     iconType: String,
     btnText: String,
     btnUrl: String,
-    emptyText: String
+    emptyText: String,
+    helperText: String,
+    helperURL: String,
+    hasHelper: {
+      type: Boolean,
+      default: false
+    },
+    isCart: {
+      type: Boolean,
+      default: false
+    },
   },
 
   methods: {
@@ -201,6 +250,17 @@ export default {
       } else {
         return false
       }
+    },
+
+    avgRating(item) {
+      let ratings = item.reviews
+      let allRates = []
+      ratings.forEach((item) => {
+        allRates.push(item.rating)
+      })
+      let rateSum = allRates.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+      let avg = rateSum / allRates.length
+      return avg || 0
     }
   },
 

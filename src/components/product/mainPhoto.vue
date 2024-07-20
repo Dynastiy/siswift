@@ -2,7 +2,7 @@
   <div class="main">
     <div>
       <div
-        class="dropzone-container flex flex-col items-center justify-center text-center"
+        class="dropzone-container flex flex-col items-center justify-center text-center bg-white"
         @dragover="dragover"
         @dragleave="dragleave"
         @drop="drop"
@@ -25,7 +25,7 @@
           <i-icon icon="ph:upload-simple-fill" class="text-[30px]" />
           <div v-if="isDragging">Release to drop files here.</div>
           <div v-else class="text-[16px] font-medium mb-0">
-            Upload <span class="text-primary font-semibold">Phone Photo</span>
+            Upload <span class="text-primary font-semibold"> {{ uploadLabel }} </span>
           </div>
         </label>
 
@@ -59,6 +59,12 @@
 
 <script>
 export default {
+  props: {
+    uploadLabel: {
+      type: String,
+      default: 'Phone Photo'
+    }
+  },
   data() {
     return {
       isDragging: false,

@@ -17,7 +17,26 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data(){
+    return {
+      notifications: []
+    }
+  },
+
+  methods: {
+    list(){
+      this.$user.getNotifications()
+      .then((res)=> {
+        console.log(res);
+      })
+    }
+  },
+
+  beforeMount(){
+    this.list()
+  }
+}
 </script>
 
 <style></style>

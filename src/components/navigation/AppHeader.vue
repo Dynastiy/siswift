@@ -58,14 +58,14 @@
             </el-dropdown>
           </div>
 
-          <span @click="$router.push('/app/my-store')">
-            <i-icon icon="entypo:shop" width="20px"/>
+          <span @click="$router.push('/app/my-store')" role="button">
+            <i-icon icon="entypo:shop" width="20px" />
           </span>
 
           <el-dropdown trigger="click" placement="bottom-end">
             <span class="el-dropdown-link flex items-center">
               <img
-                :src="image"
+                :src="user.image ? imgUrl + 'user/profile/'+ user.image : image"
                 class="w-[38px] h-[38px] border-2 p-[2px] border-gray-100 rounded-full object-fit object-top"
               />
               <i-icon icon="prime:angle-down" class="" width="20px" />

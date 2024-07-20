@@ -123,6 +123,13 @@ export default {
     }
   },
 
+  mounted() {
+    const isLoggedIn = this.$store.getters['auth/getAuthenticated']
+    if (isLoggedIn) {
+      this.$router.push('/app/marketplace')
+    }
+  },
+
   methods: {
     async onSubmit(values) {
       this.isLoading = true
@@ -147,6 +154,12 @@ export default {
         .finally(() => {
           this.isLoading = false
         })
+    }
+  },
+
+  computed: {
+    user() {
+      return this.$store.getters['auth/getUser']
     }
   }
 }

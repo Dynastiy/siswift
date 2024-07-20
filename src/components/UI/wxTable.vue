@@ -57,6 +57,18 @@
               {{ $currencyFormat(data.total_amount) }}
             </span>
           </template>
+          <template v-else-if="field === 'seller_amount'">
+            <span>
+              {{ data.offer_price ? $currencyFormay(data.offer_price) : $currencyFormat(data.base_price) }}
+            </span>
+          </template>
+
+           <template v-else-if="field === 'orderId'">
+            <span>
+              {{ data.order.order_number }}
+            </span>
+          </template>
+          
           <template v-else-if="field === 'amount'">
             <span>
               {{ $currencyFormat(data.amount) }}
@@ -65,6 +77,11 @@
           <template v-else-if="field === 'charge'">
             <span>
               {{ $currencyFormat(data.charge) }}
+            </span>
+          </template>
+          <template v-else-if="field === 'seller'">
+            <span>
+              {{ `${data.seller.firstname} ${data.seller.lastname}` }}
             </span>
           </template>
           <template v-else-if="field === 'availability'">

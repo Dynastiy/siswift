@@ -1,5 +1,6 @@
 <template>
-  <div class="bg-white rounded-md p-6 body-content w-full">
+  <!-- bg-white rounded-md p-6 -->
+  <div class="body-content w-full lg:page-bg md:page-bg">
     <el-skeleton :loading="loading" animated>
       <template #template>
         <div>
@@ -39,7 +40,7 @@
         <div>
           <div>
             <img
-              :src="imgUrl + item?.main_image"
+              :src="imgUrl + 'product/' + item?.main_image"
               alt=""
               role="button"
               class="h-[200px] w-full rounded-md object-cover object-center border border-primary"
@@ -50,7 +51,7 @@
                 <img
                   v-for="j in item?.product_images"
                   :key="j?.id"
-                  :src="imgUrl + j?.image"
+                  :src="imgUrl + 'product/' + j?.image"
                   alt=""
                   role="button"
                   class="h-[40px] w-[60px] rounded-[4px] object-cover object-center"
@@ -59,26 +60,71 @@
               <span class="flex gap-2 items-center" role>
                 <span
                   v-if="isMyProduct"
+                  role="button"
                   class="bg-accent p-2 rounded-md whitespace-nowrap block text-primary text-xs font-semibold"
                 >
-                  Check Sponsored Analysis
+                  {{ item?.isfeatured ? 'Check Sponsored Analysis' : 'Sponsor Listing' }}
                 </span>
-                <span  v-if="!isMyProduct" class="bg-accent p-2 rounded-md text-primary text-lg">
+
+                <span
+                  v-if="!isMyProduct"
+                  @click="addToCart"
+                  class="bg-accent p-2 rounded-md text-primary text-lg"
+                  role="button"
+                >
                   <i-icon icon="ph:heart-fill" />
                 </span>
-                <span v-if="!isMyProduct" class="bg-accent p-2 rounded-md text-primary text-lg">
+                <!-- <span
+                  v-if="!isMyProduct"
+                  class="bg-accent p-2 rounded-md text-primary text-lg"
+                  role="button"
+                >
                   <i-icon icon="material-symbols:report" />
-                </span>
-                <span class="bg-accent p-2 rounded-md text-primary text-lg">
+                </span> -->
+                <span
+                  role="button"
+                  @click="onShare"
+                  class="bg-accent p-2 rounded-md text-primary text-lg"
+                >
                   <i-icon icon="ic:baseline-share" />
                 </span>
               </span>
             </div>
 
             <div class="mt-4 flex flex-col gap-4">
-              <div>
-                <span class="text-[13px] block">Brand: {{ item?.brand?.name }}</span>
+              <h4 class="font-bold text-xl text-primary">
+                {{ `${$currencyFormat(item?.base_price)}` }}
+              </h4>
+              <div class="flex flex-col gap-[5px]">
+                <div
+                  class="bg-accent p-[6px] w-fit"
+                  v-for="(obj, i) in JSON.parse(item?.bulk_price)"
+                  :key="i"
+                >
+                  <span class="text-[12px] block w-fit">
+                    <b>{{ `From ${obj.qty} pieces:` }}</b>
+                    {{ `${$currencyFormat(obj.price)}/piece` }}</span
+                  >
+                </div>
+              </div>
+              <div class="flex flex-col gap-2">
+                <span class="text-[13px] block"><b>Brand:</b> {{ item?.brand?.name }}</span>
                 <h4 class="font-semibold">{{ `${item?.name} ${item?.model}` }}</h4>
+                <span
+                  class="text-[13px] block bg-primary text-white w-fit rounded-sm px-[6px] py-[2px] block"
+                >
+                  {{ item?.condition }}</span
+                >
+                <span class="text-[13px] block"><b>RAM:</b> {{ item?.ram }}</span>
+                <span class="flex gap-[7px] text-sm items-center">
+                  <b>Color:</b>
+                  <span
+                    class="block w-4 h-4 p-2 cursor-pointer rounded-full ring-2 ring-offset-2 ring-primary"
+                    :style="{
+                      backgroundColor: item?.colour
+                    }"
+                  ></span>
+                </span>
                 <span class="flex gap-2">
                   <!-- <span class="text-xs flex gap-1 font-semibold">
                     <i-icon icon="mingcute:star-fill" class="text-secondary text-xs" />
@@ -89,19 +135,68 @@
               </div>
 
               <div>
-                <span v-for="item in ['overview', 'review']" :key="item">{{ item }}</span>
-                <div>
-                  <span>
-                    <h4 class="font-semibold text-[13px]">Description</h4>
-                    <p class="text-xs">
-                      {{ item?.description }}
-                    </p>
+                <span class="border-b border-b-gray-400 w-full flex gap-4 justify-center">
+                  <span
+                    v-for="(item, idx) in ['description', 'reviews']"
+                    :key="idx"
+                    role="button"
+                    class="capitalize w-full text-center text-sm"
+                    @click="activeTab = item"
+                    :class="{
+                      'border-b text-primary border-b-primary font-semibold': activeTab === item
+                    }"
+                  >
+                    {{ item }}
                   </span>
+                </span>
+                <div class="mt-2">
+                  <div v-if="activeTab == 'description'">
+                    <span>
+                      <h4 class="font-semibold text-[13px]">Description</h4>
+                      <div class="text-xs" v-html="item?.description"></div>
+                    </span>
+                  </div>
+                  <div v-if="activeTab == 'reviews'">
+                    <div class="flex flex-col gap-3">
+                      <div v-for="obj in item?.reviews" :key="obj?.id">
+                        <h6 class="text-[14px] font-semibold">
+                          {{ `${obj?.user?.firstname} ${obj?.user?.lastname}` }}
+                        </h6>
+                        <div class="flex items-start gap-2">
+                          <span>
+                            <img
+                              :src="
+                                obj?.user?.image
+                                  ? imgUrl + 'user/profile/' + obj?.user?.image
+                                  : image
+                              "
+                              class="w-[35px] h-[35px] border-2 p-[2px] border-gray-100 rounded-full object-fit object-top"
+                            />
+                          </span>
+                          <div>
+                            <p class="text-sm">comment</p>
+                            <span class="text-xs flex gap-[2px]">
+                              <i-icon icon="mingcute:star-fill" class="text-secondary text-xs" />
+                              4
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
+              <hr class="my-[4px]" />
+
               <div>
-                <span class="text-[13px] block">Location: {{ item?.location }}</span>
+                <span class="text-[13px] block">Address: {{ item?.location }}</span>
+                <span class="text-[13px] flex gap-[3px] items-center"
+                  ><i-icon icon="tabler:location-filled" class="text-secondary text-sm" />
+                  {{
+                   item?.state === 'AkwaIbom' ? `${item?.lga}, Akwa Ibom` : `${item?.lga}, ${item?.state}`
+                  }}</span
+                >
                 <span class="text-[13px] block font-semibold" v-if="item?.shop"
                   >Store Name: {{ item?.shop?.name }}</span
                 >
@@ -110,12 +205,16 @@
                   <h4 class="font-bold text-primary">{{ $currencyFormat(item?.base_price) }}</h4>
                   <button class="brand-btn-md brand-primary">Edit</button>
                 </div>
-                <div v-else class="flex justify-between">
-                  <span class="flex gap-3">
-                    <button class="brand-btn-md brand-outline">Make an offer</button>
-                    <button class="brand-btn-md brand-outline">Start a chat</button>
+                <div v-else class="flex lg:flex-row md:flex-row flex-col justify-between gap-3">
+                  <span class="flex lg:flex-row md:flex-row flex-col gap-3">
+                    <button class="brand-btn-md brand-outline" @click="makeOffer">
+                      Make an offer
+                    </button>
+                    <button class="brand-btn-md brand-outline" @click="startChat">
+                      Start a chat
+                    </button>
                   </span>
-                  <button class="brand-btn-md brand-primary">Order Now</button>
+                  <button class="brand-btn-md brand-primary" @click="orderNow">Order Now</button>
                 </div>
               </div>
             </div>
@@ -127,6 +226,7 @@
 </template>
 
 <script>
+import image from '@/assets/img/no-user.png'
 export default {
   props: {
     productID: Number,
@@ -139,7 +239,9 @@ export default {
     return {
       ID: this.$route.params.id,
       item: {},
-      loading: false
+      loading: false,
+      activeTab: 'description',
+      image
     }
   },
 
@@ -147,6 +249,23 @@ export default {
     filterFunc() {
       this.isFilterOpen = !this.isFilterOpen
     },
+
+    startChat() {
+      this.$router.push(`/app/messages/?user=${this.item?.shop?.user_id}`)
+    },
+
+    async onShare() {
+      try {
+        await navigator.share({
+          title: `Checkout my amazing product at ${this.windowOrigin}`,
+          text: '',
+          url: this.productLink
+        })
+      } catch (err) {
+        alert(err)
+      }
+    },
+
     getProduct() {
       this.loading = true
       this.$products
@@ -159,9 +278,67 @@ export default {
           this.loading = false
         })
     },
+
     getUser() {
       this.$auth.getProfile().then((res) => {
         console.log(res)
+      })
+    },
+
+    addToCart() {
+      let payload = {
+        product_id: this.ID,
+        quantity: 1,
+        offer_price: this.item.base_price
+      }
+      this.$user.addToCart(payload).then((res) => {
+        console.log(res)
+        this.$router.push('/app/my-cart')
+      })
+    },
+
+    removeFromCart(id) {
+      this.$user.removeFromCart(id).then((res) => {
+        console.log(res)
+      })
+    },
+
+    makeOffer() {
+      let payload = {
+        product_id: this.ID,
+        quantity: 1,
+        offer_price: 5000
+      }
+      this.$user.addToCart(payload).then((res) => {
+        console.log(res)
+      })
+    },
+
+    orderNow() {
+      let payload = {
+        product_id: this.ID,
+        quantity: 1,
+        offer_price: this.item.base_price
+      }
+      this.$user.addToCart(payload).then((res) => {
+        console.log(res)
+        let isOrderNow = Boolean(res.data.status)
+        if (isOrderNow) {
+          this.checkOut(res.data)
+        }
+      })
+    },
+
+    checkOut(e) {
+      let payload = {
+        type: 1,
+        address: this.user.address,
+        payment: 1
+      }
+      this.$user.checkOut(payload).then((res) => {
+        console.log(res)
+        this.$router.push('/app/my-cart')
+        this.removeFromCart(e.id)
       })
     }
   },
@@ -169,7 +346,6 @@ export default {
   beforeMount() {
     this.getProduct()
     this.getUser()
-    console.log(this.$route)
   },
 
   // beforeRouteEnter(to, from) {
@@ -192,11 +368,25 @@ export default {
     user() {
       return this.$store.getters['auth/getUser']
     },
+
     isMyProduct() {
-      return this.user.seller_id == this.item.seller_id
+      return this.user.id == this.item.shop.user_id
+    },
+
+    windowOrigin() {
+      return window.location.origin
+    },
+
+    productLink() {
+      return `${this.windowOrigin}/app/product/${this.ID}`
     }
   }
 }
 </script>
 
-<style></style>
+<style scoped>
+ol li {
+  list-style: decimal !important;
+  margin-left: 20px !important;
+}
+</style>

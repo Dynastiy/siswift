@@ -1,10 +1,10 @@
 <template>
-  <div class="body flex gap-4 items-start">
-    <div class="bg-white rounded-md col-span-3 p-6 body-content w-full">
+  <div class="body lg:page-bg md:page-bg flex gap-4 items-start">
+    <div class=" col-span-3 body-content w-full">
       <!-- Dashboard -->
 
       <div class="flex items-center justify-between">
-        <h4 class="mb-3 font-semibold text-lg">Marketplace Items</h4>
+        <h4 class="mb-3 font-semibold text-lg">Recommended Items</h4>
         <div class="flex justify-end mb-4 gap-4" v-if="!isFilterOpen">
           <!-- <button
             class="brand-btn text-sm brand-primary py-2 px-2 flex gap-1 items-center"
@@ -87,17 +87,17 @@ export default {
 
     showProduct(e) {
       console.log(e)
-      function isMobileDevice() {
-        return window.matchMedia('(max-width: 767px)').matches
-      }
+      // function isMobileDevice() {
+      //   return window.matchMedia('(max-width: 767px)').matches
+      // }
 
-      if (isMobileDevice()) {
-        console.log('You are using a mobile device')
+      // if (isMobileDevice()) {
+      //   console.log('You are using a mobile device')
         this.$router.push(`/app/product/${e?.id}`)
-      } else {
-        console.log('You are using a desktop device')
-        this.openProductDetails(e.id)
-      }
+      // } else {
+      //   console.log('You are using a desktop device')
+      //   this.openProductDetails(e.id)
+      // }
     },
 
     openProductDetails(e) {

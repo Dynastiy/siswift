@@ -1,4 +1,10 @@
 /* BUTTONS  */
+@layer components {
+    .page-bg {
+        @apply bg-white rounded-md p-6
+    }
+}
+
 .brand-btn {
     border: none;
     padding: 14px 12px;
@@ -47,7 +53,7 @@
     padding-left: 12px;
     padding-right: 10px;
     align-items: center;
-    background: var(---gray-bg) !important;
+    background: #fff !important;
     border-radius: 6px;
 }
 
@@ -65,7 +71,7 @@
     font-weight: 500;
     outline: none;
     border: none;
-    background-color: transparent;
+    background-color: #fff;
     border-radius: 10px;
 }
 
@@ -95,7 +101,7 @@
     padding: 12px 10px;
     font-weight: 500;
     outline: none;
-    background-color: var(---gray-bg) !important;
+    background-color: #fff !important;
     border-radius: 6px;
     border-width: 1px;
     border-color: var(---gray1);
@@ -317,4 +323,3 @@ form label {
 .filter-container.display {
     /* width: 290px; */
 }
-

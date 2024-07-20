@@ -16,6 +16,17 @@ export default {
 
   async list() {
     try {
+      let res = await $request.get(`/products`)
+      // catchAxiosSuccess()
+      return res.data
+    } catch (error) {
+      catchAxiosError("Listings not found")
+      throw error
+    }
+  },
+
+  async sellerProducts() {
+    try {
       let res = await $request.get(`/seller-products`)
       // catchAxiosSuccess()
       return res.data
@@ -36,6 +47,18 @@ export default {
     }
   },
 
+  async sendMessage(formData) {
+    try {
+      let res = await $request.post(`/messages`, formData)
+      // catchAxiosSuccess(res)
+      return res.data
+    } catch (error) {
+      // catchAxiosError('Messages not retrieved')
+      return error
+      
+    }
+  },
+
   async getMessages(ID) {
     try {
       let res = await $request.get(`/messages/${ID}`)
@@ -47,17 +70,50 @@ export default {
     }
   },
 
-
-  async addToCart(payload) {
+  async getNotifications(){
     try {
-      let res = await $request.post(`/add-to-cart`, payload)
-      catchAxiosSuccess(res)
+      let res = await $request.get(`/notifications`)
+      // catchAxiosSuccess(res)
       return res.data
     } catch (error) {
-      catchAxiosError(error)
+      catchAxiosError("user not gotten")
       throw error
     }
   },
+
+  async getTransactions(){
+    try {
+      let res = await $request.get(`/transactions`)
+      // catchAxiosSuccess(res)
+      return res.data
+    } catch (error) {
+      catchAxiosError("user not gotten")
+      throw error
+    }
+  },
+
+  async getStoreAnalysis(){
+    try {
+      let res = await $request.get(`/shop-stats`)
+      // catchAxiosSuccess(res)
+      return res.data
+    } catch (error) {
+      catchAxiosError("Store Stats")
+      throw error
+    }
+  },
+
+  async addToCart(payload) {
+    try {
+      let res = await $request.post(`/carts`, payload)
+      catchAxiosSuccess('Added to cart succesfully')
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data)
+      throw error
+    }
+  },
+  
 
   async updateCart({id, payload}) {
     try {
@@ -72,11 +128,22 @@ export default {
 
   async removeFromCart(id) {
     try {
-      let res = await $request.post(`/remove-cart-item/${id}`)
-      catchAxiosSuccess(res)
+      let res = await $request.delete(`/carts/${id}`)
+      catchAxiosSuccess(res.data)
       return res.data
     } catch (error) {
-      catchAxiosError(error)
+      catchAxiosError(error.data)
+      throw error
+    }
+  },
+
+  async fundWallet(payload) {
+    try {
+      let res = await $request.post(`/pay`, payload)
+      catchAxiosSuccess(res.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data)
       throw error
     }
   },
@@ -103,9 +170,34 @@ export default {
     }
   },
 
-  async getOrders(status, page) {
+  async getOrders(type) {
     try {
-      let res = await $request.get(`/user-orders?status=${status}&page=${page}`, )
+      let res = await $request.get(`/orders/${type}`, )
+      // catchAxiosSuccess(res)
+      return res.data
+    } catch (error) {
+      // catchAxiosError(error)
+      return error
+      // throw error
+    }
+  },
+
+  async getSellerOrders(type) {
+    try {
+      let res = await $request.get(`/orders/${type}/seller`, )
+      // catchAxiosSuccess(res)
+      return res.data
+    } catch (error) {
+      // catchAxiosError(error)
+      return error
+      // throw error
+    }
+  },
+
+
+  async showShop() {
+    try {
+      let res = await $request.get(`/shops`, )
       // catchAxiosSuccess(res)
       return res.data
     } catch (error) {
@@ -139,13 +231,13 @@ export default {
     }
   },
 
-  async removeAddress(id) {
+  async checkOut(formdata) {
     try {
-      let res = await $request.post(`/remove-address/${id}`)
-      catchAxiosSuccess(res)
+      let res = await $request.post(`/checkout`, formdata)
+      catchAxiosSuccess(res.data)
       return res.data
     } catch (error) {
-      catchAxiosError(error)
+      catchAxiosError(error.data)
       throw error
     }
   },

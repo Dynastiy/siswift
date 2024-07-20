@@ -3,6 +3,7 @@ import Register from '@/modules/App/Auth/Register.vue'
 import ForgotPassword from '@/modules/App/Auth/ForgotPassword.vue'
 import ChangePassword from '@/modules/App/Auth/ChangePassword.vue'
 import InputCode from '@/modules/App/Auth/InputCode.vue'
+import VerifyEmail from '@/modules/App/Auth/VerifyEmail.vue'
 
 const routes = [
   {
@@ -52,6 +53,16 @@ const routes = [
     meta: {
       layout: 'Auth',
       requiresAuth: false
+    }
+  },
+
+  {
+    path: '/verify-email',
+    name: 'verify-email',
+    component: VerifyEmail,
+    meta: {
+      layout: 'Auth',
+      requiresAuth: true
     }
   },
 ]

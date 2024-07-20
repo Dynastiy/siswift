@@ -42,6 +42,7 @@ export default {
           isLink: true,
           isBottom: false
         },
+
         {
           title: 'My Cart',
           icon: 'streamline:shopping-cart-1-solid',
@@ -60,7 +61,7 @@ export default {
         // },
         {
           title: 'My Orders',
-          icon: 'flowbite:messages-solid',
+          icon: 'lets-icons:order-fill',
           url: '/app/my-orders',
           parent: 'my-orders',
           isLink: true,
@@ -68,7 +69,7 @@ export default {
         },
         {
           title: 'My Listings',
-          icon: 'flowbite:messages-solid',
+          icon: 'material-symbols:text-ad',
           url: '/app/my-listings',
           parent: 'my-listings',
           isLink: true,
@@ -160,6 +161,13 @@ export default {
   beforeMount() {},
 
   created() {},
+  
+  mounted(){
+    let isEmailVerified = Boolean(this.user.ev)
+    if(!isEmailVerified) {
+      this.$router.push('/verify-email')
+    }
+  },
 
   computed: {
     routeName() {

@@ -3,32 +3,30 @@ import { useToast } from 'vue-toastification'
 
 const toast = useToast()
 export const catchAxiosError = (error) => {
-  // if (error?.data) {
-  //   const responseData = error.data
-  //   if (responseData.message) {
-  //     toast.error(responseData.message, {
-  //       timeout: 4000
-  //     })
-  //   }
-
-  //   if (responseData.errors) {
-  //     for (const key in responseData.errors) {
-  //       if (responseData.errors.hasOwnProperty(key)) {
-  //         responseData.errors[key].forEach((errorMessage) => {
-  //           toast.error(errorMessage, {
-  //             timeout: 6000
-  //           })
-  //         })
-  //       }
-  //     }
-  //   }
-  // } else {
-  //   toast.error('An error occurred.', {
-  //     timeout: 4000
-  //   })
-  // }
   if (error) {
-    toast.success(error, {
+    const responseData = error.message
+    console.log(responseData);
+    if (responseData.error) {
+      responseData.error.forEach((errorMessage) => {
+        toast.error(errorMessage, {
+          timeout: 4000
+        })
+      })
+    }
+
+    // if (responseData.error) {
+    //   for (const key in responseData.error) {
+    //     if (responseData.error.hasOwnProperty(key)) {
+    //       responseData.errors[key].forEach((errorMessage) => {
+    //         toast.error(errorMessage, {
+    //           timeout: 4000
+    //         })
+    //       })
+    //     }
+    //   }
+    // }
+  } else {
+    toast.error('An error occurred.', {
       timeout: 4000
     })
   }
@@ -78,18 +76,18 @@ export const catchAxiosError = (error) => {
 // }
 
 export const catchAxiosSuccess = (res) => {
-  // console.log(res?.message?.success, 'from:response')
+  console.log(res, 'from:response')
   // if (res?.data?.message) {
   //   toast.success(res.data.message, {
   //     timeout: 4000
   //   })
   // }
 
-  if (res) {
-    toast.success(res, {
-      timeout: 4000
-    })
-  }
+  // if (res) {
+  //   toast.success(res, {
+  //     timeout: 4000
+  //   })
+  // }
 
   // if (res?.message) {
   //   toast.success(res.message, {
@@ -104,18 +102,35 @@ export const catchAxiosSuccess = (res) => {
   // }
 
   // Display individual success messages
-  // if (res?.message?.success) {
-  //   for (let i = 0; i < res?.message?.success.length; i++) {
-  //     toast.success(res?.message?.success[i], {
-  //       timeout: 4000
-  //     })
-  //   }
-  //   res?.message?success.forEach((successMessage) => {
-  //     toast.success(successMessage, {
-  //       timeout: 4000
-  //     });
-  //   })
-  // }
+  if(res?.message?.success) {
+    res?.message?.success.forEach((successMessage) => {
+      toast.success(successMessage, {
+        timeout: 4000
+      });
+    })
+  }
+
+  else if (res?.message) {
+    if(Array.isArray(res?.message)) {
+      for (let i = 0; i < res?.message.length; i++) {
+        toast.success(res?.message[i], {
+          timeout: 4000
+        })
+      }
+    }
+    else {
+      toast.success(res?.message, {
+        timeout: 4000
+      });
+    }
+  }
+
+  else if(res) {
+    toast.success(res, {
+      timeout: 4000
+    });
+  } 
+
 }
 
 export default { catchAxiosError, catchAxiosSuccess }

@@ -1,11 +1,11 @@
 <template>
-  <div class="body flex gap-4 items-start">
-    <div class="bg-white rounded-md p-6 body-content w-full">
+  <div class="body flex lg:flex-row md:flex-row flex-col-reverse gap-6 items-start">
+    <div class="lg:page-bg md:page-bg body-content w-full">
       <!-- Dashboard -->
       <div>
-        <div class="flex justify-between items-center">
-          <h4 class="font-semibold text-lg">My Store</h4>
-          <div class="flex justify-end mb-4 gap-4">
+        <div class="flex justify-between items-center mb-6">
+          <h4 class="font-semibold text-lg">My Store Ads</h4>
+          <div class="flex justify-end  gap-4" v-if="Object.keys(shop).length > 0">
             <button
               class="brand-btn-md text-sm brand-primary flex gap-1 items-center"
               @click="$router.push('/app/product/new')"
@@ -29,6 +29,9 @@
               btnText="Create Product"
               emptyText="Your store is Empty 😥"
               btnUrl="/app/product/new"
+              helperText="or Create a Store"
+              helperURL="/app/store/new"
+              :hasHelper="true"
               @viewProduct="showProduct"
             />
             <!--  -->
@@ -36,34 +39,72 @@
         </div>
       </div>
     </div>
-    <div
-      v-if="isProductDetails"
-      class="bg-white rounded-md filter-container min-h-[80vh]"
-      :class="[isProductDetails ? 'w-[400px]' : 'w-0 overflow-x-hidden hidden']"
-    >
-      <!-- <ProductFilter @close="filterFunc"/> -->
-      <ProductDetails :productID="isProductDetails" :isMyStore="true" />
+    <div v-if="Object.keys(shop).length > 0 && Boolean(shop.status)" class="lg:w-[400px] md:w-[400px] w-full">
+      <div class="bg-white rounded-md filter-container lg:min-h-[80vh] md:min-h-[80vh] h-max">
+      <h4 class="font-semibold p-4">{{ `${shop?.name} Store` }}</h4>
+      <hr class="" />
+      <div class="p-4">
+        <img
+          :src="imgUrl + 'seller/shop_logo/' + shop?.logo"
+          alt=""
+          role="button"
+          class="h-[200px] w-full rounded-md object-cover object-center border border-primary"
+        />
+        <!-- {{ shop }} -->
+        <div class="">
+          <div class="flex flex-col gap-[8px] mt-4">
+            <div class="flex justify-between items-start">
+              <span class="text-sm flex flex-col">
+                <span class="font-semibold"> Description </span>
+                <span>{{ shop?.meta_description || '---' }}</span>
+              </span>
+              <span
+                role="button"
+                class="bg-accent p-2 rounded-md whitespace-nowrap block text-primary text-xs font-semibold"
+              >
+                Edit
+              </span>
+            </div>
+            <span class="text-sm flex justify-between items-center">
+              <span class="font-semibold"> Location: </span>
+              <span contenteditable>{{ shop?.address }}</span>
+            </span>
+
+            <span class="text-sm flex justify-between items-center">
+              <span class="font-semibold"> Phone Number: </span>
+              <span>{{ shop?.phone }}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- <ProductDetails :productID="isProductDetails" :isMyStore="true" /> -->
     </div>
+    </div>
+    
   </div>
 </template>
 
 <script>
-import ProductDetails from '@/modules/App/Dashboard/product/_UUID.vue'
+// import ProductDetails from '@/modules/App/Dashboard/product/_UUID.vue'
 export default {
-  components: { ProductDetails },
+  // components: { ProductDetails },
   data() {
     return {
       items: [],
       loading: false,
-      isProductDetails: null
+      isProductDetails: null,
+      shop: {}
     }
   },
 
   methods: {
     list() {
+      let ShopStatus = Boolean(this.shop.status)
+     if(ShopStatus) {
       this.loading = true
       this.$user
-        .list()
+        .sellerProducts()
         .then((res) => {
           console.log('data from products list:', res)
           this.items = res.data.data
@@ -71,31 +112,50 @@ export default {
         .finally(() => {
           this.loading = false
         })
+     }
     },
     showProduct(e) {
       console.log(e)
-      function isMobileDevice() {
-        return window.matchMedia('(max-width: 767px)').matches
-      }
+      // function isMobileDevice() {
+      //   return window.matchMedia('(max-width: 767px)').matches
+      // }
 
-      if (isMobileDevice()) {
-        console.log('You are using a mobile device')
-        this.$router.push(`/app/product/${e?.id}`)
-      } else {
-        console.log('You are using a desktop device')
-        this.openProductDetails(e.id)
-      }
+      // if (isMobileDevice()) {
+      //   console.log('You are using a mobile device')
+      this.$router.push(`/app/product/${e?.id}`)
+      // } else {
+      //   console.log('You are using a desktop device')
+      //   this.openProductDetails(e.id)
+      // }
     },
 
     openProductDetails(e) {
       this.isProductDetails = this.isProductDetails === e ? null : e
+    },
+
+    getShop() {
+      this.$user.showShop().then((res) => {
+        console.log(res)
+        this.shop = res[0]
+      })
     }
   },
 
   beforeMount() {
     this.list()
+    this.getShop()
+  },
+
+  computed: {
+    user(){
+      return this.$store.getters['auth/getUser']
+    }
   }
 }
 </script>
 
-<style></style>
+<style>
+/* input:contenteditable {
+
+} */
+</style>

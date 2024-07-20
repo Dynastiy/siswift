@@ -1,16 +1,4 @@
 const routes = [
-  // {
-  //   path: '/',
-  //   redirect: 'app/marketplace',
-  //   name: 'home',
-  //   meta: {
-  //     layout: 'Dashboard',
-  //     requiresAuth: true,
-  //     parent: 'marketplace',
-  //     name: 'home'
-  //   }
-  // },
-
   {
     path: '/',
     name: "home",
@@ -118,6 +106,18 @@ const routes = [
   },
 
   {
+    path: '/app/store/new',
+    name: 'app-store-new',
+    component: () => import('@/modules/App/Dashboard/store/create.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'store-new',
+      name: 'home'
+    }
+  },
+
+  {
     path: '/app/my-store/analysis',
     name: 'app-store-analysis',
     component: () => import('@/modules/App/Dashboard/StoreAnalysis.vue'),
@@ -142,6 +142,21 @@ const routes = [
   },
 
   {
+    path: '/app/message/m',
+    name: 'app-messages-m',
+    component: () => import('@/components/chat/pane.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'app-messages',
+      name: 'home'
+    }
+  },
+
+
+  
+
+  {
     path: '/app/wallet',
     name: 'app-wallet',
     component: () => import('@/modules/App/Dashboard/Wallet.vue'),
@@ -152,6 +167,43 @@ const routes = [
       name: 'home'
     }
   },
+
+  {
+    path: '/app/wallet/deposit',
+    name: 'app-wallet-deposit',
+    component: () => import('@/modules/App/Dashboard/wallet/Deposit.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'app-wallet',
+      name: 'deposit'
+    }
+  },
+
+  {
+    path: '/app/success',
+    name: 'app-success',
+    component: () => import('@/modules/App/Dashboard/SuccessPage.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'app-success',
+      name: ''
+    }
+  },
+
+  {
+    path: '/app/wallet/withdraw',
+    name: 'app-wallet-withdraw',
+    component: () => import('@/modules/App/Dashboard/wallet/Withdraw.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'app-wallet',
+      name: 'withdraw'
+    }
+  },
+
 
   {
     path: '/app/setting',
@@ -235,6 +287,42 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'legal',
+      name: 'home'
+    }
+  },
+
+  {
+    path: '/app/kyc',
+    name: 'app-kyc',
+    component: () => import('@/modules/App/Dashboard/KYC.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'kyc',
+      name: 'home'
+    }
+  },
+
+  {
+    path: '/app/kyc/select-document-type',
+    name: 'app-kyc-document-type',
+    component: () => import('@/modules/App/Dashboard/kyc/selectDocumentType.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'kyc',
+      name: 'home'
+    }
+  },
+
+  {
+    path: '/app/kyc/upload',
+    name: 'app-kyc-upload',
+    component: () => import('@/modules/App/Dashboard/kyc/uploadDocument.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'kyc',
       name: 'home'
     }
   }

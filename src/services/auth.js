@@ -6,10 +6,11 @@ export default {
     try {
       let res = await $request.post(`login`, formData)
       console.log(res.data);
-      catchAxiosSuccess('Login Succesful')
+      catchAxiosSuccess(res.data)
       return res.data
     } catch (error) {
-      catchAxiosError("Login Error")
+      console.log(error.data, 'from ');
+      catchAxiosError(error.data)
       throw error
     }
   },
@@ -17,10 +18,10 @@ export default {
   async createAccount(formData) {
     try {
       let res = await $request.post(`register`, formData)
-      catchAxiosSuccess("Account created successfully")
+      catchAxiosSuccess(res.data)
       return res.data
     } catch (error) {
-      catchAxiosError("Account Creation Error")
+      catchAxiosError(error.data)
       // return error
       throw error
     }
@@ -51,6 +52,18 @@ export default {
     }
   },
 
+  async verifyEmail(formData) {
+    try {
+      let res = await $request.post(`/user/verify-email`, formData)
+      catchAxiosSuccess(res.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data)
+      // return error
+      throw error
+    }
+  },
+
   async getProfile() {
     try {
       let res = await $request.get(`/profile`)
@@ -58,6 +71,18 @@ export default {
       return res.data
     } catch (error) {
       // catchAxiosError(error)
+      return error
+      // throw error
+    }
+  },
+
+  async getVerificationCode() {
+    try {
+      let res = await $request.get(`/user/authorization`)
+      catchAxiosSuccess(res.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data)
       return error
       // throw error
     }
@@ -75,39 +100,43 @@ export default {
     }
   },
 
-  async updateProfile(formData) {
+  async updateProfile(formData, ID) {
     try {
-      let res = await $request.post(`/auth/update-profile-details`, formData)
-      catchAxiosSuccess(res)
+      let res = await $request.post(`/profile/${ID}`, formData)
+      catchAxiosSuccess(res.data)
       return res.data
     } catch (error) {
-      catchAxiosError(error)
+      catchAxiosError(error.data)
       //   return error
       throw error
     }
   },
 
-  async updateCoverPhoto(formData) {
+  async uploadDocument(formData) {
     try {
-      let res = await $request.post(`/auth/update-cover-photo`, formData)
-      catchAxiosSuccess(res)
+      let res = await $request.post(`/kyc`, formData)
+      catchAxiosSuccess(res.data)
       return res.data
     } catch (error) {
-      catchAxiosError(error)
+      catchAxiosError(error.data)
       //   return error
       throw error
     }
   },
 
-  async updateProfilePhoto(formData) {
+  async getDocument() {
     try {
-      let res = await $request.post(`/auth/update-profile-photo`, formData)
-      catchAxiosSuccess(res)
+      let res = await $request.get(`/kyc`)
+      catchAxiosSuccess(res.data)
       return res.data
     } catch (error) {
-      catchAxiosError(error)
+      catchAxiosError(error.data)
       //   return error
       throw error
     }
-  }
+  },
+
+  // sendVerificationCode(){
+
+  // }
 }

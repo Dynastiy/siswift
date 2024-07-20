@@ -5,7 +5,7 @@
         {{ item.label.split('_').join(' ') }}
       </span>
     </span>
-    <div class="bg-white p-8 rounded-md lg:w-6/12 md:w-7/12 w-full mx-auto mt-6">
+    <div class="lg:page-bg md:page-bg lg:w-6/12 md:w-7/12 w-full mx-auto mt-6">
       <component :is="tabs[activeTab].component" />
     </div>
   </div>

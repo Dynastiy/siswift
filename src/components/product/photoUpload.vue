@@ -2,7 +2,7 @@
   <div class="main grid grid-cols-5 gap-2 mt-4">
     <div>
       <div
-        class="dropzone-container flex flex-col items-center justify-center rounded-md text-center h-12"
+        class="dropzone-container flex flex-col items-center justify-center rounded-md text-center h-12 bg-white"
         @dragover="dragover"
         @dragleave="dragleave"
         @drop="drop"

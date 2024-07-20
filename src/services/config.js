@@ -19,13 +19,13 @@ export default {
     }
   },
 
-    async createStore(formData) {
+    async createStore(formData, type) {
         try {
-          let res = await $request.post(`shops`, formData)
-          catchAxiosSuccess("Store Created Succesfully")
+          let res = await $request.post(type, formData)
+          catchAxiosSuccess(res.data)
           return res.data
         } catch (error) {
-          catchAxiosError("Store Not created")
+          catchAxiosError(error.data)
           throw error
         }
       },
