@@ -2,7 +2,7 @@
   <div class="main">
     <div>
       <div
-        class="dropzone-container flex flex-col items-center justify-center text-center bg-white"
+        class="dropzone-container flex flex-col items-center justify-center text-center"
         @dragover="dragover"
         @dragleave="dragleave"
         @drop="drop"

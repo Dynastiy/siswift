@@ -86,7 +86,7 @@
 .activated,
 .in-stock,
 .registered,
-.published, .confirmed {
+.published, .confirmed, .deposit {
     color: green;
     background-color: rgba(0, 128, 0, 0.175);
     font-size: 0.7rem;
@@ -109,7 +109,7 @@
 .rejected,
 .banned,
 .out-of-stock,
-.not-registered {
+.not-registered, .withdraw {
     color: red;
     background-color: rgba(255, 0, 0, 0.175);
     font-size: 0.7rem;

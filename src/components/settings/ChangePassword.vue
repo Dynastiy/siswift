@@ -19,7 +19,7 @@
         <div class="flex flex-col gap-4">
             <div>
             <label for="">Old Password</label>
-            <vField name="password" v-slot="{ field }" rules="required">
+            <vField name="current_password" v-slot="{ field }" rules="required">
               <div class="input-field">
                 <span class="w-full flex gap-2 items-center">
                   <span class="password-iccon">
@@ -27,9 +27,9 @@
                   </span>
                   <input
                     :type="typePassword ? 'password' : 'text'"
-                    name="password"
+                    name="current_password"
                     class="w-full"
-                    id="password"
+                    id="password1"
                     placeholder="Password"
                     v-bind="field"
                   />
@@ -42,7 +42,7 @@
                 </span>
               </div>
             </vField>
-            <ErrorMessage name="password" class="text-xs text-error"></ErrorMessage>
+            <ErrorMessage name="current_password" class="text-xs text-error"></ErrorMessage>
           </div>
           <div>
             <label for="">New Password</label>
@@ -56,7 +56,7 @@
                     :type="typePassword ? 'password' : 'text'"
                     name="password"
                     class="w-full"
-                    id="password"
+                    id="password2"
                     placeholder="Password"
                     v-bind="field"
                   />
@@ -74,7 +74,7 @@
 
           <div>
             <label for="">Confirm Password</label>
-            <vField name="password" v-slot="{ field }" rules="required">
+            <vField name="password_confirmation" v-slot="{ field }" rules="required">
               <div class="input-field">
                 <span class="w-full flex gap-2 items-center">
                   <span class="password-iccon">
@@ -82,9 +82,9 @@
                   </span>
                   <input
                     :type="typePassword2 ? 'password' : 'text'"
-                    name="confirm_password"
+                    name="password_confirmation"
                     class="w-full"
-                    id="password"
+                    id="password3"
                     placeholder="Confirm Password"
                     v-bind="field"
                   />
@@ -97,7 +97,7 @@
                 </span>
               </div>
             </vField>
-            <ErrorMessage name="password" class="text-xs text-error"></ErrorMessage>
+            <ErrorMessage name="password_confirmation" class="text-xs text-error"></ErrorMessage>
           </div>
   
         </div>
@@ -134,56 +134,11 @@
     },
   
     methods: {
-      async onSubmit(values) {
-          console.log(values, 'ommmo');
-          this.$router.push('/login')
-      //   this.isLoading = true
-      //   try {
-      //     let res = await this.$request.post(`auth/signin`, values)
-      //     console.log(res.data)
-      //     let userData = res.data
-      //     let token = res.data.token
-      //     this.$store.commit('auth/login', {
-      //       token,
-      //       user: userData.user
-      //     })
-      //     this.$toastify({
-      //       text: `Welcome back, ${userData.user.first_name}`,
-      //       gravity: 'top',
-      //       position: 'center',
-      //       style: {
-      //         fontSize: '13px',
-      //         borderRadius: '4px',
-      //         background: '#333'
-      //       }
-      //     }).showToast()
-      //     console.log(userData, 'ommmo')
-      //     const route = this.$route.query.redirectFrom
-      //     console.log(route)
-      //     if (route) {
-      //       this.$router.push(route).catch(() => {})
-      //     } else {
-      //       if (userData.user.role === 'buyer') {
-      //         this.$router.push('/user').catch(() => {})
-      //       } else {
-      //         this.$router.push('/vendor/dashboard').catch(() => {})
-      //       }
-      //     }
-      //   } catch (error) {
-      //     console.log(error)
-      //     this.$toastify({
-      //       text: `User not logged in`,
-      //       gravity: 'top',
-      //       position: 'center',
-      //       style: {
-      //         fontSize: '13px',
-      //         borderRadius: '4px',
-      //         background: 'red'
-      //       }
-      //     }).showToast()
-      //   } finally {
-      //     this.isLoading = false
-      //   }
+      async onSubmit(values, {resetForm}) {
+      this.$auth.changePassword(values).then((res) => {
+        resetForm()
+        return res
+      })
       }
     }
   }

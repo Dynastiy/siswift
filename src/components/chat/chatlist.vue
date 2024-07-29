@@ -1,7 +1,7 @@
 <template>
-  <div class="lg:page-bg md:page-bg h-[75vh]">
+  <div class="lg:page-bg md:page-bg ">
     <span class=" flex justify-between items-center">
-      <h4 class="font-semibold">Chats</h4>
+      <h4 class="font-bold text-xl">Chats</h4>
       <!-- <span>
         <i-icon icon="ri:search-2-line" class="form-icon text-gray-400" />
       </span> -->
@@ -24,7 +24,7 @@
       </template>
       <template #default>
         <div>
-          <div class="">
+          <div class="overflow-y-auto">
             <div class="flex flex-col gap-5">
               <div
                 class="flex items-center justify-between"
@@ -34,12 +34,6 @@
                 :key="item?.id"
               >
                 <div class="flex gap-3 items-center">
-                  <!-- <img
-              src="https://www.cnet.com/a/img/resize/690ad0a97cf8fc98f3cf851e7b149d2ffc5b171e/hub/2023/05/04/31dfdcf2-1ac3-4320-b40c-4c356300f06e/google-pixel-7a-phone-14.jpg?auto=webp&height=500"
-              alt=""
-              role="button"
-              class="h-[30px] w-[30px] rounded-[4px] object-cover object-center"
-            /> -->
                   <span
                     class="h-[30px] w-[30px] rounded-full flex items-center justify-center font-bold"
                     v-if="!item?.userInfo?.image"
@@ -55,12 +49,13 @@
                     class="w-[38px] h-[38px] border-2 p-[2px] border-gray-100 rounded-full object-fit object-top"
                   />
                   <div class="flex flex-col">
+                    <!-- {{JSON.parse(item?.message).title}} -->
                     <span class="text-[13px] text-black1 font-semibold">
                       {{ `${item?.userInfo?.firstname} ${item?.userInfo?.lastname}` }}
                     </span>
                     <span class="text-[12px] text-gray-500">
                       <span>{{ item?.userInfo_id !== user.id ? 'You:' : '' }}</span>
-                      {{ item?.message.slice(0, 12) + '...' }}
+                      {{ JSON.parse(item?.message).title ? JSON.parse(item?.message).title.slice(0, 12) + '...' : item?.message.slice(0, 12) + '...' }}
                     </span>
                   </div>
                 </div>
@@ -95,71 +90,39 @@
 <script>
 import image from '@/assets/img/no-user.png'
 export default {
+  props: {
+    allMessages: Array,
+    isLoading: Boolean,
+  },
   data() {
     return {
-      messages: [],
       image,
+      messages: [],
       loading: false
     }
   },
 
   methods: {
-    getList() {
-      this.loading = true
-      this.$user
-        .messages()
-        .then((res) => {
-          console.log(res.data)
-          let messages = res.data
-          // Group the data by 'category' and keep only the last item
-          // let groupedData =
-          const groupedData = this.groupByAndKeepLast(messages)
+   
+  },
 
-          let chatList = []
-          groupedData.forEach((elem) => {
-            let receiver = {
-              ...elem.receiver
-            }
-            let sender = {
-              ...elem.sender
-            }
-            let message = {
-              userInfo: elem.sender_id === this.user.id ? receiver : sender,
-              userId: elem.sender_id === this.user.id ? elem.receiver_id : elem.sender_id,
-              message: elem.message,
-              created_at: elem.created_at
-            }
-            chatList.push(message)
-          })
-          this.messages = chatList
-          console.log('chat list data:', chatList)
-        })
-        .finally(() => {
-          this.loading = false
-        })
+  watch: {
+    allMessages: {
+      handler(val) {
+        this.messages = val
+      },
+      immediate: true
     },
-
-    groupByAndKeepLast(array) {
-      return Object.values(
-        array.reduce((result, currentValue) => {
-          // Get the value of the key in the current item
-          const testKey = currentValue
-          const groupKey =
-            currentValue[testKey.sender_id === this.user.id ? 'receiver_id' : 'sender_id']
-
-
-          // Always set the current item as the value for this key
-          result[groupKey] = currentValue
-
-          // Return the result object for the next iteration
-          return result
-        }, {})
-      )
+    isLoading: {
+      handler(val) {
+        this.loading = val
+      },
+      immediate: true
     }
   },
 
   beforeMount() {
-    this.getList()
+    // this.getList()
   },
 
   computed: {

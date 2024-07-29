@@ -1,3 +1,5 @@
+<!-- darrian.konstantinos@dockstones.com -->
+
 <template>
   <div class="flex flex-col justify-between">
     <div class="">
@@ -6,26 +8,19 @@
         >Please input code sent to your mail</span
       >
     </div>
-    <vForm
-      @submit="onSubmit"
-      v-slot="{ meta }"
-      class="mt-20 h-[60vh] flex flex-col justify-between"
-    >
+    <div class="mt-20 h-[60vh] flex flex-col justify-between">
       <div class="flex flex-col gap-6">
         <div>
-          <vField name="code" v-slot="{ field }" rules="required">
-            <div class="flex justify-center w-full gap-6">
-              <PinCode
-                input-class="w-12 h-12 text-2xl font-semibold rounded-lg text-gray-600 border-2 border-gray-300"
-                success-class=""
-                spacing-class=""
-                :digits="4"
-                autofocus
-                v-bind="field"
-              />
-            </div>
-          </vField>
-          <ErrorMessage name="code" class="text-xs text-error"></ErrorMessage>
+          <div class="flex justify-center w-full">
+            <PinCode
+              input-class="lg:w-12 md:w-12 w-[40px] lg:h-12 md:h-12 h-[40px] text-2xl font-semibold rounded-lg text-gray-600 border-2 border-gray-300"
+              success-class=""
+              spacing-class=""
+              :digits="6"
+              autofocus
+              v-model="code"
+            />
+          </div>
         </div>
 
         <vue-countdown :time="60000" @end="onCountdownEnd" v-slot="{ seconds, totalSeconds }">
@@ -56,16 +51,15 @@
 
       <div class="text-center mt-12">
         <button
+          @click="onSubmit"
           class="brand-btn w-full"
-          :disabled="isLoading || !meta.valid"
-          :class="[
-            isLoading ? 'bg-gray1 text-gray' : meta.valid ? 'brand-primary' : 'bg-gray1 text-black1'
-          ]"
+          :disabled="isLoading"
+          :class="[isLoading ? 'bg-gray1 text-gray' : 'brand-primary']"
         >
           Continue
         </button>
       </div>
-    </vForm>
+    </div>
   </div>
 </template>
 
@@ -75,24 +69,44 @@ export default {
 
   data() {
     return {
-      typePassword: true,
-      typePassword2: true,
       isLoading: false,
       validationErrors: {},
-      counting: false
+      counting: false,
+      code: ''
     }
   },
 
   methods: {
-    async onSubmit(values) {
-      console.log(values, 'ommmo')
-      this.$router.push('/change-password')
+    async onSubmit() {
+      let email = this.$route.query.email
+      let payload = {
+        email: email
+        // email_verified_code: this.code
+      }
+      this.$auth.verifyResetCode(payload, this.code).then((res) => {
+        console.log(res)
+        this.$router.push(`/change-password?email=${res.data.email}&code=${res.data.token}`)
+      })
+    },
+
+    getCode() {
+      let payload = {
+        email: this.$route.query.email
+      }
+      this.$auth
+        .forgotPassword(payload)
+        .then((res) => {
+          this.startCountdown()
+          return res
+        })
+        .finally(() => {
+          this.isLoading = false
+        })
     },
 
     resendToken() {
-      if(!this.counting) {
-        alert('resend token')
-        this.startCountdown()
+      if (!this.counting) {
+        this.getCode()
       }
     },
 
@@ -105,8 +119,12 @@ export default {
     }
   },
 
-  mounted() {
-    this.startCountdown()
+  mounted() {},
+
+  computed: {
+    user() {
+      return this.$store.getters['auth/getUser']
+    }
   }
 }
 </script>
@@ -116,6 +134,6 @@ export default {
   /* justify-content: space-between !important; */
   width: 100%;
   justify-content: center;
-  gap: 30px;
+  /* gap: 30px; */
 }
 </style>

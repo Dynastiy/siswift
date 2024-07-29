@@ -95,6 +95,18 @@
               {{ data.status }}
             </span>
           </template>
+          <template v-else-if="field === 'txn_type'">
+            <span :class="data.type">
+              {{ data.type }}
+            </span>
+          </template>
+
+          <template v-else-if="field === 'txn_amount'">
+            <span :class="data.type === 'deposit' ? 'text-green-600' : 'text-red-600'">
+              {{ $currencyFormat(data.amount) }}
+            </span>
+          </template>
+
           <template v-else-if="field === 'tableBtn'">
             <div class="flex justify-end">
               <button class="brand-btn brand-primary" @click="$emit('btnClick', data)">View</button>

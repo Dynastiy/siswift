@@ -18,8 +18,9 @@
       </span>
     </div>
 
-    <!-- <span
-      class=" mt-20 border border-dashed border-primary block p-2 rounded-md flex justify-between items-center"
+    <span
+      @click="$router.push('/app/setting/upgrade')"
+      class="mt-20 border border-dashed border-primary block p-2 rounded-md flex justify-between items-center"
       role="button"
     >
       <span class="font-medium text-sm flex gap-2 items-center">
@@ -27,7 +28,7 @@
         Upgrade
       </span>
       <i-icon icon="prime:angle-right" class="text-[25px]" />
-    </span> -->
+    </span>
   </div>
 </template>
 

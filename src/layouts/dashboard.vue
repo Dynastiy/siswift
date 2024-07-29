@@ -75,6 +75,14 @@ export default {
           isLink: true,
           isBottom: false
         },
+        {
+          title: 'My Favourites',
+          icon: 'icon-park-solid:like',
+          url: '/app/my-favourites',
+          parent: 'my-favourites',
+          isLink: true,
+          isBottom: false
+        },
         
         {
           title: 'Messages',

@@ -1,24 +1,32 @@
 <template>
   <div class="body lg:page-bg md:page-bg flex gap-4 items-start">
-    <div class=" col-span-3 body-content w-full">
+    <div class="col-span-3 body-content w-full">
       <!-- Dashboard -->
 
       <div class="flex items-center justify-between">
         <h4 class="mb-3 font-semibold text-lg">Recommended Items</h4>
-        <div class="flex justify-end mb-4 gap-4" v-if="!isFilterOpen">
-          <!-- <button
+        <div>
+          <button
+            class="brand-btn-md text-sm brand-primary flex gap-1 items-center"
+            @click="$router.push('/app/product/new')"
+          >
+            Create Ad
+          </button>
+          <div class="flex justify-end mb-4 gap-4" v-if="!isFilterOpen">
+            <!-- <button
             class="brand-btn text-sm brand-primary py-2 px-2 flex gap-1 items-center"
             @click="filterFunc"
           >
             <i-icon icon="mdi:filter" />
             Filter
           </button> -->
-          <!-- <button
+            <!-- <button
             class="rounded-[6px] border border-gray-500 text-sm py-2 px-2 flex gap-2 items-center"
           >
             Sort by
             <i-icon icon="fa:angle-down" class="text-[10px]" />
           </button> -->
+          </div>
         </div>
       </div>
       <div>
@@ -93,7 +101,7 @@ export default {
 
       // if (isMobileDevice()) {
       //   console.log('You are using a mobile device')
-        this.$router.push(`/app/product/${e?.id}`)
+      this.$router.push(`/app/product/${e?.id}`)
       // } else {
       //   console.log('You are using a desktop device')
       //   this.openProductDetails(e.id)

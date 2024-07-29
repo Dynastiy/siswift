@@ -1,12 +1,12 @@
 <script setup>
-// const getYear = new Date().getFullYear()
+const thisYear = new Date().getFullYear()
 // import TwitterIcon from "@/components/icons/twitterIcon.vue";
 </script>
 
 <template>
   <footer class="bg-black2 mt-0 py-[72px] flex flex-col gap-[54px] lg:gap-[54px] text-white">
     <div class="container">
-      <div class="grid grid-cols-4">
+      <div class="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4">
         <div>
           <ul class="flex flex-col lg:gap-[12px]">
             <!-- <li class="text-[14px] font-normal lg:leading-[21.602px]">
@@ -27,7 +27,7 @@
         <div class="flex justify-between lg:flex-row flex-col">
           <div class="flex flex-col lg:flex-row gap-[58px] text-left justify-start w-full">
             <div>
-              <h5 class="font-bold text-primary text-[16px] mb-[12px]">Service</h5>
+              <h5 class="font-bold text-primary text-[16px] mb-[10px]">Service</h5>
               <ul class="flex flex-col lg:gap-[12px]">
                 <li class="text-[14px] font-normal lg:leading-[21.602px]">
                   <router-link to="/app/my-store"> Store </router-link>
@@ -52,7 +52,7 @@
         <div class="flex justify-between lg:flex-row flex-col">
           <div class="flex flex-col lg:flex-row gap-[58px] text-left justify-start w-full">
             <div>
-              <h5 class="font-bold text-primary text-[16px] mb-[12px]">Company</h5>
+              <h5 class="font-bold text-primary text-[16px] mb-[10px]">Company</h5>
               <ul class="flex flex-col lg:gap-[12px]">
                 <!-- <li class="text-[14px] font-normal lg:leading-[21.602px]">
                 <router-link to=""> Products </router-link>
@@ -77,7 +77,7 @@
         <div class="flex justify-between lg:flex-row flex-col">
           <div class="flex flex-col lg:flex-row gap-[58px] text-left justify-start w-full">
             <div>
-              <h5 class="font-bold text-primary text-[16px] mb-[12px]">Our Social Media</h5>
+              <h5 class="font-bold text-primary text-[16px] mb-[10px]">Our Social Media</h5>
               <ul class="flex flex-col lg:gap-[12px]">
                 <li class="text-[14px] font-normal lg:leading-[21.602px]">
                   <a href="https://instagram.com/siswiftng" target="_blank"> Instagram </a>
@@ -93,6 +93,12 @@
           </div>
         </div>
       </div>
+      <div class="mt-6">
+          <hr class="w-full mx-auto bg-gray-400 my-4" />
+          <p class="text-center text-sm">
+            Copyright &copy; {{ thisYear }} All Rights Reserved, Made by <a class="text-secondary" href="https://albannytechnologies.com" target="_blank">Albanny Technologies</a>.
+          </p>
+        </div>
     </div>
   </footer>
 </template>

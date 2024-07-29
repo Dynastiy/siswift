@@ -2,7 +2,7 @@
   <div>
     <el-skeleton :loading="loading" animated>
       <template #template>
-        <div class="grid lg:grid-cols-4 md:grid-cols-4 grid-cols-2 gap-4 mt-4">
+        <div class="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4 mt-4">
           <div v-for="item in 8" :key="item">
             <el-skeleton-item variant="image" style="height: 200px; border-radius: 10px" />
           </div>
@@ -13,18 +13,28 @@
           <div
             class="grid grid-cols-2 gap-4"
             :class="[
-              isFilterOpen ? 'lg:grid-cols-3 md:grid-cols-3' : 'lg:grid-cols-4 md:grid-cols-4'
+              isFilterOpen ? 'lg:grid-cols-3 md:grid-cols-3' : 'lg:grid-cols-4 md:grid-cols-3'
             ]"
           >
             <div v-for="(item, idx) in products" :key="idx" class="hover:shadow bg-white">
               <div>
-                <div class="" @click="viewProduct(item)">
+                <div class="relative" @click="viewProduct(item)">
                   <img
                     :src="imgUrl + 'product/' + item?.main_image"
                     alt=""
                     role="button"
-                    class="w-full h-[150px] object-contain"
+                    class="w-full h-[150px] object-cover object-top"
                   />
+                  
+                  <span v-if="item?.shop?.user?.kv" class="bg-white flex text-[12px] items-center text-primary rounded-[4px] absolute top-1 right-1 gap-[3px] px-[6px] py-[2px] w-fit">
+                    <i-icon icon="mdi:user-tick" />
+                    verified
+                  </span>
+
+                  <span v-if="item?.is_featured" class="bg-white flex text-[10px] items-center text-primary rounded-[4px] absolute bottom-1 left-1 gap-[3px] px-[6px] py-[2px] w-fit">
+                    <i-icon icon="mdi:fire" />
+                    sponsored
+                  </span>
                 </div>
               </div>
               <div class="mt-2 flex flex-col justify-between px-4 p-3">
@@ -37,7 +47,7 @@
                     {{ item?.name }}
                   </h6>
 
-                  <el-dropdown
+                  <!-- <el-dropdown
                     trigger="click"
                     placement="bottom-end"
                     v-if="user.id === item?.shop.user_id"
@@ -52,7 +62,7 @@
                         </div>
                       </div>
                     </template>
-                  </el-dropdown>
+                  </el-dropdown> -->
                 </div>
 
                 <small class="text-xs block text-gray-500" v-if="item?.shop">
@@ -60,9 +70,9 @@
                 </small>
 
                 <span
-                  class="text-[13px] block mt-2 bg-primary text-white w-fit rounded-sm px-[6px] py-[2px] block"
+                  class="text-[12px] block mt-2 bg-primary text-white w-fit rounded-sm px-[6px] py-[2px] block"
                 >
-                  {{ item?.condition }}</span
+                  {{ item?.condition.split('-').join(' ') }}</span
                 >
 
                 <div class="flex justify-between items-center mt-3">
@@ -74,6 +84,7 @@
                       {{ $currencyFormat(item?.base_price) }}
                     </span>
                     <span
+                    v-if="item?.offer_price"
                       class="text-primary font-bold lg:text-sm md:text-sm text-xs block leading-tight"
                     >
                       {{ $currencyFormat(item?.offer_price) }}
@@ -84,32 +95,15 @@
                     {{ avgRating(item) }}
                   </span>
                 </div>
-
-                <div class="flex justify-between items-center" v-if="isCart">
-                  <div>
-                    <span v-if="!item?.status" :class="{ pending: item?.status == 0 }"
-                      >Pending</span
-                    >
-                    <div v-else>
-                      <span v-if="item?.status === 2" :class="{ canceled: item?.status == 2 }"
-                        >Cancelled</span
-                      >
-                      <button @click="$emit('checkOut', item)" v-else class="brand-btn w-full brand-primary py-1">Checkout</button>
-                    </div>
-                  </div>
-                  <span class="text-red-500" role="button" @click="$emit('removeFromCart', item)">
-                    <i-icon icon="material-symbols:delete" />
-                  </span>
-                </div>
               </div>
             </div>
           </div>
           <div v-if="!loading && products.length === 0" class="flex justify-center">
-            <div class="text-center flex flex-col gap-4">
+            <div class="text-center flex flex-col items-center gap-4">
               <span
-                class="bg-accent block h-[200px] w-[200px] rounded-full flex justify-center items-center"
+                class="bg-accent block h-[200px] w-[200px] text-primary rounded-full flex justify-center items-center"
               >
-                <i-icon :icon="iconType" class="text-[100px]" />
+                <i-icon :icon="iconType" class="text-[100px] " />
               </span>
               <h5>{{ emptyText }}</h5>
               <div>
@@ -171,7 +165,7 @@ export default {
     isCart: {
       type: Boolean,
       default: false
-    },
+    }
   },
 
   methods: {

@@ -208,6 +208,10 @@ Object.keys(services).forEach((key) => {
   app.config.globalProperties[`$${key}`] = services[key]
 })
 
+import { useToast } from 'vue-toastification'
+let appToast = useToast()
+app.config.globalProperties.$toast = appToast
+
 // app.use(Toast, options);
 app.use(Toast)
 
@@ -231,9 +235,11 @@ app.use(VueClipboard, {
 app.use(QrReader)
 
 // Plugins
-import { currencyFormat, formatDate, getID } from './plugins/filters'
+import { currencyFormat, formatDate, getID, formatRelativeTime, formatTime } from './plugins/filters'
 app.config.globalProperties.$currencyFormat = currencyFormat
 app.config.globalProperties.$formatDate = formatDate
 app.config.globalProperties.$getID = getID
+app.config.globalProperties.$formatRelativeTime = formatRelativeTime
+app.config.globalProperties.$formatTime = formatTime
 
 app.mount('#app')

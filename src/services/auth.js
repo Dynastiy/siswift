@@ -5,11 +5,11 @@ export default {
   async login(formData) {
     try {
       let res = await $request.post(`login`, formData)
-      console.log(res.data);
+      console.log(res.data)
       catchAxiosSuccess(res.data)
       return res.data
     } catch (error) {
-      console.log(error.data, 'from ');
+      console.log(error.data, 'from ')
       catchAxiosError(error.data)
       throw error
     }
@@ -27,26 +27,39 @@ export default {
     }
   },
 
-  async forgotPasswordRequestLink(formData) {
+  async forgotPassword(formData) {
     try {
-      let res = await $request.post(`/auth/forgot-password`, formData)
-      catchAxiosSuccess(res)
+      let res = await $request.post(`/password/email`, formData)
+      catchAxiosSuccess(res.data)
       return res.data
     } catch (error) {
-      catchAxiosError(error)
+      catchAxiosError(error.data)
       // return error
       throw error
     }
   },
 
-
-  async resetPassword(formData, {token, email}) {
+  async resetPassword(payload, formData) {
     try {
-      let res = await $request.post(`/auth/reset-password?token=${token}&email=${email}`, formData)
-      catchAxiosSuccess(res)
+      let res = await $request.post(`/password/reset`, formData, { params:  payload })
+      catchAxiosSuccess(res.data)
       return res.data
     } catch (error) {
-      catchAxiosError(error)
+      catchAxiosError(error.data)
+      // return error
+      throw error
+    }
+  },
+
+  async verifyResetCode(formData, code) {
+    try {
+      let res = await $request.post(`/password/verify-code`, formData, {
+        params: { code }
+      })
+      catchAxiosSuccess(res.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data)
       // return error
       throw error
     }
@@ -90,11 +103,11 @@ export default {
 
   async changePassword(formData) {
     try {
-      let res = await $request.post(`/auth/change-password`, formData)
-      catchAxiosSuccess(res)
+      let res = await $request.post(`/user/change-password`, formData)
+      catchAxiosSuccess(res.data)
       return res.data
     } catch (error) {
-      catchAxiosError(error)
+      catchAxiosError(error.data)
       //   return error
       throw error
     }
@@ -134,7 +147,7 @@ export default {
       //   return error
       throw error
     }
-  },
+  }
 
   // sendVerificationCode(){
 

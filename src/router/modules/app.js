@@ -70,6 +70,42 @@ const routes = [
   },
 
   {
+    path: '/app/my-favourites',
+    name: 'app-favourites',
+    component: () => import('@/modules/App/Dashboard/Wishlist.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'my-favourites',
+      name: 'home'
+    }
+  },
+
+  {
+    path: '/app/checkout',
+    name: 'cart-checkout',
+    component: () => import('@/modules/App/Dashboard/cart/CheckOut.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'my-cart',
+      name: 'home'
+    }
+  },
+
+  {
+    path: '/app/make-offer/:id',
+    name: 'make-offer',
+    component: () => import('@/modules/App/Dashboard/cart/MakeOffer.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'marketplace',
+      name: 'home'
+    }
+  },
+
+  {
     path: '/app/my-listings',
     name: 'app-listings',
     component: () => import('@/modules/App/Dashboard/Listings.vue'),
@@ -118,6 +154,18 @@ const routes = [
   },
 
   {
+    path: '/app/store/edit',
+    name: 'app-store-edit',
+    component: () => import('@/modules/App/Dashboard/store/create.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'store-edit',
+      name: 'home'
+    }
+  },
+
+  {
     path: '/app/my-store/analysis',
     name: 'app-store-analysis',
     component: () => import('@/modules/App/Dashboard/StoreAnalysis.vue'),
@@ -144,17 +192,14 @@ const routes = [
   {
     path: '/app/message/m',
     name: 'app-messages-m',
-    component: () => import('@/components/chat/pane.vue'),
+    component: () => import('@/components/chat/mobileMessages.vue'),
     meta: {
-      layout: 'Dashboard',
+      layout: 'Default',
       requiresAuth: true,
       parent: 'app-messages',
       name: 'home'
     }
   },
-
-
-  
 
   {
     path: '/app/wallet',
@@ -209,6 +254,18 @@ const routes = [
     path: '/app/setting',
     name: 'app-setting',
     component: () => import('@/modules/App/Dashboard/Setting.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'setting',
+      name: 'home'
+    }
+  },
+
+  {
+    path: '/app/setting/upgrade',
+    name: 'app-setting-upgrade',
+    component: () => import('@/modules/App/Dashboard/Upgrade.vue'),
     meta: {
       layout: 'Dashboard',
       requiresAuth: true,

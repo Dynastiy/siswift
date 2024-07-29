@@ -1,6 +1,9 @@
 <template>
   <!-- bg-white rounded-md p-6 -->
   <div class="body-content w-full lg:page-bg md:page-bg">
+    <!-- <div>
+      {{ wishlist_item }}
+    </div> -->
     <el-skeleton :loading="loading" animated>
       <template #template>
         <div>
@@ -43,7 +46,7 @@
               :src="imgUrl + 'product/' + item?.main_image"
               alt=""
               role="button"
-              class="h-[200px] w-full rounded-md object-cover object-center border border-primary"
+              class="h-[300px] w-full rounded-md object-contain object-center border border-primary"
             />
 
             <div class="mt-4" :class="{ 'flex justify-between': !isMyProduct }">
@@ -66,14 +69,17 @@
                   {{ item?.isfeatured ? 'Check Sponsored Analysis' : 'Sponsor Listing' }}
                 </span>
 
-                <span
+                <button
                   v-if="!isMyProduct"
-                  @click="addToCart"
-                  class="bg-accent p-2 rounded-md text-primary text-lg"
-                  role="button"
+                  @click="addToWishlist"
+                  :class="[
+                    'p-2 rounded-md  text-lg',
+                    wishlist_item ? 'bg-gray-200 text-gray-700' : 'bg-accent text-primary'
+                  ]"
+                  :disabled="wishlist_item"
                 >
                   <i-icon icon="ph:heart-fill" />
-                </span>
+                </button>
                 <!-- <span
                   v-if="!isMyProduct"
                   class="bg-accent p-2 rounded-md text-primary text-lg"
@@ -81,17 +87,19 @@
                 >
                   <i-icon icon="material-symbols:report" />
                 </span> -->
-                <span
-                  role="button"
+                <button
                   @click="onShare"
                   class="bg-accent p-2 rounded-md text-primary text-lg"
                 >
                   <i-icon icon="ic:baseline-share" />
-                </span>
+                </button>
               </span>
             </div>
 
-            <div class="mt-4 flex flex-col gap-4">
+            <div class="mt-4 flex flex-col gap-1">
+              <span class="text-[13px] block"><b>Brand:</b> {{ item?.brand?.name }}</span>
+              <h4 class="font-semibold">{{ `${item?.name} ${item?.model}` }}</h4>
+
               <h4 class="font-bold text-xl text-primary">
                 {{ `${$currencyFormat(item?.base_price)}` }}
               </h4>
@@ -108,12 +116,10 @@
                 </div>
               </div>
               <div class="flex flex-col gap-2">
-                <span class="text-[13px] block"><b>Brand:</b> {{ item?.brand?.name }}</span>
-                <h4 class="font-semibold">{{ `${item?.name} ${item?.model}` }}</h4>
                 <span
-                  class="text-[13px] block bg-primary text-white w-fit rounded-sm px-[6px] py-[2px] block"
+                  class="text-[11px] block bg-primary text-white w-fit rounded-sm px-[6px] py-[2px] block"
                 >
-                  {{ item?.condition }}</span
+                  {{ item?.condition.split('-').join(' ') }}</span
                 >
                 <span class="text-[13px] block"><b>RAM:</b> {{ item?.ram }}</span>
                 <span class="flex gap-[7px] text-sm items-center">
@@ -194,27 +200,78 @@
                 <span class="text-[13px] flex gap-[3px] items-center"
                   ><i-icon icon="tabler:location-filled" class="text-secondary text-sm" />
                   {{
-                   item?.state === 'AkwaIbom' ? `${item?.lga}, Akwa Ibom` : `${item?.lga}, ${item?.state}`
+                    item?.state === 'AkwaIbom'
+                      ? `${item?.lga}, Akwa Ibom`
+                      : `${item?.lga}, ${item?.state}`
                   }}</span
                 >
-                <span class="text-[13px] block font-semibold" v-if="item?.shop"
+                <!-- <span class="text-[13px] block font-semibold" v-if="item?.shop"
                   >Store Name: {{ item?.shop?.name }}</span
-                >
+                > -->
                 <hr class="my-4" />
-                <div v-if="isMyProduct" class="flex justify-between items-center">
+                <!-- <div v-if="isMyProduct" class="flex justi fy-between items-center">
                   <h4 class="font-bold text-primary">{{ $currencyFormat(item?.base_price) }}</h4>
                   <button class="brand-btn-md brand-primary">Edit</button>
-                </div>
-                <div v-else class="flex lg:flex-row md:flex-row flex-col justify-between gap-3">
-                  <span class="flex lg:flex-row md:flex-row flex-col gap-3">
-                    <button class="brand-btn-md brand-outline" @click="makeOffer">
+                </div> -->
+                <div
+                  v-if="!isMyProduct"
+                  class="flex lg:flex-row md:flex-row flex-col items-start justify-between gap-3"
+                >
+                  <div>
+                    <div class="flex gap-2 mb-3">
+                      <img
+                        :src="
+                          item?.shop?.user?.image
+                            ? imgUrl + 'user/profile/' + item?.shop?.user.image
+                            : image
+                        "
+                        class="w-[45px] h-[45px] border-2 p-[2px] border-gray-100 rounded-full object-fit object-top"
+                      />
+                      <span class="flex flex-col">
+                        <span class="text-[14px] font-semibold">{{
+                          `${item?.shop?.user?.firstname} ${item?.shop?.user?.lastname}`
+                        }}</span>
+                        <span class="text-[12px] text-gray-400">{{
+                          `joined Siswift ${$formatRelativeTime(item?.shop?.user?.created_at)}`
+                        }}</span>
+                      </span>
+                    </div>
+                    <span class="flex lg:flex-row md:flex-row flex-col gap-3 items-center">
+                      <span v-if="displayContact">
+                        <a
+                          class="flex items-center gap-[5px] text-sm font-semibold"
+                          :href="`tel:${item?.shop?.user?.mobile}`"
+                          ><i-icon icon="ph:phone" class="form-icon text-gray-600" />
+                          {{ item?.shop?.user?.mobile }}
+                        </a>
+                      </span>
+                      <button
+                        v-else
+                        class="brand-btn-md brand-primary flex items-center gap-[6px]"
+                        @click="showContact"
+                      >
+                        <i-icon icon="ph:phone" class="form-icon text-white" />
+                        Show Contact
+                      </button>
+                      <button class="brand-btn-md brand-outline" @click="startChat">
+                        Start a chat
+                      </button>
+                    </span>
+                  </div>
+                  <div class="flex lg:flex-row md:flex-row flex-col gap-2">
+                    <input
+                      type="text"
+                      v-model="quantity"
+                      :disabled="JSON.parse(item?.bulk_price).length === 0"
+                      class="input lg:w-[80px] md:w-[100px]"
+                    />
+                    <button class="brand-btn-md brand-primary whitespace-nowrap" @click="addToCart">
+                      Add to Cart
+                    </button>
+                    <button class="brand-btn-md brand-outline whitespace-nowrap" @click="makeOffer">
                       Make an offer
                     </button>
-                    <button class="brand-btn-md brand-outline" @click="startChat">
-                      Start a chat
-                    </button>
-                  </span>
-                  <button class="brand-btn-md brand-primary" @click="orderNow">Order Now</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -241,7 +298,10 @@ export default {
       item: {},
       loading: false,
       activeTab: 'description',
-      image
+      image,
+      quantity: 1,
+      displayContact: false,
+      wishlistItems: []
     }
   },
 
@@ -250,8 +310,54 @@ export default {
       this.isFilterOpen = !this.isFilterOpen
     },
 
+    showContact() {
+      this.displayContact = !this.displayContact
+    },
+
     startChat() {
-      this.$router.push(`/app/messages/?user=${this.item?.shop?.user_id}`)
+      let url = ''
+      // this.$router.push(`/app/messages/?user=${this.item?.shop?.user_id}`)
+      function isMobileDevice() {
+        return window.matchMedia('(max-width: 767px)').matches
+      }
+      if (isMobileDevice()) {
+        console.log('You are using a mobile device')
+        url = `/app/message/m?user=${this.item?.shop?.user_id}&userData=${JSON.stringify(
+          this.item?.shop?.user
+        )}`
+      } else {
+        console.log('You are using a desktop device')
+        url = `/app/messages/?user=${this.item?.shop?.user_id}&userData=${JSON.stringify(
+          this.item?.shop?.user
+        )}`
+      }
+      this.$router.push(url)
+    },
+
+    getWishlist() {
+      this.loading = true
+      this.$user
+        .wishList()
+        .then((res) => {
+          console.log('data from products list:', res)
+          let req = []
+          res.forEach((item) => {
+            console.log(item)
+            let dataInfo = {
+              ...item.product,
+              cart_id: item.id,
+              offer_price: item.offer_price,
+              quantity: item.quantity,
+              session_id: item.session_id,
+              status: item.status
+            }
+            req.push(dataInfo)
+          })
+          this.wishlistItems = req
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
 
     async onShare() {
@@ -285,60 +391,39 @@ export default {
       })
     },
 
+    makeOffer() {
+      this.$router.push(`/app/make-offer/${this.ID}`)
+    },
+
     addToCart() {
       let payload = {
         product_id: this.ID,
-        quantity: 1,
+        quantity: this.quantity,
         offer_price: this.item.base_price
       }
       this.$user.addToCart(payload).then((res) => {
         console.log(res)
         this.$router.push('/app/my-cart')
       })
+      console.log(payload)
+    },
+
+    addToWishlist() {
+      let payload = {
+        product_id: this.ID,
+        quantity: this.quantity,
+        offer_price: this.item.base_price
+      }
+      this.$user.addToWishlist(payload).then((res) => {
+        console.log(res)
+        this.$router.push('/app/my-favourites')
+      })
+      console.log(payload)
     },
 
     removeFromCart(id) {
       this.$user.removeFromCart(id).then((res) => {
         console.log(res)
-      })
-    },
-
-    makeOffer() {
-      let payload = {
-        product_id: this.ID,
-        quantity: 1,
-        offer_price: 5000
-      }
-      this.$user.addToCart(payload).then((res) => {
-        console.log(res)
-      })
-    },
-
-    orderNow() {
-      let payload = {
-        product_id: this.ID,
-        quantity: 1,
-        offer_price: this.item.base_price
-      }
-      this.$user.addToCart(payload).then((res) => {
-        console.log(res)
-        let isOrderNow = Boolean(res.data.status)
-        if (isOrderNow) {
-          this.checkOut(res.data)
-        }
-      })
-    },
-
-    checkOut(e) {
-      let payload = {
-        type: 1,
-        address: this.user.address,
-        payment: 1
-      }
-      this.$user.checkOut(payload).then((res) => {
-        console.log(res)
-        this.$router.push('/app/my-cart')
-        this.removeFromCart(e.id)
       })
     }
   },
@@ -346,6 +431,7 @@ export default {
   beforeMount() {
     this.getProduct()
     this.getUser()
+    this.getWishlist()
   },
 
   // beforeRouteEnter(to, from) {
@@ -353,6 +439,16 @@ export default {
   // },
 
   watch: {
+    '$route.params.id': {
+      handler(val) {
+        // if (newVal !== oldVal) {
+        this.ID = val
+        this.getProduct()
+        // }
+      },
+      immediate: true
+    },
+
     productID: {
       handler(val) {
         if (val) {
@@ -379,6 +475,12 @@ export default {
 
     productLink() {
       return `${this.windowOrigin}/app/product/${this.ID}`
+    },
+
+    wishlist_item() {
+      const val = this.wishlistItems.filter((elem) => this.ID == elem.id)
+      const result = val.length !== 0
+      return result
     }
   }
 }

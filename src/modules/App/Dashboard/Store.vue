@@ -5,19 +5,19 @@
       <div>
         <div class="flex justify-between items-center mb-6">
           <h4 class="font-semibold text-lg">My Store Ads</h4>
-          <div class="flex justify-end  gap-4" v-if="Object.keys(shop).length > 0">
+          <div class="flex justify-end gap-4" v-if="shop && shop.status">
             <button
               class="brand-btn-md text-sm brand-primary flex gap-1 items-center"
               @click="$router.push('/app/product/new')"
             >
               Create Ad
             </button>
-            <button
+            <!-- <button
               class="brand-btn-md text-sm brand-primary flex gap-1 items-center"
               @click="$router.push('/app/my-store/analysis')"
             >
               Store Analysis
-            </button>
+            </button> -->
           </div>
         </div>
         <div>
@@ -31,7 +31,7 @@
               btnUrl="/app/product/new"
               helperText="or Create a Store"
               helperURL="/app/store/new"
-              :hasHelper="true"
+              :hasHelper="hasHelper"
               @viewProduct="showProduct"
             />
             <!--  -->
@@ -39,49 +39,52 @@
         </div>
       </div>
     </div>
-    <div v-if="Object.keys(shop).length > 0 && Boolean(shop.status)" class="lg:w-[400px] md:w-[400px] w-full">
+    <div
+      v-if="shop && shop.status"
+      class="lg:w-[400px] md:w-[400px] w-full"
+    >
       <div class="bg-white rounded-md filter-container lg:min-h-[80vh] md:min-h-[80vh] h-max">
-      <h4 class="font-semibold p-4">{{ `${shop?.name} Store` }}</h4>
-      <hr class="" />
-      <div class="p-4">
-        <img
-          :src="imgUrl + 'seller/shop_logo/' + shop?.logo"
-          alt=""
-          role="button"
-          class="h-[200px] w-full rounded-md object-cover object-center border border-primary"
-        />
-        <!-- {{ shop }} -->
-        <div class="">
-          <div class="flex flex-col gap-[8px] mt-4">
-            <div class="flex justify-between items-start">
-              <span class="text-sm flex flex-col">
-                <span class="font-semibold"> Description </span>
-                <span>{{ shop?.meta_description || '---' }}</span>
+        <h4 class="font-semibold p-4">{{ `${shop?.name} Store` }}</h4>
+        <hr class="" />
+        <div class="p-4">
+          <img
+            :src="imgUrl + 'seller/shop_logo/' + shop?.logo"
+            alt=""
+            role="button"
+            class="h-[200px] w-full rounded-md object-cover object-center border border-primary"
+          />
+          <!-- {{ shop }} -->
+          <div class="">
+            <div class="flex flex-col gap-[8px] mt-4">
+              <div class="flex justify-between items-start">
+                <span class="text-sm flex flex-col">
+                  <span class="font-semibold"> Description </span>
+                  <span>{{ shop?.meta_description || '---' }}</span>
+                </span>
+                <span
+                @click="$router.push(`/app/store/edit`)"
+                  role="button"
+                  class="bg-accent p-2 rounded-md whitespace-nowrap block text-primary text-xs font-semibold"
+                >
+                  Edit
+                </span>
+              </div>
+              <span class="text-sm flex justify-between items-center">
+                <span class="font-semibold"> Location: </span>
+                <span contenteditable>{{ shop?.address }}</span>
               </span>
-              <span
-                role="button"
-                class="bg-accent p-2 rounded-md whitespace-nowrap block text-primary text-xs font-semibold"
-              >
-                Edit
+
+              <span class="text-sm flex justify-between items-center">
+                <span class="font-semibold"> Phone Number: </span>
+                <span>{{ shop?.phone }}</span>
               </span>
             </div>
-            <span class="text-sm flex justify-between items-center">
-              <span class="font-semibold"> Location: </span>
-              <span contenteditable>{{ shop?.address }}</span>
-            </span>
-
-            <span class="text-sm flex justify-between items-center">
-              <span class="font-semibold"> Phone Number: </span>
-              <span>{{ shop?.phone }}</span>
-            </span>
           </div>
         </div>
-      </div>
 
-      <!-- <ProductDetails :productID="isProductDetails" :isMyStore="true" /> -->
+        <!-- <ProductDetails :productID="isProductDetails" :isMyStore="true" /> -->
+      </div>
     </div>
-    </div>
-    
   </div>
 </template>
 
@@ -94,32 +97,32 @@ export default {
       items: [],
       loading: false,
       isProductDetails: null,
-      shop: {}
+      shop: null
     }
   },
 
   methods: {
     list() {
-      let ShopStatus = Boolean(this.shop.status)
-     if(ShopStatus) {
-      this.loading = true
-      this.$user
-        .sellerProducts()
-        .then((res) => {
-          console.log('data from products list:', res)
-          this.items = res.data.data
-        })
-        .finally(() => {
-          this.loading = false
-        })
-     }
+      // console.log(Object.keys(this.shop).length)
+      // let ShopStatus = Boolean(this.shop.status)
+      if (this.shop && this.shop.status) {
+        this.loading = true
+        this.$user
+          .sellerProducts()
+          .then((res) => {
+            console.log('data from products list:', res)
+            this.items = res.data.data
+          })
+          .finally(() => {
+            this.loading = false
+          })
+      }
     },
     showProduct(e) {
       console.log(e)
       // function isMobileDevice() {
       //   return window.matchMedia('(max-width: 767px)').matches
       // }
-
       // if (isMobileDevice()) {
       //   console.log('You are using a mobile device')
       this.$router.push(`/app/product/${e?.id}`)
@@ -135,8 +138,13 @@ export default {
 
     getShop() {
       this.$user.showShop().then((res) => {
-        console.log(res)
-        this.shop = res[0]
+        console.log(res);
+        if(res.length > 0) {
+          this.shop = res[0]
+        }
+        else {
+          this.shop = null
+        }
       })
     }
   },
@@ -146,9 +154,30 @@ export default {
     this.getShop()
   },
 
+  watch: {
+    shop: {
+      handler(val) {
+        if(val && val.status) {
+          this.list()
+        }
+      },
+      immediate: true
+    }
+  },
+
   computed: {
-    user(){
+    user() {
       return this.$store.getters['auth/getUser']
+    },
+    hasHelper(){
+      let val
+      if(this.shop && this.shop.status ) {
+        val = false
+      }
+      else {
+        val = true
+      }
+      return val
     }
   }
 }

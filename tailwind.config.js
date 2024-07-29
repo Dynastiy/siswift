@@ -7,6 +7,15 @@ module.exports = {
   important: true,
   theme: {
     extend: {
+      extend: {
+        height: {
+          'screen-75': '75vh',
+          'calc-50': 'calc(50% - 4rem)', // Example: calc(50% - 4rem)
+        },
+        width: {
+          'calc-full': 'calc(100% - 2rem)', // Example: calc(100% - 2rem)
+        },
+      },
       colors: {
         primary: 'var(---primary-color)',
         secondary: 'var(---secondary-color)',

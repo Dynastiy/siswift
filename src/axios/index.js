@@ -5,7 +5,7 @@ import axios from "axios";
 import config from "./config";
 // import store from "@/store"
 
-// import router from "./router";
+import router from "@/router";
 // import { decodeToken } from '@/utils/auth';
 
 // console.log(`Bearer ${decodeToken()}`)
@@ -36,7 +36,11 @@ if (accessToken) {
 // Add a request interceptor
 $axios.interceptors.request.use(
   function (axiosConfig) {
-    NProgress.start();
+     let routeType = router.currentRoute._value.meta.parent
+    if(routeType !== 'app-messages') {
+      NProgress.start();
+    }
+    
     // Add access token to header before request is sent if any
     // const accessToken = Cookies.get(config.accessTokenStorageKey);
     const token = localStorage.getItem('_user_token')

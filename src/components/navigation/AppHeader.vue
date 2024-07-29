@@ -51,7 +51,7 @@
                     >
                   </span>
                   <div class="mt-3 flex flex-col gap-4">
-                    <wx-notification v-for="item in 5" :key="item" />
+                    <wx-notification/>
                   </div>
                 </div>
               </template>

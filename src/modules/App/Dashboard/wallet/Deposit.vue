@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="lg:page-bg md:page-bglg:w-6/12 md:w-7/12 w-full mx-auto mt-6">
+    <div class="lg:page-bg md:page-bg lg:w-6/12 md:w-7/12 w-full mx-auto mt-6">
       <div class="">
         <h3 class="lg:text-2xl md:text-2xl text-xl font-bold mb-0">Make Deposit</h3>
         <span class="text-[15px] block font-regular text-gray2"

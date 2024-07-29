@@ -32,27 +32,28 @@
       </div> -->
     </div>
     <div class="col-span-4">
-      <div class="grid grid-cols-4 gap-2" >
-      <div v-for="(item, idx) in photos" :key="idx">
-        <div class="relative">
-          <img :src="generateURL(item)" alt="" class="h-12 w-full rounded-md object-fit-cover" />
-          <div class="flex justify-end gap-2 absolute top-1 right-1">
-            <span
-              role="button"
-              class="bg-white text-xs px-2 py-1 font-semibold rounded-md"
-              @click="removePhoto(idx)"
-            >
-              <i-icon icon="fluent:delete-12-regular" />
-            </span>
+      <div class="grid grid-cols-4 gap-2">
+        <div v-for="(item, idx) in photos" :key="idx">
+          <div class="relative">
+            <img :src="generateURL(item)" alt="" class="h-12 w-full rounded-md object-fit-cover" />
+            <div class="flex justify-end gap-2 absolute top-1 right-1">
+              <span
+                role="button"
+                class="bg-white text-xs px-2 py-1 font-semibold rounded-md"
+                @click="removePhoto(idx)"
+              >
+                <i-icon icon="fluent:delete-12-regular" />
+              </span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </div>
   </div>
 </template>
 
 <script>
+import { useToast } from 'vue-toastification'
 export default {
   data() {
     return {
@@ -63,7 +64,20 @@ export default {
   },
   methods: {
     onChange2() {
-      this.photos.push(...this.$refs.file2.files)
+      // console.log()
+      const toast = useToast()
+      if (this.$refs.file2.files.length > 4) {
+        // alert()
+        toast.error('Cannot upload more than four photos, upgrade plan to upload more', {
+          timeout: 4000
+        })
+        let newArray = []
+        newArray.push(...this.$refs.file2.files)
+        let slicedArray = newArray.slice(0, 4)
+        this.photos.push(...slicedArray)
+      } else {
+        this.photos.push(...this.$refs.file2.files)
+      }
       console.log(this.photos, 'from:photo Upload')
       this.$emit('uploadImage', this.photos)
     },
@@ -79,7 +93,7 @@ export default {
 
     drop(e) {
       e.preventDefault()
-      this.$refs.file2.photos = e.dataTransfer.photos
+      this.$refs.file2.files = e.dataTransfer.photos
       this.onChange()
       this.isDragging = false
     },

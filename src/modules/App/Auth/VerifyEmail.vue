@@ -83,7 +83,7 @@ export default {
   methods: {
     async onSubmit() {
       let payload = {
-        email: this.user.eamil,
+        email: this.user.email,
         email_verified_code: this.code
       }
       this.$auth.verifyEmail(payload).then((res) => {

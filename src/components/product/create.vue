@@ -6,8 +6,14 @@
         @submit="nextStep"
         :validation-schema="currentSchema"
         keep-values
-        v-slot="{ meta }"
+        v-slot="{ meta, values }"
       >
+        <span class="bg-accent text-xs p-2 block mb-2">
+          For your listing to go live, please verify your identity
+          <router-link class="text-primary font-semibold underline" to="/app/kyc"
+            >go to KYC verification</router-link
+          >
+        </span>
         <template v-if="currentStep === 0">
           <div class="flex flex-col gap-2">
             <div>
@@ -61,14 +67,22 @@
               </div>
             </div>
 
-            <div>
-              <label for="">Bulk Pricing</label>
-              <div class="flex gap-2">
+            <div class="w-full">
+              <label for="">Quantity</label>
+              <vField name="quantity" type="tel" placeholder="Enter Quantity" class="input">
+              </vField>
+              <ErrorMessage name="quantity" class="text-xs text-error"></ErrorMessage>
+            </div>
+
+            <div v-if="values.quantity > 1">
+              <label for="">Bulk Pricing {{ `(${bulk_prices.length}/5)` }} </label>
+              <div class="flex gap-2" v-if="bulk_prices.length < 5">
                 <input
                   type="text"
                   v-model="bulk_size"
                   placeholder="Enter Bulk Size"
                   class="input"
+                  @keyup="checkSize(values.quantity)"
                 />
                 <input
                   type="text"
@@ -76,15 +90,32 @@
                   placeholder="Price Per Piece*"
                   class="input"
                 />
-                <span class="brand-btn bg-primary" @click="addBulkPrice">Save</span>
+                <button
+                  :disabled="sizeError || !price_per_piece || !bulk_size"
+                  :class="[
+                    'brand-btn bg-primary text-white',
+                    sizeError || !price_per_piece || !bulk_size ? 'bg-gray-500' : ''
+                  ]"
+                  type="button"
+                  @click="addBulkPrice"
+                >
+                  Save
+                </button>
               </div>
+              <span v-if="sizeError" class="text-[12px] text-red-500">*{{ sizeError }}</span>
               <div class="flex flex-col gap-[5px] mt-[10px]">
-                <div class="bg-accent p-[6px]" v-for="(obj, i) in bulk_prices" :key="i">
+                <div
+                  class="bg-accent py-[6px] px-[12px] flex justify-between items-center"
+                  v-for="(obj, i) in bulk_prices"
+                  :key="i"
+                >
                   <span class="text-sm block">
                     <b>{{ `From ${obj.qty} pieces:` }}</b>
                     {{ `${$currencyFormat(obj.price)}/piece` }}</span
                   >
-                  <span></span>
+                  <span @click="removeItem(i)" class="text-red-500" role="button">
+                    <i-icon icon="material-symbols:close" />
+                  </span>
                 </div>
               </div>
             </div>
@@ -163,7 +194,7 @@
                 <option
                   v-for="item in [
                     'new',
-                    'like_new',
+                    'like-new',
                     'refurbished',
                     'used-good',
                     'used-fair',
@@ -253,7 +284,7 @@
         <div class="flex flex-col gap-4 mt-7">
           <button
             class="brand-btn w-full bg-primary"
-            v-if="currentStep > 0 "
+            v-if="currentStep > 0"
             type="submit"
             @click="prevStep"
           >
@@ -313,6 +344,7 @@ export default {
       validationErrors: {},
       currentStep: 0,
       bulk_size: '',
+      sizeError: null,
       price_per_piece: '',
       schemas: [
         yup.object({
@@ -377,6 +409,7 @@ export default {
       formdata.append('location', values.location)
       formdata.append('description', this.product_description)
       formdata.append('model', values.model)
+      formdata.append('track_inventory', values.quantity)
       formdata.append('condition', values.condition)
       formdata.append('ram', values.ram_size)
       formdata.append('sim', values.sim)
@@ -389,11 +422,22 @@ export default {
       // }
       formdata.append('state', values.state)
       formdata.append('lga', values.city)
-      this.$products.create(formdata).then((res) => {
-        console.log(res)
-        this.$router.push('/app/my-listings')
-        return
-      })
+      this.$products
+        .create(formdata)
+        .then((res) => {
+          console.log(res)
+          this.$router.push('/app/my-listings')
+          // this.$toast.success('Your ad has been submitted, pending approval', {
+          //   timeout: 4000
+          // })
+          return
+        })
+        .catch((err) => {
+          console.log(err)
+          this.$toast.error('Error', {
+            timeout: 4000
+          })
+        })
     },
 
     addColor(color) {
@@ -406,6 +450,10 @@ export default {
 
     removeColor(color) {
       this.colors = this.colors.filter((item) => item !== color)
+    },
+
+    removeItem(e) {
+      this.bulk_prices.splice(e, 1)
     },
 
     addBulkPrice() {
@@ -462,6 +510,14 @@ export default {
       this.$emit('prevStep')
     },
 
+    checkSize(e) {
+      let sizeError =
+        +this.bulk_size > +e
+          ? 'bulk quantity cannot be higher than quantity of product available'
+          : null
+      this.sizeError = sizeError
+    },
+
     getSetting() {
       this.$config.getSettings().then((res) => {
         console.log('settings:', res)
@@ -493,6 +549,7 @@ export default {
       },
       immediate: true
     },
+
     selectedState: {
       handler: debounce(function () {
         this.getLGA()

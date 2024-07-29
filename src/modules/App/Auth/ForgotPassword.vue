@@ -66,16 +66,16 @@ export default {
   methods: {
     async onSubmit(values) {
       console.log(values, 'ommmo')
-      this.$router.push('/input-code')
+      
       this.isLoading = true
       let payload = {
-        email: values.email,
-        password: values.password
+        email: values.email
       }
       this.$auth
         .forgotPassword(payload)
         .then((res) => {
           console.log(res.data, 'from login')
+          this.$router.push(`/input-code?email=${values.email}`)
         })
         .finally(() => {
           this.isLoading = false

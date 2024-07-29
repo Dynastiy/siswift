@@ -18,7 +18,7 @@
           :loading="loading"
           iconType="bx:store"
           btnText="Create Product"
-          emptyText="Your store is Empty 😥"
+          emptyText="You have not listed any ad yet 😥"
           btnUrl="/app/product/new"
           @viewProduct="showProduct"
           helperText="or Create a Store"
@@ -48,7 +48,7 @@ export default {
     list() {
       this.loading = true
       this.$user
-        .list()
+        .sellerProducts()
         .then((res) => {
           console.log('data from products list:', res)
           this.items = res.data.data
@@ -78,7 +78,7 @@ export default {
 
     getShop() {
       this.$user.showShop().then((res) => {
-        console.log(res)
+        // console.log(res)
         this.shop = res[0]
       })
     }

@@ -14,9 +14,20 @@ export default {
     }
   },
 
+  async wishList() {
+    try {
+      let res = await $request.get(`/wishlist`)
+      // catchAxiosSuccess(res)
+      return res.data
+    } catch (error) {
+      catchAxiosError("Cart items not retrieved")
+      throw error
+    }
+  },
+
   async list() {
     try {
-      let res = await $request.get(`/products`)
+      let res = await $request.get(`/all-products`)
       // catchAxiosSuccess()
       return res.data
     } catch (error) {
@@ -77,6 +88,17 @@ export default {
       return res.data
     } catch (error) {
       catchAxiosError("user not gotten")
+      throw error
+    }
+  },
+
+  async readNotification(params){
+    try {
+      let res = await $request.get(`/notifications`, params)
+      // catchAxiosSuccess(res)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data)
       throw error
     }
   },
@@ -150,22 +172,22 @@ export default {
 
   async addToWishlist(payload) {
     try {
-      let res = await $request.post(`/add-to-wishlist`, payload)
-      catchAxiosSuccess(res)
+      let res = await $request.post(`/wishlist`, payload)
+      catchAxiosSuccess(res.data)
       return res.data
     } catch (error) {
-      catchAxiosError(error)
+      catchAxiosError(error.data)
       throw error
     }
   },
 
   async removeFromWishlist(id) {
     try {
-      let res = await $request.post(`/remove-from-wishlist/${id}`)
-      catchAxiosSuccess(res)
+      let res = await $request.delete(`/wishlist/${id}`)
+      catchAxiosSuccess(res.data)
       return res.data
     } catch (error) {
-      catchAxiosError(error)
+      catchAxiosError(error.data)
       throw error
     }
   },
@@ -282,6 +304,18 @@ export default {
       return res.data
     } catch (error) {
       catchAxiosError(error)
+      throw error
+    }
+  },
+
+  // Accept or Reject OFfer 
+  async modifyOffer(payload, action) {
+    try {
+      let res = await $request.post(`/offer/${action}`, payload)
+      catchAxiosSuccess(res.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data)
       throw error
     }
   },
