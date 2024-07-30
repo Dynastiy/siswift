@@ -136,8 +136,9 @@
                     />
                     <div class="flex justify-between w-full items-center">
                       <div>
-                        <h4 class="text-white text-[16px] font-semibold">Emmanuel Michael</h4>
-                        <h6 class="text-white text-[12px]">emmanuel@mail.com</h6>
+                        <!-- {{ user }} -->
+                        <h4 class="text-white text-[16px] font-semibold">{{`${user.firstname} ${user.lastname}`}}</h4>
+                        <h6 class="text-white text-[12px]">{{ user.email }}</h6>
                         <div>
                       <span class="text-primary w-fit py-[1px] px-[5px] rounded-[3px] text-[12px] font-semibold flex gap-[5px] items-center bg-white" v-if="subscription">
                         <i-icon icon="teenyicons:diamond-solid" />
