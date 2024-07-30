@@ -6,15 +6,15 @@
         :key="idx"
         role="button"
         class="capitalize w-full text-center"
-        :class="{ 'border-b text-primary border-b-primary font-semibold': activeTab === idx }"
+        :class="{ 'border-b text-primary border-b-primary font-semibold': activeTab == idx }"
         @click="activateMenu(idx)"
       >
         {{ item.label.split('_').join(' ') }}
       </span>
     </span>
     <div class="lg:page-bg md:page-bg mt-6">
-      <all v-if="activeTab === 0" />
-      <orders v-else  :currentTab="activeTab"/>
+      <all v-if="activeTab == '0'" />
+      <orders v-else :currentTab="activeTab" />
     </div>
   </div>
 </template>
@@ -44,7 +44,25 @@ export default {
   methods: {
     activateMenu(i) {
       console.log(i)
-      this.activeTab = i
+      this.$router.push({ name: 'app-listings', query: { tab: i } })
+    }
+  },
+
+  mounted() {
+    console.log(!this.$route.query.tab);
+    if (!this.$route.query.tab ) {
+      this.$router.push({ name: 'app-listings', query: { tab: this.activeTab } })
+    }
+  },
+
+  watch: {
+    '$route.query.tab': {
+      handler(val) {
+        if(val) {
+          this.activeTab = val
+        }
+      },
+      immediate: true
     }
   }
 }

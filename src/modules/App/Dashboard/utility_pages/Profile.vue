@@ -29,7 +29,7 @@
           </label>
         </div>
         <h4 class="font-semibold flex items-center mt-3">{{ `${form.firstname} ${form.lastname}` }} <span>
-        <i-icon icon="ic:round-verified" :class="[!user?.kv ? 'text-gray-300' : 'text-green-600']" />
+        <i-icon icon="ic:round-verified" :class="[!user?.kv ? 'text-gray-400' : 'text-green-600']" />
         </span> </h4>
       </div>
       <form class="flex flex-col gap-[8px]" @submit.prevent="editProfile">

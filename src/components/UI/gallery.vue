@@ -17,7 +17,7 @@
               :class="['thumbnail-image', activeImage === index ? 'active' : '']"
               @click="activateImage(index)"
             >
-              <img :src="image.thumbnail" />
+              <img :src="image" />
             </div>
           </div>
         </div>

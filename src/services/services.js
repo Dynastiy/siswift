@@ -4,6 +4,7 @@ import vendor from './vendor'
 import response from './response'
 import config from './config'
 import auth from './auth'
+import orders from './order'
 
 export const services = {
   products,
@@ -11,7 +12,8 @@ export const services = {
   vendor,
   response,
   config,
-  auth
+  auth,
+  orders
 };
 
 // Optionally, if you want to access all services via a single object

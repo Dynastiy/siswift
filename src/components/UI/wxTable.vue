@@ -109,7 +109,7 @@
 
           <template v-else-if="field === 'tableBtn'">
             <div class="flex justify-end">
-              <button class="brand-btn brand-primary" @click="$emit('btnClick', data)">View</button>
+              <button class="text-primary underline text-[12px]" @click="$emit('btnClick', data)">Details</button>
             </div>
           </template>
           <template v-else-if="field === 'is_registered'">

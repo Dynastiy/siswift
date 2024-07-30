@@ -53,10 +53,10 @@
                     <span class="text-[13px] text-black1 font-semibold">
                       {{ `${item?.userInfo?.firstname} ${item?.userInfo?.lastname}` }}
                     </span>
-                    <span class="text-[12px] text-gray-500">
+                    <!-- <span class="text-[12px] text-gray-500">
                       <span>{{ item?.userInfo_id !== user.id ? 'You:' : '' }}</span>
                       {{ JSON.parse(item?.message).title ? JSON.parse(item?.message).title.slice(0, 12) + '...' : item?.message.slice(0, 12) + '...' }}
-                    </span>
+                    </span> -->
                   </div>
                 </div>
 

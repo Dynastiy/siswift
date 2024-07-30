@@ -16,7 +16,16 @@ export function currencyFormat(value) {
 
 export function formatDate(value) {
     let currentDate = new Date(value)
-    const options = { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' }
+    const options = { 
+      weekday: 'short', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric',
+      hour: '2-digit', 
+      minute: '2-digit', 
+      second: '2-digit',
+      hour12: true // Set to false for 24-hour format
+  };
     return currentDate.toLocaleDateString('en-US', options)
 }
 

@@ -22,6 +22,28 @@ const routes = [
   },
 
   {
+    path: '/privacy-policy',
+    name: "privacy-policy",
+    component: () => import('@/modules/App/PrivacyPolicy.vue'),
+    meta: {
+      layout: 'Home',
+      requiresAuth: false,
+      name: "privacy-policy"
+    }
+  },
+
+  {
+    path: '/contact',
+    name: "contact",
+    component: () => import('@/modules/App/Contact.vue'),
+    meta: {
+      layout: 'Home',
+      requiresAuth: false,
+      name: "contact"
+    }
+  },
+
+  {
     path: '/app/marketplace',
     name: 'app-marketplace',
     component: () => import('@/modules/App/Dashboard/Index.vue'),
@@ -37,6 +59,30 @@ const routes = [
     path: '/app/product/:id',
     name: 'product-details',
     component: () => import('@/modules/App/Dashboard/product/_UUID.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'marketplace',
+      name: 'home'
+    }
+  },
+
+  {
+    path: '/app/product/:id/sponsor-listing',
+    name: 'sponsor-listing',
+    component: () => import('@/modules/App/Dashboard/product/sponsor.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'my-store',
+      name: 'home'
+    }
+  },
+
+  {
+    path: '/app/product/:slug/seller/:id',
+    name: 'user-details',
+    component: () => import('@/modules/App/Dashboard/utility_pages/UserProfile.vue'),
     meta: {
       layout: 'Dashboard',
       requiresAuth: true,
@@ -101,6 +147,54 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'marketplace',
+      name: 'home'
+    }
+  },
+
+  {
+    path: '/app/user/review/:id',
+    name: 'user-review',
+    component: () => import('@/modules/App/Dashboard/utility_pages/ReviewUser.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'marketplace',
+      name: 'home'
+    }
+  },
+
+  {
+    path: '/app/product/review/:id',
+    name: 'product-review',
+    component: () => import('@/modules/App/Dashboard/product/ReviewProduct.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'marketplace',
+      name: 'home'
+    }
+  },
+
+  {
+    path: '/app/product/review',
+    name: 'product-review',
+    component: () => import('@/modules/App/Dashboard/product/ReviewProduct.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'marketplace',
+      name: 'home'
+    }
+  },
+
+  {
+    path: '/app/order/:order_id',
+    name: 'order-details',
+    component: () => import('@/modules/App/Dashboard/orders/_UUID.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'orders',
       name: 'home'
     }
   },

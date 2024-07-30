@@ -80,9 +80,19 @@ export default {
         }
       },
 
-      async getTags() {
+      async getUserData(params) {
         try {
-          let res = await $request.get(`all-tags`)
+          let res = await $request.get(`user/${params}`)
+          return res.data
+        } catch (error) {
+          catchAxiosError(error)
+          throw error
+        }
+      },
+
+      async getPlans() {
+        try {
+          let res = await $request.get(`plans`)
           return res.data
         } catch (error) {
           catchAxiosError(error)

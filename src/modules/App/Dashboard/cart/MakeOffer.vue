@@ -2,38 +2,47 @@
   <div class="lg:page-bg md:page-bg lg:w-6/12 md:w-7/12 w-full mx-auto">
     <h4 class="font-semibold">Make Offer</h4>
     <hr class="my-4" />
-    <div class="mb-3">
-      <div class="flex gap-2">
-        <img
-          :src="imgUrl + 'product/' + item?.main_image"
-          alt=""
-          role="button"
-          class="h-[60px] w-[65px] object-contain rounded-lg"
-        />
-        <div class="flex gap-[4px] flex-col">
-          <span class="font-semibold block">{{ item?.name }}</span>
-          <span class="block text-[13px] text-primary font-semibold">{{
-            item?.offer_price
-              ? $currencyFormat(item?.offer_price)
-              : $currencyFormat(item?.base_price)
-          }}</span>
+    <span v-if="loading"> Retrieving Product Details </span>
+    <div v-else>
+      <div class="mb-3">
+        <div class="flex gap-2">
+          <img
+            :src="imgUrl + 'product/' + item?.main_image"
+            alt=""
+            role="button"
+            class="h-[60px] w-[65px] object-contain rounded-lg"
+          />
+          <div class="flex gap-[4px] flex-col">
+            <span class="font-semibold block">{{ item?.name }}</span>
+            <span class="block text-[13px] text-primary font-semibold">{{
+              item?.offer_price
+                ? $currencyFormat(item?.offer_price)
+                : $currencyFormat(item?.base_price)
+            }}</span>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="flex flex-col gap-2">
-      <div>
-        <label for="" class="text-[14px]">Quantity</label>
-        <input type="text" :disabled="JSON.parse(item?.bulk_price).length === 0 " model="quantity" class="input" placeholder="Enter Offer Amount" />
+      <div class="flex flex-col gap-2">
+        <!-- <div>
+          <label for="" class="text-[14px]">Quantity</label>
+          <input
+            type="text"
+            :disabled="item?.track_inventory <= 1"
+            v-model="quantity"
+            class="input"
+            placeholder="Enter Quantity"
+          />
+        </div> -->
+        <div>
+          <label for="" class="text-[14px]">Amount</label>
+          <input type="tel" v-model="price" class="input" placeholder="Enter Offer Amount" />
+        </div>
       </div>
-      <div>
-        <label for="" class="text-[14px]">Amount</label>
-        <input type="tel" v-model="price" class="input" placeholder="Enter Offer Amount" />
+      <div class="text-center mt-6">
+        <button @click="makeOffer" class="brand-btn brand-primary px-[30px] py-[10px]">
+          Make Offer
+        </button>
       </div>
-    </div>
-    <div class="text-center mt-6">
-      <button @click="makeOffer" class="brand-btn brand-primary px-[30px] py-[10px]">
-        Make Offer
-      </button>
     </div>
   </div>
 </template>
@@ -56,7 +65,7 @@ export default {
       let payload = {
         product_id: this.ID,
         quantity: this.quantity,
-        offer_price: this.price
+        offer_price: this.price || this.item.base_price
       }
       this.$user.addToCart(payload).then((res) => {
         console.log(res)
@@ -64,18 +73,22 @@ export default {
       })
     },
 
-    startChat(){
-      let url = ""
+    startChat() {
+      let url = ''
       // this.$router.push(`/app/messages/?user=${this.item?.shop?.user_id}`)
       function isMobileDevice() {
         return window.matchMedia('(max-width: 767px)').matches
       }
       if (isMobileDevice()) {
         console.log('You are using a mobile device')
-        url = `/app/message/m?user=${this.item?.shop?.user_id}&userData=${JSON.stringify(this.item?.shop?.user)}`
+        url = `/app/message/m?user=${this.item?.shop?.user_id}&userData=${JSON.stringify(
+          this.item?.shop?.user
+        )}`
       } else {
         console.log('You are using a desktop device')
-        url = `/app/messages/?user=${this.item?.shop?.user_id}&userData=${JSON.stringify(this.item?.shop?.user)}`
+        url = `/app/messages/?user=${this.item?.shop?.user_id}&userData=${JSON.stringify(
+          this.item?.shop?.user
+        )}`
       }
       this.$router.push(url)
     },
@@ -97,9 +110,11 @@ export default {
   watch: {
     price: {
       handler(val) {
-        console.log(val);
-        if(val >= this.item.base_price) {
-          console.log("Offer Price cannot be higher than or equal to product actual price");
+        if (Number(val) >+ Number(this.item.base_price)) {
+          this.$toast.error('Offer Price cannot be higher than or equal to product actual price', {
+            timeout: 4000
+          })
+          this.price = Number(this.item.base_price) - 1
         }
       },
       immediate: true
@@ -113,6 +128,9 @@ export default {
   computed: {
     user() {
       return this.$store.getters['auth/getUser']
+    },
+    isDisabled() {
+      return JSON.parse(this.item?.bulk_price).length === 0
     }
   }
 }

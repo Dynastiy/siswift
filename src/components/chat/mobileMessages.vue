@@ -30,7 +30,7 @@
       </div>
       <span class="flex gap-2 items-center">
         <a :href="`tel:${userData.mobile}`"
-          ><i-icon icon="ph:phone" class="form-icon text-gray-600" role="button"
+          ><i-icon icon="solar:phone-bold" class="form-icon text-gray-600" role="button"
         /></a>
         <!-- <i-icon icon="pajamas:ellipsis-v" class="form-icon text-gray-600" role="button" /> -->
       </span>
@@ -59,8 +59,8 @@
                 } received from ${userData?.firstname} ${userData?.lastname}`
           }}</span>
           <span v-if="item.sender_id !== user.id" class="flex gap-4 mt-2 justify-end w-full">
-            <span class="text-green-500" role="button">Accept</span>
-            <span class="text-red-500" role="button">Reject</span>
+            <span class="text-green-500" role="button" @click="offerFunc('accept', item?.message)">Accept</span>
+            <span class="text-red-500" role="button" @click="offerFunc('reject', item?.message)">Reject</span>
           </span>
         </span>
           <span v-else class="flex flex-col">
@@ -176,6 +176,18 @@ export default {
         // let info = this.messages.find((item)=> this.user.id !== item.sender_id || item.receiver_id)
       })
     },
+
+    offerFunc(e, value) {
+      console.log(e, value);
+      let payload = {
+        cat_id: value.cart_id
+      }
+      this.$orders.modifyOffer(payload, e)
+      .then((res)=> {
+        console.log(res);
+      })
+    },
+
 
     scrollToEnd() {
       const container = this.$refs.messagesContainer;

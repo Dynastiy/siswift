@@ -337,7 +337,12 @@ export default {
             user: userData.user
           })
           localStorage.setItem('_user_token', userData.access_token)
-          this.$router.push('/verify-email')
+          if(!userData.user.ev) {
+            this.$router.push('/verify-email')
+          }
+          else {
+            this.$router.push('/app/marketplace')
+          }
         })
         .finally(()=> {
           this.isLoading = false

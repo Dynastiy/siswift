@@ -2,16 +2,6 @@
   <div>
     <div class="">
       <div class="card-carousel" @mouseover="stopTimer" @mouseleave="restartTimer">
-        <!-- <b-skeleton-wrapper :loading="loading">
-            <template #loading>
-              <b-skeleton width="100%" height="200px"></b-skeleton>
-            </template> -->
-        <!-- <b-skeleton
-            v-if="loading"
-            width="100%"
-            class="img-skeleton"
-            style="border-radius: 15px"
-          ></b-skeleton> -->
         <div>
           <div
             class="card-img"
@@ -29,24 +19,22 @@
                 </span>
               </div>
             </div>
-            <div class="captions w-[130px]" :class="{ 'caption-sm': size === 'sm' }">
-              <span>
-                <h2 :class="[size === 'sm' ? 'text-[10px] p-1' : 'p-3'  ]" class="bg-white uppercase font-bold">{{ currentImage.name }}</h2>
-                <span
-                :class="[  size === 'sm' ? 'text-[8px] px-1 py-1' : 'px-6 py-2' ]"
-                  class=" flex bg-primary gap-1 uppercase text-sm gap-2 text-white font-semibold items-center font-medium"
-                  role="button"
-                  @click="$router.push(`product/${currentImage.slug}/view`)"
-                >
-                  shop now
-                  <i-icon icon="pajamas:long-arrow" />
-                </span>
-              </span>
-            </div>
+
             <div class="actions">
               <span @click="prevImage" class="prev"> &#8249; </span>
               <span @click="nextImage" class="next"> &#8250; </span>
             </div>
+          </div>
+        </div>
+        <div class="thumbnails flex mt-3">
+          <div
+            class="w-full border-r border-[#979b9b]"
+            v-for="(image, index) in images"
+            :key="image.id"
+            :class="['thumbnail-image', activeImage === index ? 'active' : '']"
+            @click="activateImage(index)"
+          >
+            <img :src="image.src" />
           </div>
         </div>
       </div>

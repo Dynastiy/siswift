@@ -60,7 +60,7 @@
 
                 <span
                   v-if="item?.shop?.user?.kv"
-                  class="bg-white flex text-[12px] items-center text-primary rounded-[4px] absolute top-1 right-1 gap-[3px] px-[6px] py-[2px] w-fit"
+                  class="bg-secondary text-white shadow  flex text-[12px] items-center rounded-[4px] absolute top-1 right-1 gap-[3px] px-[6px] py-[2px] w-fit"
                 >
                   <i-icon icon="mdi:user-tick" />
                   verified
@@ -209,11 +209,14 @@ export default {
 
     updateCart(item) {
       const payload = {
-        quantity: item.quantity
+        quantity: item.quantity,
+        offer_price: item.offer_price,
+        product_id: item.id,
+        _method: 'put'
       }
 
-      this.$customer.updateCart({ id: item.id, payload }).then(() => {
-        this.getUser()
+      this.$user.updateCart({ id: item.id, payload }).then(() => {
+        return
       })
     },
 

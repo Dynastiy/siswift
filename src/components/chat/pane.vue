@@ -27,7 +27,7 @@
       </div>
       <span class="flex gap-2 items-center">
         <a :href="`tel:${userData.mobile}`"
-          ><i-icon icon="ph:phone" class="form-icon text-gray-600" role="button"
+          ><i-icon icon="solar:phone-bold" class="form-icon text-gray-600" role="button"
         /></a>
         <!-- <i-icon icon="pajamas:ellipsis-v" class="form-icon text-gray-600" role="button" /> -->
       </span>
@@ -176,7 +176,7 @@ export default {
       let payload = {
         cat_id: value.cart_id
       }
-      this.$user.modifyOffer(payload, e)
+      this.$orders.modifyOffer(payload, e)
       .then((res)=> {
         console.log(res);
       })

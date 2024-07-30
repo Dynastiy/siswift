@@ -26,7 +26,7 @@
                     class="w-full h-[150px] object-cover object-top"
                   />
                   
-                  <span v-if="item?.shop?.user?.kv" class="bg-white flex text-[12px] items-center text-primary rounded-[4px] absolute top-1 right-1 gap-[3px] px-[6px] py-[2px] w-fit">
+                  <span v-if="item?.shop?.user?.kv" class="bg-secondary text-white shadow flex text-[12px] items-center text-primary rounded-[4px] absolute top-1 right-1 gap-[3px] px-[6px] py-[2px] w-fit">
                     <i-icon icon="mdi:user-tick" />
                     verified
                   </span>
@@ -70,6 +70,7 @@
                 </small>
 
                 <span
+                v-if="item?.condition"
                   class="text-[12px] block mt-2 bg-primary text-white w-fit rounded-sm px-[6px] py-[2px] block"
                 >
                   {{ item?.condition.split('-').join(' ') }}</span

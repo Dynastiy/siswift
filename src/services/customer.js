@@ -139,7 +139,7 @@ export default {
 
   async updateCart({id, payload}) {
     try {
-      let res = await $request.post(`/update-cart-item/${id}`, payload)
+      let res = await $request.post(`/carts/${id}`, payload)
       catchAxiosSuccess(res)
       return res.data
     } catch (error) {
@@ -192,30 +192,6 @@ export default {
     }
   },
 
-  async getOrders(type) {
-    try {
-      let res = await $request.get(`/orders/${type}`, )
-      // catchAxiosSuccess(res)
-      return res.data
-    } catch (error) {
-      // catchAxiosError(error)
-      return error
-      // throw error
-    }
-  },
-
-  async getSellerOrders(type) {
-    try {
-      let res = await $request.get(`/orders/${type}/seller`, )
-      // catchAxiosSuccess(res)
-      return res.data
-    } catch (error) {
-      // catchAxiosError(error)
-      return error
-      // throw error
-    }
-  },
-
 
   async showShop() {
     try {
@@ -228,97 +204,7 @@ export default {
       // throw error
     }
   },
-
-  async getOrderByID(id) {
-    try {
-      let res = await $request.get(`/find-order/${id}`, )
-      // catchAxiosSuccess(res)
-      return res.data
-    } catch (error) {
-      // catchAxiosError(error)
-      return error
-    }
-  },
-
   
-
-  async addAddress(payload) {
-    try {
-      let res = await $request.post(`/add-address`, payload)
-      catchAxiosSuccess(res)
-      return res.data
-    } catch (error) {
-      catchAxiosError(error)
-      throw error
-    }
-  },
-
-  async checkOut(formdata) {
-    try {
-      let res = await $request.post(`/checkout`, formdata)
-      catchAxiosSuccess(res.data)
-      return res.data
-    } catch (error) {
-      catchAxiosError(error.data)
-      throw error
-    }
-  },
-
-  async placeOrder(payload) {
-    try {
-      let res = await $request.post(`/make-order`, payload)
-      catchAxiosSuccess(res)
-      return res.data
-    } catch (error) {
-      catchAxiosError(error)
-      throw error
-    }
-  },
-
-  async removeOrder(id) {
-    try {
-      let res = await $request.post(`/delete-user-order/${id}`)
-      catchAxiosSuccess(res)
-      return res.data
-    } catch (error) {
-      catchAxiosError(error)
-      throw error
-    }
-  },
-
-  async createRating(payload) {
-    try {
-      let res = await $request.post(`/create-rating`, payload)
-      catchAxiosSuccess(res)
-      return res.data
-    } catch (error) {
-      catchAxiosError(error)
-      throw error
-    }
-  },
-
-  async createReview(payload) {
-    try {
-      let res = await $request.post(`/create-review`, payload)
-      catchAxiosSuccess(res)
-      return res.data
-    } catch (error) {
-      catchAxiosError(error)
-      throw error
-    }
-  },
-
-  // Accept or Reject OFfer 
-  async modifyOffer(payload, action) {
-    try {
-      let res = await $request.post(`/offer/${action}`, payload)
-      catchAxiosSuccess(res.data)
-      return res.data
-    } catch (error) {
-      catchAxiosError(error.data)
-      throw error
-    }
-  },
 }
 
 

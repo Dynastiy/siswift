@@ -42,15 +42,15 @@
       <template #default>
         <div>
           <div>
-            <img
+            <!-- <img
               :src="imgUrl + 'product/' + item?.main_image"
               alt=""
               role="button"
               class="h-[300px] w-full rounded-md object-contain object-center border border-primary"
-            />
-
-            <div class="mt-4" :class="{ 'flex justify-between': !isMyProduct }">
-              <div class="grid grid-cols-4 gap-3 mb-3">
+            /> -->
+            <wxCarousel :imagesProps="images" />
+            <div class="mt-4">
+              <!-- <div class="grid grid-cols-4 gap-3 mb-3">
                 <img
                   v-for="j in item?.product_images"
                   :key="j?.id"
@@ -59,9 +59,10 @@
                   role="button"
                   class="h-[40px] w-[60px] rounded-[4px] object-cover object-center"
                 />
-              </div>
-              <span class="flex gap-2 items-center" role>
+              </div> -->
+              <span class="flex gap-2 items-center justify-end">
                 <span
+                @click="$router.push(`/app/product/${ID}/sponsor-listing`)"
                   v-if="isMyProduct"
                   role="button"
                   class="bg-accent p-2 rounded-md whitespace-nowrap block text-primary text-xs font-semibold"
@@ -87,10 +88,7 @@
                 >
                   <i-icon icon="material-symbols:report" />
                 </span> -->
-                <button
-                  @click="onShare"
-                  class="bg-accent p-2 rounded-md text-primary text-lg"
-                >
+                <button @click="onShare" class="bg-accent p-2 rounded-md text-primary text-lg">
                   <i-icon icon="ic:baseline-share" />
                 </button>
               </span>
@@ -106,7 +104,7 @@
               <div class="flex flex-col gap-[5px]">
                 <div
                   class="bg-accent p-[6px] w-fit"
-                  v-for="(obj, i) in JSON.parse(item?.bulk_price)"
+                  v-for="(obj, i) in bulk"
                   :key="i"
                 >
                   <span class="text-[12px] block w-fit">
@@ -228,7 +226,7 @@
                         class="w-[45px] h-[45px] border-2 p-[2px] border-gray-100 rounded-full object-fit object-top"
                       />
                       <span class="flex flex-col">
-                        <span class="text-[14px] font-semibold">{{
+                        <span class="text-[14px] font-semibold" role="button" @click="goToSeller">{{
                           `${item?.shop?.user?.firstname} ${item?.shop?.user?.lastname}`
                         }}</span>
                         <span class="text-[12px] text-gray-400">{{
@@ -241,7 +239,7 @@
                         <a
                           class="flex items-center gap-[5px] text-sm font-semibold"
                           :href="`tel:${item?.shop?.user?.mobile}`"
-                          ><i-icon icon="ph:phone" class="form-icon text-gray-600" />
+                          ><i-icon icon="solar:phone-bold" class="form-icon text-gray-600" />
                           {{ item?.shop?.user?.mobile }}
                         </a>
                       </span>
@@ -250,7 +248,7 @@
                         class="brand-btn-md brand-primary flex items-center gap-[6px]"
                         @click="showContact"
                       >
-                        <i-icon icon="ph:phone" class="form-icon text-white" />
+                        <i-icon icon="solar:phone-bold" class="form-icon text-white" />
                         Show Contact
                       </button>
                       <button class="brand-btn-md brand-outline" @click="startChat">
@@ -262,7 +260,7 @@
                     <input
                       type="text"
                       v-model="quantity"
-                      :disabled="JSON.parse(item?.bulk_price).length === 0"
+                      :disabled="item?.track_inventory <= 1"
                       class="input lg:w-[80px] md:w-[100px]"
                     />
                     <button class="brand-btn-md brand-primary whitespace-nowrap" @click="addToCart">
@@ -425,6 +423,14 @@ export default {
       this.$user.removeFromCart(id).then((res) => {
         console.log(res)
       })
+    },
+
+    goToSeller() {
+      let sellerName = this.item?.shop
+      console.log(sellerName)
+      let name = `${sellerName?.user.firstname}-${sellerName?.user.lastname}`
+      let editedName = name.toLowerCase()
+      this.$router.push(`/app/product/${editedName}/seller/${sellerName.user_id}`)
     }
   },
 
@@ -466,7 +472,11 @@ export default {
     },
 
     isMyProduct() {
-      return this.user.id == this.item.shop.user_id
+      let info = ''
+      if (this.item.shop) {
+        info = this.user.id == this.item.shop.user_id
+      }
+      return info
     },
 
     windowOrigin() {
@@ -481,6 +491,31 @@ export default {
       const val = this.wishlistItems.filter((elem) => this.ID == elem.id)
       const result = val.length !== 0
       return result
+    },
+
+    bulk(){
+      return this.item.bulk_price == null ? [] : JSON.parse(this.item.bulk_price).length  === 0 ? [] : JSON.parse(this.item?.bulk_price)
+    },
+
+    images(){
+      let otherImages = []
+      for(let i = 0; i < this.item?.product_images.length; i++) {
+        otherImages.push({
+          id: i+1,
+          src:this.imgUrl + 'product/' + this.item?.product_images[i].image,
+          isLink: false
+        })
+      }
+      let images = [
+        {
+          id: 1,
+          src: this.imgUrl + 'product/' + this.item?.main_image,
+          isLink: false
+        },
+        ...otherImages
+      ]
+      
+      return images
     }
   }
 }

@@ -51,7 +51,7 @@
                     >
                   </span>
                   <div class="mt-3 flex flex-col gap-4">
-                    <wx-notification/>
+                    <wx-notification />
                   </div>
                 </div>
               </template>
@@ -65,7 +65,7 @@
           <el-dropdown trigger="click" placement="bottom-end">
             <span class="el-dropdown-link flex items-center">
               <img
-                :src="user.image ? imgUrl + 'user/profile/'+ user.image : image"
+                :src="user.image ? imgUrl + 'user/profile/' + user.image : image"
                 class="w-[38px] h-[38px] border-2 p-[2px] border-gray-100 rounded-full object-fit object-top"
               />
               <i-icon icon="prime:angle-down" class="" width="20px" />
@@ -114,23 +114,41 @@
     <div class="">
       <Sidebar v-model:visible="drawer" position="right" style="width: 80%">
         <template #container="{ closeCallback }">
-          <div class="h-screen bg-white px-8 pb-28 flex flex-col z-20">
-            <div>
+          <div class="h-screen bg-white pb-28 flex flex-col z-20">
+            <!-- <div class="bg-secondary">
               <span role="button" class="flex justify-end mt-4" @click="closeCallback">
                 <i-icon icon="gg:close-o" class="text-error text-2xl" />
               </span>
-            </div>
+            </div> -->
             <div class="flex flex-col justify-between h-[80vh]">
-              <div class="mt-4">
-                <div class="flex justify-center mt-2">
-                  <router-link to="/"
+              <div class="">
+                <div class="bg-primary px-4 pb-6 pt-4 rounded-bl-3xl rounded-br-3xl">
+                  <!-- <router-link to="/"
                     ><img src="@/assets/BrandLogos/logo.png" width="120" alt=""
-                  /></router-link>
+                  /></router-link> -->
+                  <span role="button" class="flex justify-end mb-6" @click="closeCallback">
+                    <i-icon icon="gg:close-o" class="text-white text-xl" />
+                  </span>
+                  <div class="flex gap-[10px] items-center">
+                    <img
+                      :src="user.image ? imgUrl + 'user/profile/' + user.image : image"
+                      class="w-[38px] h-[38px] border-2 p-[2px] border-gray-100 rounded-full object-fit object-top"
+                    />
+                    <div class="flex justify-between w-full items-center">
+                      <div>
+                        <h4 class="text-white text-[16px] font-semibold">Emmanuel Michael</h4>
+                        <h6 class="text-white text-[12px]">emmanuel@mail.com</h6>
+                      </div>
+                      <span class="text-white" role="button" @click="openProfile">
+                        <i-icon icon="uis:angle-right" />
+                      </span>
+                    </div>
+                  </div>
                 </div>
 
-                <hr class="my-6 bg-gray-200" />
+                <!-- <hr class="my-6 bg-gray-200" /> -->
 
-                <ul class="flex flex-col min-h-[75vh] justify-between">
+                <ul class="flex flex-col min-h-[75vh] justify-between px-4 mt-4">
                   <menu-item
                     :menuItems="menuItems"
                     @menuClick="$event.hasChildren ? openSubMenu($event) : goToLink($event)"
@@ -194,6 +212,11 @@ export default {
         this.drawer = false
         this.$router.push(item.url).catch(() => {})
       }
+    },
+
+    openProfile(){
+      this.$router.push('/app/profile')
+      this.drawer = false
     },
 
     openSubMenu(item) {

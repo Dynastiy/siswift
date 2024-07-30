@@ -12,16 +12,31 @@
         />
         <div class="flex gap-[4px] flex-col">
           <span class="font-semibold block">{{ item?.name }}</span>
-          <span class="block text-sm">{{
-            item?.offer_price
-              ? $currencyFormat(item?.offer_price)
-              : $currencyFormat(item?.base_price)
-          }}</span>
-          <span class="block">Qty: {{ item?.quantity }}</span>
+          <!-- <span>{{totalAmount}}</span> -->
+          <span class="block text-sm">{{ $currencyFormat(totalAmount(item)) }}</span>
+          <span class="block text-[13px]">Qty: {{ item?.quantity }}</span>
         </div>
       </div>
     </div>
-    <div class="text-right mt-12">
+    <div class="mt-3">
+      <select v-model="escrow" name="" id="" class="input">
+        <option value="">--Select payment Method--</option>
+        <option :value="1">Pay with Wallet</option>
+        <option :value="0">Pay Directly</option>
+      </select>
+    </div>
+    <div class="bg-accent p-3 mt-4">
+      <p class="text-[13px]">
+        For your protection, your payment will be held in a secure account until you've received
+        your order and confirm.
+      </p>
+
+      <p class="text-[13px] mt-2">
+        To confirm it go to cart and click on the menu of the item, then click to view product
+        details and confirm it
+      </p>
+    </div>
+    <div class="text-center mt-4">
       <button @click="checkOut" class="brand-btn brand-primary px-[30px] py-[10px]">
         Make Payment
       </button>
@@ -35,7 +50,8 @@ export default {
     return {
       items: [],
       loading: false,
-      isProductDetails: null
+      isProductDetails: null,
+      escrow: ""
     }
   },
 
@@ -94,16 +110,37 @@ export default {
     },
 
     checkOut() {
+      let paystack = {
+        callback_url: window.location.origin + '/app/success',
+        gateway: 'paystack',
+      }
       let payload = {
         type: 1,
         address: this.user.address,
-        payment: 1
+        payment: 1,
+        escrow: this.escrow,
+        description: 'Pay for Order',
+        ...paystack
       }
-      this.$user.checkOut(payload).then((res) => {
+      this.$orders.checkOut(payload).then((res) => {
         console.log(res)
+        let paymentUrl = res.data.paymentUrl
+        console.log(res.data.paymentUrl)
+        if(this.escrow) {
+           this.$router.push('/app/success')
+        }
+        else {
+         window.open(paymentUrl, '_parent');
+        }
         this.removeFromCart()
-        this.$router.push('/app/success')
       })
+    },
+
+    totalAmount(item) {
+      let amount = item?.offer_price
+        ? item?.offer_price * item?.quantity
+        : item?.base_price * item?.quantity
+      return amount
     }
   },
 
@@ -114,7 +151,8 @@ export default {
   computed: {
     user() {
       return this.$store.getters['auth/getUser']
-    }
+    },
+    
   }
 }
 </script>

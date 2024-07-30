@@ -14,7 +14,7 @@
     </span>
     <div class="lg:page-bg md:page-bg mt-6">
         <h4 class="mb-3 font-semibold">Buying Orders</h4>
-        <wxTable :columns="columns" :items="items" />
+        <wxTable :columns="columns" :items="items" @btnClick="viewRecord"/>
     </div>
   </div>
 </template>
@@ -39,7 +39,7 @@ export default {
       
         { field: 'seller', header: 'Seller' },
         { field: 'created_at', header: 'Date' },
-        // { field: 'status', header: 'Status' }
+        { field: 'tableBtn', header: '' }
       ],
       items: []
     }
@@ -55,10 +55,15 @@ export default {
     list() {
       let activeTab = Boolean(this.activeTab)
       let type = activeTab ? 'completed' : 'pending'
-      this.$user.getOrders(type).then((res) => {
+      this.$orders.getOrders(type).then((res) => {
         console.log(res)
         this.items = res.data
       })
+    },
+
+    viewRecord(e) {
+      console.log(e, 'ommmo')
+      this.$router.push(`/app/order/${e.id}`)
     }
   },
 

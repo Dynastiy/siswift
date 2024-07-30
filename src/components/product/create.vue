@@ -8,7 +8,8 @@
         keep-values
         v-slot="{ meta, values }"
       >
-        <span class="bg-accent text-xs p-2 block mb-2">
+      <!-- {{ user }} -->
+        <span v-if="!user.kv" class="bg-accent text-xs p-2 block mb-2">
           For your listing to go live, please verify your identity
           <router-link class="text-primary font-semibold underline" to="/app/kyc"
             >go to KYC verification</router-link
@@ -354,7 +355,8 @@ export default {
             .string()
             .required()
             .matches(/^[0-9]+$/, 'Must be numeric'),
-          brand_id: yup.string()
+          brand_id: yup.string(),
+          quantity: yup.string().required().matches(/^[0-9]+$/, 'Must be numeric'),
         }),
         yup.object({
           location: yup.string().required(),
@@ -362,7 +364,7 @@ export default {
           condition: yup.string().required(),
           sim: yup.string(),
           state: yup.string().required(),
-          city: yup.string().required()
+          city: yup.string().required(),
         })
 
         // yup.object({
@@ -395,6 +397,18 @@ export default {
 
   methods: {
     async create(values) {
+      if(!this.mainImage) {
+        this.$toast.error('Please, add product image', {
+            timeout: 4000
+          })
+      }
+
+      if(this.photos.length === 0 ) {
+        this.$toast.error('Please, please add aat least one image', {
+            timeout: 4000
+          })
+      }
+
       const formdata = new FormData()
       formdata.append('name', values.product_name)
       formdata.append('brand_id', values.brand_id)
@@ -427,9 +441,9 @@ export default {
         .then((res) => {
           console.log(res)
           this.$router.push('/app/my-listings')
-          // this.$toast.success('Your ad has been submitted, pending approval', {
-          //   timeout: 4000
-          // })
+          this.$toast.success('Your ad has been submitted, pending approval', {
+            timeout: 4000
+          })
           return
         })
         .catch((err) => {
