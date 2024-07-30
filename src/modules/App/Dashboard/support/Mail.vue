@@ -9,7 +9,13 @@
         }}</span>
       </div> -->
     <vForm @submit="onSubmit" v-slot="{ meta }" class="">
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-3">
+        <div>
+          <label for="">Name</label>
+          <vField name="name" rules="required" class="input" type="text"> </vField>
+          <ErrorMessage name="name" class="text-xs text-error"></ErrorMessage>
+        </div>
+
         <div>
           <label for="">Email Address</label>
           <vField name="email" rules="email" class="input" type="email"> </vField>
@@ -17,8 +23,14 @@
         </div>
 
         <div>
+          <label for="">Subject</label>
+          <vField name="subject" rules="required" class="input" type="text"> </vField>
+          <ErrorMessage name="subject" class="text-xs text-error"></ErrorMessage>
+        </div>
+
+        <div>
           <label for="">Description</label>
-          <vField name="message" rules="required" class="input" as="textarea" rows="6"> </vField>
+          <vField name="message" rules="required" class="input" as="textarea" rows="4"> </vField>
           <ErrorMessage name="mesage" class="text-xs text-error"></ErrorMessage>
         </div>
       </div>
@@ -33,7 +45,6 @@
         >
           Send
         </button>
-        <div class="mt-3"></div>
       </div>
     </vForm>
   </div>
@@ -50,9 +61,21 @@ export default {
   },
 
   methods: {
-    async onSubmit(values) {
+    async onSubmit(values, {resetForm}) {
+      this.isLoading = true
+      let payload = {
+        ...values, 
+        priority: 1
+      }
       console.log(values, 'ommmo')
-      alert('sent')
+      this.$config.sendTicket(payload)
+      .then((res)=> {
+        console.log(res);
+        resetForm()
+      })
+      .finally(()=> {
+        this.isLoading = false
+      })
     }
   }
 }
