@@ -2,7 +2,7 @@
   <!-- bg-white rounded-md p-6 -->
   <div class="body-content w-full lg:page-bg md:page-bg">
     <!-- <div>
-      {{ wishlist_item }}
+      {{ loading }}
     </div> -->
     <el-skeleton :loading="loading" animated>
       <template #template>
@@ -48,7 +48,7 @@
               role="button"
               class="h-[300px] w-full rounded-md object-contain object-center border border-primary"
             /> -->
-            <wxCarousel :imagesProps="images" />
+            <wxCarousel v-if="item" :imagesProps="images" />
             <div class="mt-4">
               <!-- <div class="grid grid-cols-4 gap-3 mb-3">
                 <img
@@ -81,13 +81,14 @@
                 >
                   <i-icon icon="ph:heart-fill" />
                 </button>
-                <!-- <span
+                <span
                   v-if="!isMyProduct"
                   class="bg-accent p-2 rounded-md text-primary text-lg"
                   role="button"
+                  @click="$router.push('/app/support/send-mail')"
                 >
                   <i-icon icon="material-symbols:report" />
-                </span> -->
+                </span>
                 <button @click="onShare" class="bg-accent p-2 rounded-md text-primary text-lg">
                   <i-icon icon="ic:baseline-share" />
                 </button>
@@ -499,7 +500,8 @@ export default {
 
     images(){
       let otherImages = []
-      for(let i = 0; i < this.item?.product_images.length; i++) {
+      let allImages = this.item ? this.item?.product_images : []
+      for(let i = 0; i < allImages.length; i++) {
         otherImages.push({
           id: i+1,
           src:this.imgUrl + 'product/' + this.item?.product_images[i].image,

@@ -100,4 +100,27 @@ export default {
         }
       },
 
+      async createUserReview(payload) {
+        try {
+          let res = await $request.post(`/review`, payload)
+          catchAxiosSuccess(res.data)
+          return res.data
+        } catch (error) {
+          catchAxiosError(error.data)
+          throw error
+        }
+      },
+
+      async getSubscription(payload) {
+        try {
+          let res = await $request.get(`/subscription`, payload)
+          // catchAxiosSuccess(res.data)
+          return res.data
+        } catch (error) {
+          catchAxiosError(error.data)
+          throw error
+        }
+      },
+    
+
 }

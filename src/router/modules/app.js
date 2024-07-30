@@ -175,17 +175,17 @@ const routes = [
     }
   },
 
-  {
-    path: '/app/product/review',
-    name: 'product-review',
-    component: () => import('@/modules/App/Dashboard/product/ReviewProduct.vue'),
-    meta: {
-      layout: 'Dashboard',
-      requiresAuth: true,
-      parent: 'marketplace',
-      name: 'home'
-    }
-  },
+  // {
+  //   path: '/app/product/review',
+  //   name: 'product-review',
+  //   component: () => import('@/modules/App/Dashboard/product/ReviewProduct.vue'),
+  //   meta: {
+  //     layout: 'Dashboard',
+  //     requiresAuth: true,
+  //     parent: 'marketplace',
+  //     name: 'home'
+  //   }
+  // },
 
   {
     path: '/app/order/:order_id',

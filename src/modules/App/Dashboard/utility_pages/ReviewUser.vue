@@ -7,7 +7,7 @@
           >Do you have a feedback for this user?</span
         >
       </div>
-      <form @submit="onSubmit" class="mt-8 flex flex-col gap-4">
+      <form @submit.prevent="onSubmit" class="mt-8 flex flex-col gap-4">
         <div class="">
           <div>
             <label for="">Rating</label>
@@ -25,8 +25,8 @@
               rows="5"
               placeholder="Type a review"
               class="input"
+              v-model="review"
             ></textarea>
-            <ErrorMessage name="review" class="text-xs text-error"></ErrorMessage>
           </div>
         </div>
 
@@ -49,12 +49,25 @@ export default {
   data() {
     return {
       isLoading: false,
-      value: 0
+      value: 0,
+      review: ''
     }
   },
   methods: {
-    onSubmit(values) {
-      console.log(values)
+    onSubmit() {
+        this.isLoading = true
+      let payload = {
+        seller_id: this.$route.params.id,
+        review: this.review,
+        rating: this.value
+      }
+      this.$config.createUserReview(payload).then((res) => {
+        this.$router.go(-1)
+        return res
+      })
+      .finally(()=> {
+        this.isLoading = false
+      })
     }
   }
 }

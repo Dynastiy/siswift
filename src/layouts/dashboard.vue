@@ -117,13 +117,13 @@ export default {
           isBottom: true,
           hasChildren: true,
           children: [
-            {
-              title: 'Chat with Us',
-              icon: 'mingcute:settings-1-fill',
-              url: '/app/support/chat',
-              isLink: true,
-              subItem: 'chat'
-            },
+            // {
+            //   title: 'Chat with Us',
+            //   icon: 'mingcute:settings-1-fill',
+            //   url: '/app/support/chat',
+            //   isLink: true,
+            //   subItem: 'chat'
+            // },
             {
               title: 'Call Us',
               icon: 'mingcute:settings-1-fill',
