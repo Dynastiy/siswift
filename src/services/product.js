@@ -34,5 +34,16 @@ export default {
       catchAxiosError(error.data)
       throw error
     }
+  },
+
+  async createProductReview(formdata) {
+    try {
+      let res = await $request.post(`rate`, formdata)
+      catchAxiosSuccess(res.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data)
+      throw error
+    }
   }
 }

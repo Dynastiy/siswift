@@ -42,21 +42,24 @@
         <template #default>
           <div>
             <div>
+              <!-- <div>
+                {{order}}
+              </div> -->
               <div class="mt-4 flex flex-col gap-1">
-                <div class="flex gap-2" v-for="item in items" :key="item?.id">
-        <img
-          :src="imgUrl + 'product/' + item?.main_image"
-          alt=""
-          role="button"
-          class="h-[80px] w-[60px] object-contain rounded-lg"
-        />
-        <div class="flex gap-[4px] flex-col">
-          <span class="font-semibold block">{{ item?.name }}</span>
-          <!-- <span>{{totalAmount}}</span> -->
-          <!-- <span class="block text-sm">{{ $currencyFormat(totalAmount(item)) }}</span> -->
-          <!-- <span class="block text-[13px]">Qty: {{ item?.quantity }}</span> -->
-        </div>
-      </div>
+                <div class="flex gap-2">
+                  <img
+                    :src="imgUrl + 'product/' + product?.main_image"
+                    alt=""
+                    role="button"
+                    class="h-[80px] w-[60px] object-contain rounded-lg"
+                  />
+                  <div class="flex gap-[4px] flex-col">
+                    <span class="font-semibold block">{{ product?.name }}</span>
+                    <!-- <span>{{ totalAmount }}</span> -->
+                    <span class="block text-sm">{{ $currencyFormat(order?.base_price) }}</span>
+                    <span class="block text-[13px]">Qty: {{ order?.quantity }}</span>
+                  </div>
+                </div>
 
                 <div class="mt-4" v-if="isSeller">
                   <div class="flex gap-2 items-center mb-3">
@@ -77,12 +80,13 @@
                   </div>
                   <div class="flex justify-between items-center">
                     <h4 class="font-bold text-xl text-primary">
-                      {{ `${$currencyFormat(order?.total_amount)}` }}
+                      {{ $currencyFormat(totalAmount) }}
+                      <!-- {{ totalAmount }} -->
                     </h4>
                     <span
                       class="rejected px-3 py-[6px] text-[12px]"
-                      v-if="orderData?.status === 'cancelled'"
-                      >Cancelled</span
+                      v-if="orderData?.status === 'rejected'"
+                      >Escrow Rejected</span
                     >
                     <button
                       class="text-white brand-btn-md bg-primary"
@@ -95,7 +99,12 @@
                       Awaiting Buyer Confirmation
                     </span>
                     <div v-if="orderData?.status === 'delivered'">
-                      <button class="text-white brand-btn-md bg-primary" @click="$router.push('/app/user/review/'+this.orderData.buyer_id)">Review Buyer</button>
+                      <button
+                        class="text-white brand-btn-md bg-primary"
+                        @click="$router.push('/app/user/review/' + this.orderData.buyer_id)"
+                      >
+                        Review Buyer
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -103,24 +112,66 @@
                 <div class="mt-4" v-else>
                   <div class="flex gap-2 items-center mb-3">
                     <button class="completed px-3 py-[6px] text[12px]">Messages</button>
-                    <button class="pending px-3 py-[6px] text-[12px]" v-if="orderData.status === 'delivered'">View Receipt</button>
+                    <button
+                      class="pending px-3 py-[6px] text-[12px]"
+                      v-if="orderData.status === 'delivered'"
+                    >
+                      View Receipt
+                    </button>
                   </div>
-                  <div class="flex justify-between items-center">
+                  <div class="lg:flex-row md:flex-row flex-col justify-between items-center">
                     <h4 class="font-bold text-xl text-primary">
-                      {{ `${$currencyFormat(order?.total_amount)}` }}
+                      {{ `${$currencyFormat(totalAmount)}` }}
                     </h4>
                     <span
                       class="rejected px-3 py-[6px] text-[12px]"
-                      v-if="orderData?.status === 'cancelled'"
-                      >Cancelled</span
+                      v-if="orderData?.status === 'rejected'"
+                      >Escrow Rejected</span
                     >
-                    <button class="text-white brand-btn-md bg-primary" v-if="orderData.status === 'confirmed'" @click="completeTransaction">Received</button>
+                    <button
+                      class="text-white brand-btn-md bg-primary"
+                      v-if="orderData.status === 'confirmed'"
+                      @click="completeTransaction"
+                    >
+                      Received
+                    </button>
                     <span class="pending" v-if="orderData?.status === 'initiated'">
                       Awaiting Seller Confirmation
                     </span>
-                    <div class="flex gap-2 items-center" v-if="orderData.status === 'delivered'">
-                      <button class="text-white brand-btn-md bg-primary" @click="$router.push('/app/user/review/'+this.orderData.seller_id)">Review Seller</button>
-                      <button class="text-white brand-btn-md bg-primary" @click="$router.push('/app/product/review/'+this.productID)">Review Product</button>
+                    <div
+                      class="flex gap-3 lg:flex-row md:flex-row flex-col lg:items-center md:items-center lg:mt-0 md:mt-0 mt-3"
+                      v-if="orderData.status === 'delivered'"
+                    >
+                      <button
+                        class="text-white brand-btn-md bg-primary"
+                        @click="$router.push('/app/user/review/' + this.orderData.seller_id)"
+                      >
+                        Review Seller
+                      </button>
+                      <button
+                        class="text-white brand-btn-md bg-primary"
+                        @click="$router.push('/app/product/review/' + this.product.id)"
+                      >
+                        Review Product
+                      </button>
+                      <button
+                        @click="$router.push('/app/support/send-mail')"
+                        :disabled="!can_return"
+                        :class="['text-white brand-btn-md', can_return ? 'bg-primary' : 'bg-gray-500 border border-gray-500' ]"
+                      >
+                        Return Product
+                        <span v-if="can_return">
+                          <vue-countdown
+                            :time="countdownDate"
+                            @end="onCountdownEnd"
+                            v-slot="{ hours, minutes, seconds }"
+                          >
+                            <span>
+                             {{`(${hours}hours, ${minutes}mins, ${seconds}secs)`}}
+                            </span>
+                          </vue-countdown></span
+                        >
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -143,7 +194,9 @@ export default {
       order: {},
       escrow: [],
       orderData: {},
-      items: []
+      items: [],
+      product: {},
+      can_return: true
     }
   },
 
@@ -153,10 +206,11 @@ export default {
       this.$orders
         .viewOrderRecord(this.orderID)
         .then((res) => {
-          console.log('data from products list:', res)
+          console.log('data from Single order:', res)
           this.escrowList()
-          this.order = res
-          this.items = res.products
+          this.order = res.order
+          this.product = res.order.product
+          this.escrowList()
         })
         .finally(() => {
           this.loading = false
@@ -167,7 +221,7 @@ export default {
       this.$orders.allEscrow().then((res) => {
         console.log(res)
         let req = res.data
-        let vq = req.find((item) => this.orderID == item.order_id)
+        let vq = req.find((item) => this.order.order_id == item.order_id)
         console.log(vq)
         this.orderData = vq
       })
@@ -180,29 +234,38 @@ export default {
       })
     },
 
-    acceptEscrow(){
+    acceptEscrow() {
       this.$orders.acceptEscrow(this.orderData.id).then((res) => {
         this.escrowList()
         return res
       })
     },
 
-    completeTransaction(){
+    completeTransaction() {
       this.$orders.completeEscrow(this.orderData.id).then((res) => {
         this.escrowList()
         return res
       })
+    },
+
+    onCountdownEnd() {
+      this.can_return = false
     }
   },
 
   beforeMount() {
     this.getOrder()
-          this.escrowList()
+    // this.escrowList()
   },
 
   computed: {
     user() {
       return this.$store.getters['auth/getUser']
+    },
+
+    totalAmount() {
+      let amount = this.order.base_price * this.order.quantity
+      return amount
     },
 
     isSeller() {
@@ -211,6 +274,31 @@ export default {
       info = this.user.seller_id == this.order.seller_id
       // }
       return info
+    },
+
+    isEndDate() {
+      // Get Date Created
+      // console.log(this.order.created_at.g);
+
+      // Get the current date
+      var currentDate = new Date(this.order.created_at)
+      // Add 3 days to the current date
+      var futureDate = new Date(currentDate.getTime() + 1 * 24 * 60 * 60 * 1000)
+      console.log('Current Date:', currentDate.getTime() + 1 * 24 * 60 * 60 * 1000)
+      console.log('Future Date (after adding 3 days):', futureDate)
+      return futureDate
+    },
+    countdownDate() {
+      // Get Date Created
+      // console.log(this.order.created_at.g);
+
+      // Get the current date
+      var currentDate = new Date(this.order.created_at)
+      // Add 3 days to the current date
+      var futureDate = currentDate.getTime() + 1 * 24 * 60 * 60 * 1000
+      console.log('Current Date:', currentDate.getTime() + 1 * 24 * 60 * 60 * 1000)
+      console.log('Future Date (after adding 3 days):', futureDate)
+      return futureDate
     }
   }
 }

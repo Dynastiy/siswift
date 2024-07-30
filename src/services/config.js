@@ -125,10 +125,33 @@ export default {
     }
   },
 
+   
+  async subscribeToPlan(payload) {
+    try {
+      let res = await $request.post(`/subscription-payment`, {}, { params: payload })
+      catchAxiosSuccess(res.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data)
+      throw error
+    }
+  },
+
   async sendTicket(payload) {
     try {
       let res = await $request.post(`/support`, {}, { params: payload })
       catchAxiosSuccess(res.data.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data.data)
+      throw error
+    }
+  },
+
+  async getWithdrawalMethods() {
+    try {
+      let res = await $request.get(`/withdrawal-method`)
+      // catchAxiosSuccess(res.data.data)
       return res.data
     } catch (error) {
       catchAxiosError(error.data.data)

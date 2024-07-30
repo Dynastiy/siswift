@@ -102,6 +102,7 @@
               <h4 class="font-bold text-xl text-primary">
                 {{ `${$currencyFormat(item?.base_price)}` }}
               </h4>
+
               <div class="flex flex-col gap-[5px]">
                 <div
                   class="bg-accent p-[6px] w-fit"
@@ -117,6 +118,7 @@
               <div class="flex flex-col gap-2">
                 <span
                   class="text-[11px] block bg-primary text-white w-fit rounded-sm px-[6px] py-[2px] block"
+                  v-if="item?.condition"
                 >
                   {{ item?.condition.split('-').join(' ') }}</span
                 >
@@ -179,10 +181,10 @@
                             />
                           </span>
                           <div>
-                            <p class="text-sm">comment</p>
+                            <p class="text-sm">{{ obj.review }}</p>
                             <span class="text-xs flex gap-[2px]">
                               <i-icon icon="mingcute:star-fill" class="text-secondary text-xs" />
-                              4
+                              {{obj?.rating}}
                             </span>
                           </div>
                         </div>

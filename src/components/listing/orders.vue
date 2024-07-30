@@ -39,7 +39,7 @@ export default {
 
     viewRecord(e) {
       console.log(e, 'ommmo')
-      this.$router.push(`/app/order/${e.order_id}`)
+      this.$router.push(`/app/order/${e.id}`)
     }
   },
 

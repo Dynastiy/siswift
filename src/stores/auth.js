@@ -3,11 +3,16 @@ export default {
   state: {
     user: null,
     _user_token: null,
+    subscription: null
   },
 
   mutations: {
     setUser(state, data) {
       state.user = data
+    },
+
+    setSubscription(state, data) {
+      state.subscription = data
     },
 
     login(state, { token, user }) {
@@ -38,6 +43,7 @@ export default {
     auth: (state) => state.auth,
     isLoading: (state) => state.loading,
     getUser: (state) => state.user,
-    getAuthenticated: (state) => !!state._user_token
+    getAuthenticated: (state) => !!state._user_token,
+    getSubscription: (state) => state.subscription
   }
 }

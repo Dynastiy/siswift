@@ -7,11 +7,6 @@
           >Enter Amount to be withdrawn</span
         >
       </div>
-      <!-- <div>
-        <span class="text-xs text-error" v-for="(item, idx) in validationErrors" :key="idx">{{
-          item
-        }}</span>
-      </div> -->
       <vForm @submit="onSubmit" v-slot="{ meta }" class="mt-8">
         <div class="flex flex-col gap-4">
           <div>
@@ -83,6 +78,13 @@ export default {
       })
     },
 
+    getMethods(){
+      this.$config.getWithdrawalMethods()
+      .then((res)=> {
+        console.log(res);
+      })
+    },
+
     getUser() {
       this.$auth.getProfile().then((res) => {
         console.log(res.profile)
@@ -93,6 +95,7 @@ export default {
 
   mounted() {
     console.log(window.location)
+    this.getMethods()
   }
 }
 </script>

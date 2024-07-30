@@ -138,11 +138,19 @@
                       <div>
                         <h4 class="text-white text-[16px] font-semibold">Emmanuel Michael</h4>
                         <h6 class="text-white text-[12px]">emmanuel@mail.com</h6>
+                        <div>
+                      <span class="text-primary w-fit py-[1px] px-[5px] rounded-[3px] text-[12px] font-semibold flex gap-[5px] items-center bg-white" v-if="subscription">
+                        <i-icon icon="teenyicons:diamond-solid" />
+                        {{ subscription.name }}
+                      </span>
+                      
+                    </div>
                       </div>
                       <span class="text-white" role="button" @click="openProfile">
                         <i-icon icon="uis:angle-right" />
                       </span>
                     </div>
+                    
                   </div>
                 </div>
 
@@ -202,6 +210,8 @@ export default {
     }
   },
 
+  
+
   methods: {
     ...mapActions('drawer', ['setSubMenu']),
     goToLink(item) {
@@ -212,6 +222,13 @@ export default {
         this.drawer = false
         this.$router.push(item.url).catch(() => {})
       }
+    },
+
+    getCurrentSubscription() {
+      this.$config.getSubscription().then((res) => {
+        console.log(res.subscription)
+        this.$store.commit('auth/setSubscription', res.subscription)
+      })
     },
 
     openProfile(){
@@ -260,6 +277,10 @@ export default {
     }
   },
 
+  beforeMount(){
+    this.getCurrentSubscription()
+  },
+
   computed: {
     routeName() {
       return this.$route.meta.name
@@ -281,6 +302,9 @@ export default {
     },
     isBottom() {
       return this.menu.filter((item) => item.isBottom)
+    },
+    subscription(){
+      return this.$store.getters['auth/getSubscription']
     }
 
     //   userMeta() {
