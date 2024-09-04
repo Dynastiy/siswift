@@ -41,6 +41,10 @@
         </template>
         <template #default>
           <div>
+            <span  class="bg-accent text-xs p-2 block mb-2 w-fit">
+              Ensure the buyer or seller confirms 
+              receipt or delivery of the item before you depart from the meet up location.
+        </span>
             <div>
               <!-- <div>
                 {{order}}
@@ -63,7 +67,7 @@
 
                 <div class="mt-4" v-if="isSeller">
                   <div class="flex gap-2 items-center mb-3">
-                    <button class="completed px-3 py-[6px] text[12px]">Messages</button>
+                    <!-- <button class="completed px-3 py-[6px] text[12px]">Messages</button> -->
                     <button
                       class="rejected px-3 py-[6px] text-[12px]"
                       v-if="orderData?.status === 'initiated'"
@@ -78,7 +82,7 @@
                       View Receipt
                     </button>
                   </div>
-                  <div class="flex justify-between items-center">
+                  <div class="flex justify-between items-center gap-4">
                     <h4 class="font-bold text-xl text-primary">
                       {{ $currencyFormat(totalAmount) }}
                       <!-- {{ totalAmount }} -->
@@ -93,7 +97,7 @@
                       v-if="orderData?.status === 'initiated'"
                       @click="acceptEscrow"
                     >
-                      Delivered
+                      Accept & Deliver
                     </button>
                     <span class="pending" v-if="orderData?.status === 'confirmed'">
                       Awaiting Buyer Confirmation
@@ -111,7 +115,7 @@
 
                 <div class="mt-4" v-else>
                   <div class="flex gap-2 items-center mb-3">
-                    <button class="completed px-3 py-[6px] text[12px]">Messages</button>
+                    <!-- <button class="completed px-3 py-[6px] text[12px]">Messages</button> -->
                     <button
                       class="pending px-3 py-[6px] text-[12px]"
                       v-if="orderData.status === 'delivered'"
@@ -119,7 +123,7 @@
                       View Receipt
                     </button>
                   </div>
-                  <div class="lg:flex-row md:flex-row flex-col justify-between items-center">
+                  <div class="lg:flex-row md:flex-row flex-col justify-between items-center gap-4">
                     <h4 class="font-bold text-xl text-primary">
                       {{ `${$currencyFormat(totalAmount)}` }}
                     </h4>
@@ -148,12 +152,12 @@
                       >
                         Review Seller
                       </button>
-                      <button
+                      <!-- <button
                         class="text-white brand-btn-md bg-primary"
                         @click="$router.push('/app/product/review/' + this.product.id)"
                       >
                         Review Product
-                      </button>
+                      </button> -->
                       <button
                         @click="$router.push('/app/support/send-mail')"
                         :disabled="!can_return"
@@ -206,25 +210,23 @@ export default {
       this.$orders
         .viewOrderRecord(this.orderID)
         .then((res) => {
-          console.log('data from Single order:', res)
-          this.escrowList()
+          console.log('Oser details:', res)
           this.order = res.order
           this.product = res.order.product
           this.escrowList()
         })
-        .finally(() => {
-          this.loading = false
-        })
+        
     },
 
     escrowList() {
       this.$orders.allEscrow().then((res) => {
-        console.log(res)
         let req = res.data
         let vq = req.find((item) => this.order.order_id == item.order_id)
-        console.log(vq)
         this.orderData = vq
       })
+      .finally(() => {
+          this.loading = false
+        })
     },
 
     rejectEscrow() {
@@ -281,7 +283,7 @@ export default {
       // console.log(this.order.created_at.g);
 
       // Get the current date
-      var currentDate = new Date(this.order.created_at)
+      var currentDate = new Date(this.order.order.updated_at)
       // Add 3 days to the current date
       var futureDate = new Date(currentDate.getTime() + 1 * 24 * 60 * 60 * 1000)
       console.log('Current Date:', currentDate.getTime() + 1 * 24 * 60 * 60 * 1000)
@@ -293,12 +295,19 @@ export default {
       // console.log(this.order.created_at.g);
 
       // Get the current date
-      var currentDate = new Date(this.order.created_at)
-      // Add 3 days to the current date
-      var futureDate = currentDate.getTime() + 1 * 24 * 60 * 60 * 1000
-      console.log('Current Date:', currentDate.getTime() + 1 * 24 * 60 * 60 * 1000)
-      console.log('Future Date (after adding 3 days):', futureDate)
-      return futureDate
+      var currentDate = new Date(this.order.order.updated_at)
+      console.log(currentDate);
+      const now = new Date();
+      // Add 1 days to the current date
+      var futureDate = (currentDate.getTime() + 1 * 24 * 60 * 60 * 1000) - (now.getTime())
+      var res = futureDate <= 0 ? 0 : futureDate
+
+      // const timeDifference = setTime - now;
+
+      console.log('Current Date:', currentDate.getTime() + 1 * 24 * 60 * 60)
+      console.log('Future Date (after adding 1 day):', res)
+      // console.log(new Date(futureDate))
+      return res
     }
   }
 }

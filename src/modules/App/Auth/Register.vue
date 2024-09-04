@@ -207,7 +207,11 @@
             v-if="currentStep === 1"
             type="submit"
           >
-          <i-icon v-if="isLoading" icon="eos-icons:three-dots-loading" class="text-xl text-gray2" />
+            <i-icon
+              v-if="isLoading"
+              icon="eos-icons:three-dots-loading"
+              class="text-xl text-gray2"
+            />
             <span v-else>Register</span>
           </button>
           <div class="mt-3">
@@ -241,8 +245,10 @@ export default {
           phone: yup
             .string()
             .required()
+            .max(11)
             .matches(/^[0-9]+$/, 'Must be numeric')
         }),
+
         yup.object({
           password: yup.string().required().min(8),
           confirmPassword: yup
@@ -327,26 +333,26 @@ export default {
         formdata.append('password', values.password)
         formdata.append('password_confirmation', values.confirmPassword)
         formdata.append('address', values.address)
+        this.$auth
+          .createAccount(formdata)
+          .then((res) => {
+            console.log('register res:', res)
 
-        this.$auth.createAccount(formdata).then((res) => {
-          console.log('register res:', res)
-          
-          let userData = res.data
-          this.$store.commit('auth/login', {
-            token: userData.access_token,
-            user: userData.user
+            let userData = res.data
+            this.$store.commit('auth/login', {
+              token: userData.access_token,
+              user: userData.user
+            })
+            localStorage.setItem('_user_token', userData.access_token)
+            if (!userData.user.ev) {
+              this.$router.push('/verify-email')
+            } else {
+              this.$router.push('/app/marketplace')
+            }
           })
-          localStorage.setItem('_user_token', userData.access_token)
-          if(!userData.user.ev) {
-            this.$router.push('/verify-email')
-          }
-          else {
-            this.$router.push('/app/marketplace')
-          }
-        })
-        .finally(()=> {
-          this.isLoading = false
-        })
+          .finally(() => {
+            this.isLoading = false
+          })
 
         return
       }

@@ -41,7 +41,7 @@
         <span
           class="p-3 text-[13px] w-fit shadow"
           :class="[
-            item.sender_id === user.id
+            item.user_id == user.id
               ? 'ml-auto bg-accent rounded-tr-[15px] rounded-bl-[15px] rounded-br-[15px]'
               : 'rounded-tr-[15px] rounded-tl-[15px] rounded- rounded-bl-[15px] bg-white'
           ]"
@@ -72,7 +72,7 @@
     </div>
 
     <span class="flex gap-4 items-center mt-4 px-2">
-      <div class="input-field bg-white border-none w-full">
+      <div class="input-field message-field bg-white border-none w-full">
         <span class="w-full flex gap-2 items-center">
           <div class="relative">
             <span class="password-iccon" role="button" @click="emojiBox = !emojiBox">
@@ -134,7 +134,7 @@ export default {
       messages: [],
       userData: {},
       dynamicLink: '',
-      userID: null,
+      chatID: null,
       image
     }
   },
@@ -149,32 +149,16 @@ export default {
     },
 
     getMessages() {
-      console.log('userData:', this.userID)
-      this.$user.getMessages(this.userID).then((res) => {
-        console.log(res.data)
-        // let messages = res.data
-        // let allMessages = []
-        // messages.forEach((item) => {
-        //   this.messages.push(item)
-        // })
-        this.messages = res.data
-
-        console.log(this.groupByAndKeepLast(this.messages))
-        let info = this.groupByAndKeepLast(this.messages)[0]
-        let receiver = {
-          ...info.receiver
-        }
-        let sender = {
-          ...info.sender
-        }
-        let userData = info.sender_id === this.user.id ? receiver : sender
-        console.log(userData)
-        this.userData = userData
-        this.$nextTick(() => {
-          this.scrollToEnd();
-        });
-        // let info = this.messages.find((item)=> this.user.id !== item.sender_id || item.receiver_id)
-      })
+      if (this.ID) {
+        this.$user.getMessages(this.chatID).then((res) => {
+          this.messages = res.conversation.messages
+          this.messageData = res.conversation
+          console.log(res)
+          this.$nextTick(() => {
+            this.scrollToEnd()
+          })
+        })
+      }
     },
 
     offerFunc(e, value) {
@@ -258,7 +242,7 @@ export default {
     ID: {
       handler(val) {
         if (val) {
-          this.userID = val
+          this.chatID = val
           console.log(val)
           this.getMessages()
         }
@@ -280,7 +264,7 @@ export default {
       return this.$store.getters['auth/getUser']
     },
     ID() {
-      return this.$route.query.user
+      return this.$route.query.chatId
     }
   }
 }

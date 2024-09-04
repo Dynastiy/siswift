@@ -8,7 +8,6 @@
         keep-values
         v-slot="{ meta, values }"
       >
-      <!-- {{ user }} -->
         <span v-if="!user.kv" class="bg-accent text-xs p-2 block mb-2">
           For your listing to go live, please verify your identity
           <router-link class="text-primary font-semibold underline" to="/app/kyc"
@@ -18,17 +17,17 @@
         <template v-if="currentStep === 0">
           <div class="flex flex-col gap-2">
             <div>
-              <label for="">Product Name</label>
+              <label for="">Title</label>
               <vField name="product_name" placeholder="Enter Product Name" class="input"> </vField>
               <ErrorMessage name="product_name" class="text-xs text-error"></ErrorMessage>
             </div>
 
-            <div>
+            <!-- <div>
               <label for="">Product Model</label>
               <vField name="model" type="text" class="input" placeholder="Enter Product Model">
               </vField>
               <ErrorMessage name="model" class="text-xs text-error"></ErrorMessage>
-            </div>
+            </div> -->
 
             <div class="w-full">
               <label for="">Product Categories</label>
@@ -178,11 +177,11 @@
               </div>
             </div>
 
-            <div>
+            <!-- <div>
               <label for="">Location</label>
               <vField name="location" placeholder="Enter Address" class="input"> </vField>
               <ErrorMessage name="location" class="text-xs text-error"></ErrorMessage>
-            </div>
+            </div> -->
             <div>
               <div class="flex gap-[3px] items-center">
                 <label for="">Condition</label>
@@ -350,7 +349,7 @@ export default {
       schemas: [
         yup.object({
           product_name: yup.string().required(),
-          model: yup.string().required(),
+          // model: yup.string().required(),
           product_price: yup
             .string()
             .required()
@@ -359,7 +358,6 @@ export default {
           quantity: yup.string().required().matches(/^[0-9]+$/, 'Must be numeric'),
         }),
         yup.object({
-          location: yup.string().required(),
           ram_size: yup.string(),
           condition: yup.string().required(),
           sim: yup.string(),
@@ -401,12 +399,14 @@ export default {
         this.$toast.error('Please, add product image', {
             timeout: 4000
           })
+          return
       }
 
       if(this.photos.length === 0 ) {
-        this.$toast.error('Please, please add aat least one image', {
+        this.$toast.error('Please, please add at least one image', {
             timeout: 4000
           })
+          return
       }
 
       const formdata = new FormData()
@@ -420,9 +420,9 @@ export default {
         formdata.append('photos[]', elem)
       })
       formdata.append('main_image', this.mainImage)
-      formdata.append('location', values.location)
+      // formdata.append('location', values.location)
       formdata.append('description', this.product_description)
-      formdata.append('model', values.model)
+      formdata.append('model', '')
       formdata.append('track_inventory', values.quantity)
       formdata.append('condition', values.condition)
       formdata.append('ram', values.ram_size)
@@ -434,7 +434,7 @@ export default {
       //     formdata.append('bulk_price', (`${elem.qty},${elem.price}`))
       //   })
       // }
-      formdata.append('state', values.state)
+      formdata.append('state', values.state == 'AkwaIbom' ? 'Akwa Ibom' : values.state)
       formdata.append('lga', values.city)
       this.$products
         .create(formdata)

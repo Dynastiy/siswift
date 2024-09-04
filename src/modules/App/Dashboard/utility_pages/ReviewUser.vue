@@ -57,8 +57,8 @@ export default {
     onSubmit() {
         this.isLoading = true
       let payload = {
-        seller_id: this.$route.params.id,
-        review: this.review,
+        reviewed_user_id: this.$route.params.id,
+        content: this.review,
         rating: this.value
       }
       this.$config.createUserReview(payload).then((res) => {

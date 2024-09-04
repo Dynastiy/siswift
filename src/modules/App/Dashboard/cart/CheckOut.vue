@@ -1,7 +1,7 @@
 <template>
   <div class="lg:page-bg md:page-bg lg:w-6/12 md:w-7/12 w-full mx-auto">
-    <h4 class="font-semibold">Checkout</h4>
-    <hr class="my-4" />
+    <h4 class="font-semibold">Checkout <span class="text-xs">{{`(${items.length} items)`}}</span> </h4>
+    <hr class="my-2" />
     <div class="flex flex-col gap-5">
       <div class="flex gap-2" v-for="item in items" :key="item?.id">
         <img
@@ -11,11 +11,27 @@
           class="h-[80px] w-[60px] object-contain rounded-lg"
         />
         <div class="flex gap-[4px] flex-col">
-          <span class="font-semibold block">{{ item?.name }}</span>
+          <span
+            class="font-semibold block"
+            role="button"
+            @click="$router.push(`/app/product/${item?.id}`)"
+            >{{ item?.name }}</span
+          >
           <!-- <span>{{totalAmount}}</span> -->
-          <span class="block text-sm">{{ $currencyFormat(totalAmount(item)) }}</span>
-          <span class="block text-[13px]">Qty: {{ item?.quantity }}</span>
+          <span class="flex gap-1 items-center">
+            <span class="block text-sm">{{ $currencyFormat(totalAmount(item)) }}</span>
+            <span class="block text-[12px] font-semibold text-primary">x{{ item?.quantity }}</span>
+          </span>
         </div>
+      </div>
+      <hr class="" />
+      <div class="flex flex-col gap-1">
+          <span class="text-xs flex justify-between">Sub Total: <span class="font-semibold">{{ $currencyFormat(totalPrice) }}</span></span>
+          <span class="text-xs flex justify-between">Buyers protection fee: <span class="font-semibold">{{ $currencyFormat(protectionFee) }}</span></span>
+          <hr class="my-2">
+          <span class="flex justify-between text-sm font-bold">Total: <span class="font-bold">{{ $currencyFormat(overallTotal) }}</span></span>
+        <!-- <span>2% transaction fee</span> -->
+        
       </div>
     </div>
     <div class="mt-3">
@@ -51,7 +67,7 @@ export default {
       items: [],
       loading: false,
       isProductDetails: null,
-      escrow: ""
+      escrow: ''
     }
   },
 
@@ -63,8 +79,8 @@ export default {
         .then((res) => {
           console.log('data from products list:', res.data)
           let req = []
-          res.data.forEach((item) => {
-            console.log(item)
+          let vreq = res.data.filter((item) => item.status)
+          vreq.forEach((item) => {
             let dataInfo = {
               ...item.product,
               cart_id: item.id,
@@ -112,13 +128,13 @@ export default {
     checkOut() {
       let paystack = {
         callback_url: window.location.origin + '/app/success',
-        gateway: 'paystack',
+        gateway: 'paystack'
       }
       let payload = {
         type: 1,
         address: this.user.address,
         payment: 1,
-        escrow: this.escrow,
+        escrow: String(this.escrow),
         description: 'Pay for Order',
         ...paystack
       }
@@ -126,13 +142,12 @@ export default {
         console.log(res)
         let paymentUrl = res.data.paymentUrl
         console.log(res.data.paymentUrl)
-        if(this.escrow) {
-           this.$router.push('/app/success')
+        if (this.escrow) {
+          this.$router.push('/app/success')
+        } else {
+          window.open(paymentUrl, '_parent')
         }
-        else {
-         window.open(paymentUrl, '_parent');
-        }
-        this.removeFromCart()
+        // this.removeFromCart()
       })
     },
 
@@ -152,7 +167,35 @@ export default {
     user() {
       return this.$store.getters['auth/getUser']
     },
-    
+
+    totalQty() {
+      const cartItem = this.items
+      const totalPrice = cartItem.reduce((accumulator, item) => {
+        return accumulator + item.quantity
+      }, 0)
+      return totalPrice
+    },
+
+    totalPrice() {
+      const cartItem = this.items
+      const totalPrice = cartItem.reduce((accumulator, item) => {
+        if (item.offer_price === null) {
+          return accumulator + item.quantity * item.offer_price
+        } else {
+          return accumulator + item.quantity * item.base_price
+        }
+      }, 0)
+      return totalPrice
+    },
+
+    protectionFee(){
+      let fee = (2/100) * this.totalPrice
+      return fee
+    },
+
+    overallTotal() {
+      return this.protectionFee + this.totalPrice
+    }
   }
 }
 </script>

@@ -34,24 +34,23 @@
                 :key="item?.id"
               >
                 <div class="flex gap-3 items-center">
-                  <span
+                  <!-- <span
                     class="h-[30px] w-[30px] rounded-full flex items-center justify-center font-bold"
                     v-if="!item?.userInfo?.image"
                     :class="item?.userInfo?.firstname.charAt(0)"
                   >
                     {{ item?.userInfo?.firstname.charAt(0) }}
-                  </span>
+                  </span> -->
                   <img
-                    v-else
-                    :src="
-                      item?.userInfo.image ? imgUrl + 'user/profile/' + item?.userInfo.image : image
+                    :src="imgUrl + 'product/' + item.product?.main_image
+                      
                     "
                     class="w-[38px] h-[38px] border-2 p-[2px] border-gray-100 rounded-full object-fit object-top"
                   />
                   <div class="flex flex-col">
                     <!-- {{JSON.parse(item?.message).title}} -->
                     <span class="text-[13px] text-black1 font-semibold">
-                      {{ `${item?.userInfo?.firstname} ${item?.userInfo?.lastname}` }}
+                      {{ `${item?.product?.name}` }}
                     </span>
                     <!-- <span class="text-[12px] text-gray-500">
                       <span>{{ item?.userInfo_id !== user.id ? 'You:' : '' }}</span>
@@ -62,7 +61,7 @@
 
                 <span class="flex flex-col items-end gap-1">
                   <!-- <span class="text-gray-500 text-[11px]">12:05</span> -->
-                  <span class="text-gray-500 text-[11px]">{{ $formatDate(item?.created_at) }}</span>
+                  <span class="text-gray-500 text-[11px]">{{ $formatShortDate(item?.created_at) }}</span>
                   <!-- <span class="block text-xs px-1 font-semibold bg-accent rounded-sm">2</span> -->
                 </span>
               </div>

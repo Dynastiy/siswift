@@ -1,25 +1,26 @@
 <template>
-  <div class="body lg:page-bg md:page-bg flex gap-4 items-start">
+  <div class="body flex gap-4 items-start gap-4">
     <div class="col-span-3 body-content w-full">
       <!-- Dashboard -->
 
       <div class="flex items-center justify-between">
         <h4 class="mb-3 font-semibold text-lg">Recommended Items</h4>
-        <div>
+        <!-- {{location}} -->
+        <div class="flex gap-3 items-center">
           <button
             class="brand-btn-md text-sm brand-primary flex gap-1 items-center"
             @click="$router.push('/app/product/new')"
           >
             Create Ad
           </button>
-          <div class="flex justify-end mb-4 gap-4" v-if="!isFilterOpen">
-            <!-- <button
-            class="brand-btn text-sm brand-primary py-2 px-2 flex gap-1 items-center"
-            @click="filterFunc"
-          >
-            <i-icon icon="mdi:filter" />
-            Filter
-          </button> -->
+          <div class="flex justify-end gap-4" v-if="!isFilterOpen">
+            <button
+              class="brand-btn-md text-sm brand-primary flex gap-1 items-center"
+              @click="filterFunc"
+            >
+              <i-icon icon="mdi:filter" />
+              Filter
+            </button>
             <!-- <button
             class="rounded-[6px] border border-gray-500 text-sm py-2 px-2 flex gap-2 items-center"
           >
@@ -33,6 +34,7 @@
         <!-- <div>
           {{ items }}
         </div> -->
+        <h4 class="mb-3 font-medium text-primary text-sm">{{ `Within ${location}` }}</h4>
         <div>
           <!-- class="grid grid-cols-2 gap-4" :class="[isFilterOpen ? 'lg:grid-cols-3 md:grid-cols-3' : 'lg:grid-cols-4 md:grid-cols-4' ]"  -->
           <wxProductCard
@@ -84,7 +86,10 @@ export default {
       isFilterOpen: false,
       isProductDetails: null,
       items: [],
-      loading: false
+      loading: false,
+      lat: '',
+      long: '',
+      location: ''
     }
   },
 
@@ -93,19 +98,43 @@ export default {
       this.isFilterOpen = !this.isFilterOpen
     },
 
-    showProduct(e) {
-      console.log(e)
-      // function isMobileDevice() {
-      //   return window.matchMedia('(max-width: 767px)').matches
-      // }
+    async getUserLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            this.lat = position.coords.latitude
+            this.long = position.coords.longitude
+            //   console.log(this.position, 'Position');
+            console.log(position, 'Position')
+            // };
 
-      // if (isMobileDevice()) {
-      //   console.log('You are using a mobile device')
+            this.$axios
+              .get(`https://nominatim.openstreetmap.org/reverse`, {
+                params: {
+                  lat: this.lat,
+                  lon: this.long,
+                  format: 'json',
+                  addressdetails: 1
+                }
+              })
+              .then((res) => {
+                console.log(res, 'citry')
+                this.location = res.data.address.state.split(' ').length > 2 ? res.data.address.state.split(' ').slice(0,2).join(' ') : res.data.address.state.split(' ')[0]
+              })
+          },
+          (error) => {
+            this.error = error.message
+            console.error('Error getting location:', this.error)
+          }
+        )
+      } else {
+        this.error = 'Geolocation is not supported by this browser.'
+        console.error(this.error)
+      }
+    },
+
+    showProduct(e) {
       this.$router.push(`/app/product/${e?.id}`)
-      // } else {
-      //   console.log('You are using a desktop device')
-      //   this.openProductDetails(e.id)
-      // }
     },
 
     openProductDetails(e) {
@@ -117,7 +146,6 @@ export default {
       this.$products
         .list()
         .then((res) => {
-          console.log('data from products list:', res)
           this.items = res.data.products.data
         })
         .finally(() => {
@@ -128,6 +156,10 @@ export default {
 
   beforeMount() {
     this.getProducts()
+  },
+
+  mounted() {
+    this.getUserLocation()
   }
 }
 </script>

@@ -1,54 +1,73 @@
 <template>
-  <div class="lg:bg-white md:bg-white pb-3 rounded-md flex overflow-hidden flex-col rounded-lg">
-    <span
-      class="lg:px-4 py-3 md:px-4 flex justify-between items-center w-full bg-white px-5 py-[12px]"
-    >
-      <div class="flex gap-2 items-center" v-if="Object.keys(userData).length > 0">
+  <div
+    class="lg:bg-accent md:bg-accent pb-3 rounded-md flex overflow-hidden flex-col rounded-lg"
+  >
+    <div class="flex-1">
+      <div v-if="Object.keys(messageData).length > 0">
         <span
-          class="h-[30px] w-[30px] flex items-center justify-center rounded-full font-bold"
-          v-if="!userData.image"
-          :class="userData?.firstname.charAt(0)"
+          class="lg:px-4 py-3 md:px-4 flex justify-between items-center w-full bg-white px-5 py-[12px] border-b border-gray-300"
         >
-          {{ userData?.firstname.charAt(0) }}
+          <div class="flex gap-2 items-center">
+            <span
+              class="h-[30px] w-[30px] flex items-center justify-center rounded-full font-bold"
+              v-if="!userData.image"
+              :class="userData?.firstname.charAt(0)"
+            >
+              {{ userData?.firstname.charAt(0) }}
+            </span>
+            <img
+              v-else
+              :src="userData?.image ? imgUrl + 'user/profile/' + userData?.image : image"
+              alt=""
+              class="w-[38px] h-[38px] border-2 p-[2px] border-gray-100 rounded-full object-fit object-top"
+            />
+            <h4 class="font-semibold">
+              {{ `${userData?.firstname} ${userData?.lastname}` }}
+            </h4>
+          </div>
+          <span class="flex gap-2 items-center">
+            <a :href="`tel:${userData.mobile}`"
+              ><i-icon icon="solar:phone-bold" class="form-icon text-gray-600" role="button"
+            /></a>
+          </span>
         </span>
-        <img
-          v-else
-          :src="userData?.image ? imgUrl + 'user/profile/' + userData?.image : image"
-          alt=""
-          class="w-[38px] h-[38px] border-2 p-[2px] border-gray-100 rounded-full object-fit object-top"
-        />
-
-        <!-- <div>
-            {{ userData }}
-          </div> -->
-        <h4 class="font-semibold">
-          {{ `${userData?.firstname} ${userData?.lastname}` }}
-        </h4>
+        <span
+          class="lg:px-4 py-3 md:px-4 flex justify-between items-center w-full bg-white px-5 py-[12px]"
+        >
+          <div class="flex items-end gap-2">
+            <img
+              :src="imgUrl + 'product/' + messageData?.product?.main_image"
+              class="w-[50px] h-[35px] p-[2px] border-gray-100 rounded-[6px] object-fit object-top"
+            />
+            <span class="flex flex-col">
+              <span class="text-[12px] block leading-tightest">
+                {{ messageData.product.name }}
+              </span>
+              <span class="font-bold block leading-tightest">
+                {{ $currencyFormat(messageData.product.base_price) }}
+              </span>
+            </span>
+          </div>
+          <span class="text-[12px] block leading-tightest">
+            Location: {{ `${messageData.product?.lga}, ${messageData.product?.state}` }}
+          </span>
+        </span>
       </div>
-      <span class="flex gap-2 items-center">
-        <a :href="`tel:${userData.mobile}`"
-          ><i-icon icon="solar:phone-bold" class="form-icon text-gray-600" role="button"
-        /></a>
-        <!-- <i-icon icon="pajamas:ellipsis-v" class="form-icon text-gray-600" role="button" /> -->
-      </span>
-    </span>
-    <div
-      class="px-5 py-3 overflow-auto chat-screen bg-accent custom-scroll"
-      ref="messagesContainer"
-    >
-      <!-- <div class="flex flex-col gap-2"> -->
-      <!-- {{messages}} -->
-      <div
-        class="p-3 text-[13px] w-6/12 shadow mb-3"
-        :class="[
-          item.sender_id === user.id
-            ? 'ml-auto bg-gray-100 rounded-tr-[15px] rounded-bl-[15px] rounded-br-[15px]'
-            : 'rounded-tr-[15px] rounded-tl-[15px] rounded- rounded-bl-[15px] bg-white'
-        ]"
-        v-for="item in messages"
-        :key="item?.id"
-      >
-        <span v-if="item?.message.title">
+      <div class="px-5 py-4 overflow-auto chat-screen custom-scroll" ref="messagesContainer">
+        <div
+          class="p-3 text-[13px] w-6/12 shadow mb-3"
+          :class="[
+            item.user_id === user.id
+              ? 'ml-auto bg-gray-100 rounded-tr-[15px] rounded-bl-[15px] rounded-br-[15px]'
+              : 'rounded-tr-[15px] rounded-tl-[15px] rounded- rounded-bl-[15px] bg-white'
+          ]"
+          v-for="item in messages"
+          :key="item?.id"
+        >
+          <!-- <div>
+          {{ JSON.parse(item?.message) }}
+        </div> -->
+          <!-- <span>
           <span class="text-[12px]">{{
             item.sender_id === user.id
               ? `Offer of ${$currencyFormat(item?.message?.amount)} for ${
@@ -58,19 +77,30 @@
                   item?.message?.product?.name
                 } received from ${userData?.firstname} ${userData?.lastname}`
           }}</span>
-          <span v-if="item.sender_id !== user.id" class="flex gap-4 mt-2 justify-end">
-            <span class="text-green-500" role="button" @click="offerFunc('accept', item?.message)">Accept</span>
-            <span class="text-red-500" role="button" @click="offerFunc('reject', item?.message)">Reject</span>
+          <div>
+            <span class="text-xs block">{{ $formatShortDate(item?.created_at) }}</span>
+            <span v-if="item.sender_id !== user.id" class="flex gap-4 mt-2 justify-end">
+              <span class="text-green-500" role="button" @click="offerFunc('accept', item?.message)"
+                >Accept</span
+              >
+              <span class="text-red-500" role="button" @click="offerFunc('reject', item?.message)"
+                >Reject</span
+              >
+            </span>
+          </div>
+        </span> -->
+          <span class="flex flex-col">
+            <span>{{ item?.message }}</span>
+            <span class="text-[11px] mt-1 text-gray-400 block text-right">{{
+              $formatShortDate(item?.created_at)
+            }}</span>
           </span>
-        </span>
-        <span v-else class="flex flex-col">
-          <span>{{ item?.message }}</span>
-        </span>
+        </div>
+        <!-- </div> -->
       </div>
-      <!-- </div> -->
     </div>
-    <span class="flex gap-4 items-center mt-4 px-2 h-calc-50">
-      <div class="input-field bg-white border-none w-full">
+    <span class="flex gap-4 items-center mt-4 px-5">
+      <div class="input-field message-field bg-white border-none w-full">
         <span class="w-full flex gap-2 items-center">
           <div class="relative">
             <span class="password-iccon" role="button" @click="emojiBox = !emojiBox">
@@ -98,10 +128,10 @@
             v-model="content"
             @keyup.enter="sendMessage"
           />
+          <span class="password-iccon" role="button">
+            <i-icon icon="mi:attachment" class="form-icon text-black2" />
+          </span>
         </span>
-        <!-- <span class="password-iccon" role="button">
-              <i-icon icon="icomoon-free:attachment" class="form-icon text-black2" />
-            </span> -->
       </div>
       <span
         class="password-iccon bg-primary p-2 text-white rounded-full"
@@ -133,7 +163,11 @@ export default {
       userData: {},
       dynamicLink: '',
       userID: null,
-      image
+      image,
+      // ID: this.$route.query.chatId,
+      attachments: [],
+      chatID: null,
+      messageData: {}
     }
   },
 
@@ -146,18 +180,18 @@ export default {
     },
 
     getMessages() {
-      if (this.userID) {
-        this.$user.getMessages(this.userID).then((res) => {
-          this.messages = res.data
-
-          let info = this.groupByAndKeepLast(this.messages)[0]
-          let receiver = {
-            ...info.receiver
-          }
-          let sender = {
-            ...info.sender
-          }
-          let userData = info.sender_id === this.user.id ? receiver : sender
+      if (this.ID) {
+        this.$user.getMessages(this.ID).then((res) => {
+          this.messages = res.conversation.messages
+          let resData = res.conversation
+          this.messageData = resData
+          console.log(res)
+          let userData =
+            resData.buyer.id === this.user.id
+              ? resData.seller
+              : resData.seller.id === this.user.id
+                ? resData.buyer
+                : {}
           this.userData = userData
           this.$nextTick(() => {
             this.scrollToEnd()
@@ -170,15 +204,14 @@ export default {
       const container = this.$refs.messagesContainer
       container.scrollTop = container.scrollHeight
     },
-    
+
     offerFunc(e, value) {
-      console.log(e, value);
+      console.log(e, value)
       let payload = {
         cat_id: value.cart_id
       }
-      this.$orders.modifyOffer(payload, e)
-      .then((res)=> {
-        console.log(res);
+      this.$orders.modifyOffer(payload, e).then((res) => {
+        console.log(res)
       })
     },
 
@@ -199,11 +232,22 @@ export default {
     },
 
     sendMessage() {
-      let formData = {
-        receiver_id: this.ID,
-        message: this.content
+      // let formData = {
+      //   receiver_id: this.ID,
+      //   message: this.content
+      // }
+      let formData = new FormData()
+      formData.append('message', this.content)
+      formData.append('_method', 'PUT')
+      if (this.attachments.length > 0) {
+        this.attachments.forEach((elem) => {
+          formData.append('files[]', elem)
+        })
       }
-      this.$user.sendMessage(formData).then((res) => {
+      // else {
+      //   formData.append('files[]', null)
+      // }
+      this.$user.sendMessage(formData, this.ID).then((res) => {
         this.getMessages()
         this.content = ''
         this.$emit('refresh')
@@ -228,7 +272,7 @@ export default {
     ID: {
       handler(val) {
         if (val) {
-          this.userID = val
+          this.chatID = val
           console.log(val)
           this.getMessages()
         }
@@ -250,7 +294,7 @@ export default {
       return this.$store.getters['auth/getUser']
     },
     ID() {
-      return this.$route.query.user
+      return this.$route.query.chatId
     }
   }
 }
@@ -278,6 +322,6 @@ export default {
 }
 
 .chat-screen {
-  height: calc(100vh - 250px);
+  height: calc(100vh - 320px);
 }
 </style>

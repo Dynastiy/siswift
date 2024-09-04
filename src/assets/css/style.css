@@ -42,7 +42,7 @@
 }
 
 /* INPUT  */
-.input-field {
+.input-field, .message-field {
     border-width: 1px;
     border-color: var(---gray1);
     display: flex;
@@ -61,11 +61,15 @@
     border: 2px solid var(---secondary-color) !important;
 }
 
+.message-field:focus-within {
+    border: none !important;
+}
+
 .input-field.error {
     border-color: var(---error) !important;
 }
 
-.input-field input {
+.input-field input, .message-field input {
     width: 100%;
     padding: 12px 0;
     font-weight: 500;

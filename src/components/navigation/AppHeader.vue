@@ -30,14 +30,14 @@
           <i-icon
             icon="ri:search-2-line"
             class="lg:block md:block hidden"
-            width="22px"
+            width="20px"
             role="button"
             @click="isSearching = !isSearching"
           />
           <div class="lg:block md:block hidden">
             <el-dropdown trigger="click" placement="bottom-end">
               <span class="el-dropdown-link flex items-center">
-                <i-icon icon="ph:bell" width="22px" />
+                <i-icon icon="mingcute:notification-line" width="22px" />
               </span>
               <template #dropdown>
                 <div class="p-4 w-[350px]">

@@ -32,7 +32,7 @@
           </a>
           <span class="flex items-center text-black1 gap-[5px] text-sm font-semibold"
             ><i-icon icon="tabler:location-filled" class="form-icon text-gray-600" />
-            {{ user?.address }}
+            {{ `${user?.address.city}, ${user?.address.state}` }}
           </span>
         </div>
       </div>
@@ -54,7 +54,7 @@
                 />
               </span>
               <div>
-                <p class="text-sm">{{ obj?.review }}</p>
+                <p class="text-sm">{{ obj?.content }}</p>
                 <span class="text-xs flex gap-[2px]">
                   <i-icon icon="mingcute:star-fill" class="text-secondary text-xs" />
                   {{ obj?.rating }}

@@ -14,16 +14,17 @@
           />
           <div class="flex gap-[4px] flex-col">
             <span class="font-semibold block">{{ item?.name }}</span>
+            <span :class="['block text-[13px] text-primary font-semibold', price ? 'line-through' : '']">{{
+              `Actual Price: ${$currencyFormat(item?.base_price * quantity)}`
+            }}</span>
             <span class="block text-[13px] text-primary font-semibold">{{
-              item?.offer_price
-                ? $currencyFormat(item?.offer_price)
-                : $currencyFormat(item?.base_price)
+              `Your Offer: ${$currencyFormat(price * quantity)}`
             }}</span>
           </div>
         </div>
       </div>
       <div class="flex flex-col gap-2">
-        <!-- <div>
+        <div>
           <label for="" class="text-[14px]">Quantity</label>
           <input
             type="text"
@@ -32,7 +33,7 @@
             class="input"
             placeholder="Enter Quantity"
           />
-        </div> -->
+        </div>
         <div>
           <label for="" class="text-[14px]">Amount</label>
           <input type="tel" v-model="price" class="input" placeholder="Enter Offer Amount" />
@@ -55,7 +56,7 @@ export default {
       loading: false,
       item: {},
       ID: this.$route.params.id,
-      price: '',
+      price: "",
       quantity: 1
     }
   },
@@ -68,12 +69,13 @@ export default {
         offer_price: this.price || this.item.base_price
       }
       this.$user.addToCart(payload).then((res) => {
-        console.log(res)
-        this.startChat()
+        console.log(res.data.messages.conversation_id)
+        let chatId = res.data.messages.conversation_id
+        this.startChat(chatId)
       })
     },
 
-    startChat() {
+    startChat(e) {
       let url = ''
       // this.$router.push(`/app/messages/?user=${this.item?.shop?.user_id}`)
       function isMobileDevice() {
@@ -81,14 +83,10 @@ export default {
       }
       if (isMobileDevice()) {
         console.log('You are using a mobile device')
-        url = `/app/message/m?user=${this.item?.shop?.user_id}&userData=${JSON.stringify(
-          this.item?.shop?.user
-        )}`
+        url = `/app/message/m?chatId=${e}`
       } else {
         console.log('You are using a desktop device')
-        url = `/app/messages/?user=${this.item?.shop?.user_id}&userData=${JSON.stringify(
-          this.item?.shop?.user
-        )}`
+        url = `/app/messages/?chatId=${e}`
       }
       this.$router.push(url)
     },
@@ -110,7 +108,7 @@ export default {
   watch: {
     price: {
       handler(val) {
-        if (Number(val) >+ Number(this.item.base_price)) {
+        if (Number(val) > +Number(this.item.base_price)) {
           this.$toast.error('Offer Price cannot be higher than or equal to product actual price', {
             timeout: 4000
           })
@@ -118,7 +116,21 @@ export default {
         }
       },
       immediate: true
-    }
+    },
+
+    quantity: {
+      handler(val) {
+        if (val > this.item.track_inventory) {
+          // alert('Quantity cannot be above quantity available')
+          this.$toast.error('Quantity cannot be above quantity available', {
+            timeout: 4000
+          })
+          this.quantity = 1
+        }
+      },
+      immediate: false
+    },
+
   },
 
   beforeMount() {

@@ -1,8 +1,16 @@
 <template>
   <div>
     <div class="grid md:grid-cols-3 lg:grid-cols-3 grid-cols-1 gap-4">
-      <chatlist :isLoading="loading" @selectMessage="selectMessage($event)" :allMessages="messages"/>
-      <pane :userMessage="message" @refresh="getList('refresh')" class="col-span-2 lg:block md:block hidden" />
+      <chatlist
+        :isLoading="loading"
+        @selectMessage="selectMessage($event)"
+        :allMessages="messages"
+      />
+      <pane
+        :userMessage="message"
+        @refresh="getList('refresh')"
+        class="col-span-2 lg:block md:block hidden"
+      />
     </div>
   </div>
 </template>
@@ -33,44 +41,23 @@ export default {
 
       if (isMobileDevice()) {
         console.log('You are using a mobile device')
-        this.$router.push(`/app/message/m?user=${e?.userId}`)
+        this.$router.push(`/app/message/m?chatId=${e?.id}`)
       } else {
         console.log('You are using a desktop device')
-        this.$router.push('/app/messages?user=' + e.userId)
+        this.$router.push('/app/messages?chatId=' + e.id)
       }
     },
 
     getList(e) {
-      if(!e) {
+      if (!e) {
         this.loading = true
       }
       this.$user
         .messages()
         .then((res) => {
-          console.log(res.data)
-          let messages = res.data
-          // Group the data by 'category' and keep only the last item
-          // let groupedData =
-          const groupedData = this.groupByAndKeepLast(messages)
-
-          let chatList = []
-          groupedData.forEach((elem) => {
-            let receiver = {
-              ...elem.receiver
-            }
-            let sender = {
-              ...elem.sender
-            }
-            let message = {
-              userInfo: elem.sender_id === this.user.id ? receiver : sender,
-              userId: elem.sender_id === this.user.id ? elem.receiver_id : elem.sender_id,
-              message: elem.message,
-              created_at: elem.created_at
-            }
-            chatList.push(message)
-          })
-          this.messages = chatList
-          console.log('chat list data:', chatList)
+          console.log(res.conversations)
+          this.messages = res.conversations
+          // let messages = res.data
         })
         .finally(() => {
           this.loading = false

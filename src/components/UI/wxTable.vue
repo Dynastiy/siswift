@@ -81,7 +81,7 @@
           </template>
           <template v-else-if="field === 'seller'">
             <span>
-              {{ `${data.seller.firstname} ${data.seller.lastname}` }}
+              {{ data.seller ? `${data.seller.firstname} ${data.seller.lastname}` : 'Seller no longer exists' }}
             </span>
           </template>
           <template v-else-if="field === 'availability'">

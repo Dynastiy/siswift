@@ -1,7 +1,7 @@
 <template>
   <div>
-    <span class="border-b border-b-gray-400 w-full flex gap-4  justify-center">
-      <span v-for="(item, idx) in tabs" :key="idx" role="button" class="capitalize" :class="{'border-b text-primary border-b-primary font-semibold': activeTab === idx}" @click="activateMenu(idx)">
+    <span class="border-b border-b-gray-400 w-full flex gap-6  justify-center">
+      <span v-for="(item, idx) in tabs" :key="idx" role="button" class="capitalize text-[14px] text-center" :class="{'border-b text-primary border-b-primary font-semibold': activeTab === idx}" @click="activateMenu(idx)">
         {{ item.label.split('_').join(' ') }}
       </span>
     </span>
@@ -15,7 +15,9 @@
 import GeneralSettings from '@/components/settings/GeneralSettings.vue'
 import ChangePassword from '@/components/settings/ChangePassword.vue'
 import { markRaw } from 'vue'
+import Withdrawal from '@/components/settings/Withdrawal.vue'
 export default {
+  // components: { Withdrawal },
   // components: { GeneralSettings, ChangePassword },
   data() {
     return {
@@ -27,6 +29,10 @@ export default {
         {
           label: 'change_password',
           component: markRaw(ChangePassword)
+        },
+        {
+          label: 'withdrawal',
+          component: markRaw(Withdrawal)
         }
       ],
       activeTab: 0
@@ -35,7 +41,6 @@ export default {
 
   methods: {
     activateMenu(i) {
-      console.log(i);
       this.activeTab = i
     }
   }

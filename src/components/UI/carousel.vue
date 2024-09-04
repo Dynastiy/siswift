@@ -9,7 +9,7 @@
             :role="currentImage.isLink ? 'button' : ''"
           >
             <img :src="currentImage.src" alt="" />
-            <div class="indicator">
+            <!-- <div class="indicator">
               <div class="flex gap-2">
                 <span v-for="item in images" :key="item.id">
                   <span
@@ -18,7 +18,7 @@
                   ></span>
                 </span>
               </div>
-            </div>
+            </div> -->
 
             <div class="actions">
               <span @click="prevImage" class="prev"> &#8249; </span>

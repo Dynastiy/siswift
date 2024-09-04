@@ -11,7 +11,8 @@
     <div class="">
       <h3 class="lg:text-2xl md:text-2xl text-xl font-bold mb-0">Welcome back</h3>
       <span class="text-[15px] block font-regular text-gray2"
-        >Let's continue writing your love story</span
+        >Log in to access 
+        exclusive offers and find great products.</span
       >
     </div>
     <!-- <div>

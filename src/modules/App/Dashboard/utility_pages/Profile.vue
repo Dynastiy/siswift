@@ -1,13 +1,10 @@
 <template>
   <div>
     <div class="lg:page-bg md:page-bg lg:w-6/12 md:w-7/12 w-full mx-auto mt-6">
-      <!-- proile
-
-      {{ user }} -->
       <div class="flex items-center flex-col mb-3">
         <div class="relative">
           <img
-            :src="user.image ? imgUrl + 'user/profile/'+ user.image : image"
+            :src="user.image ? `${imgUrl}user/profile/${user.image}` : image"
             class="w-[80px] h-[80px] border-2 p-[2px] border-gray-100 rounded-full object-fit object-top"
           />
           <input
@@ -19,73 +16,122 @@
             accept=".png,.jpg,.jpeg,.webp,.svg"
             @change="uploadPhoto"
           />
-
           <label
             for="fileInput"
             class="file-label mb-0 flex flex-col items-center bg-primary text-white p-[8px] rounded-full absolute right-0 bottom-0"
           >
-            <i-icon :icon="isUploading ? 'line-md:downloading-loop' : 'lucide:images'" class="text-[15px]" />
-
+            <i-icon
+              :icon="isUploading ? 'line-md:downloading-loop' : 'lucide:images'"
+              class="text-[15px]"
+            />
           </label>
         </div>
-        <h4 class="font-semibold flex items-center mt-3">{{ `${form.firstname} ${form.lastname}` }} <span>
-        <i-icon icon="ic:round-verified" :class="[!user?.kv ? 'text-gray-400' : 'text-green-600']" />
-        </span> </h4>
+
+        <h4 class="font-semibold flex items-center mt-3">
+          {{ `${form.firstname} ${form.lastname}` }}
+          <span>
+            <i-icon
+              icon="ic:round-verified"
+              :class="[!user?.kv ? 'text-gray-400' : 'text-green-600']"
+            />
+          </span>
+        </h4>
       </div>
-      <form class="flex flex-col gap-[8px]" @submit.prevent="editProfile">
+      <!-- <form class="flex flex-col gap-[8px]" @submit.prevent="editProfile"> -->
+      <vForm
+        class="flex flex-col justify-between gap-[8px]"
+        @submit="editProfile"
+        v-slot="{ meta }"
+      >
         <div class="flex lg:flex-row md:flex-row flex-col gap-[8px]">
-          <div>
+          <div class="w-full">
             <label for="">First Name</label>
-            <input type="text" class="input" v-model="form.firstname" />
+            <!-- <input type="text" class="input" v-model="form.firstname" /> -->
+            <vField
+              name="firstname"
+              class="input"
+              v-model="form.firstname"
+              type="text"
+              rules="required|alpha"
+            ></vField>
+            <ErrorMessage name="firstname" class="text-xs text-error"></ErrorMessage>
           </div>
 
-          <div>
+          <div class="w-full">
             <label for="">Last Name</label>
-            <input type="text" class="input" v-model="form.lastname" />
+            <!-- <input type="text" class="input" v-model="form.lastname" /> -->
+
+            <vField
+              name="lastname"
+              class="input"
+              v-model="form.lastname"
+              type="text"
+              rules="required|alpha"
+            ></vField>
+            <ErrorMessage name="lastname" class="text-xs text-error"></ErrorMessage>
           </div>
         </div>
 
         <div>
           <label for="">Home Address</label>
-          <input type="text" class="input" v-model="form.address" />
+          <!-- <input type="text" class="input" v-model="form.address" /> -->
+          <vField
+            as="textarea"
+            name="address"
+            class="input"
+            v-model="form.address"
+            rules="required"
+          ></vField>
+          <ErrorMessage name="address" class="text-xs text-error"></ErrorMessage>
         </div>
 
         <div class="flex lg:flex-row md:flex-row flex-col items-center gap-2">
-              <div class="w-full">
-                <label for="">State</label>
-                <select name="state"  v-model="form.state" class="input">
-                  <option selected disabled value="">--Select State--</option>
-                  <option v-for="item in states" :key="item" :value="item">
-                    {{ item }}
-                  </option>
-                </select>
-                <ErrorMessage name="state" class="text-xs text-error"></ErrorMessage>
-              </div>
+          <div class="w-full">
+            <label for="">State</label>
+            <vField as="select" name="state" class="input" v-model="form.state" rules="required">
+              <option selected disabled value="">--Select State--</option>
+              <option v-for="item in states" :key="item" :value="item">
+                {{ item }}
+              </option>
+            </vField>
+            <ErrorMessage name="state" class="text-xs text-error"></ErrorMessage>
+          </div>
 
-              <div class="w-full">
-                <label for="">City</label>
-                <select name="city" v-model="form.city" class="input">
-                  <option selected disabled value="">--Select City--</option>
-                  <option v-for="item in lgas" :key="item" :value="item">
-                    {{ item }}
-                  </option>
-                </select>
-                <ErrorMessage name="city" class="text-xs text-error"></ErrorMessage>
-              </div>
-            </div>
+          <div class="w-full">
+            <label for="">City</label>
+            <select name="city" v-model="form.city" class="input">
+              <option selected disabled value="">--Select City--</option>
+              <option v-for="item in lgas" :key="item" :value="item">
+                {{ item }}
+              </option>
+            </select>
+            <ErrorMessage name="city" class="text-xs text-error"></ErrorMessage>
+          </div>
+        </div>
 
         <div class="text-center mt-2">
           <button
             class="brand-btn w-8/12"
-            :disabled="isLoading"
-            :class="[isLoading ? 'bg-gray1 text-gray' : 'brand-primary']"
+            :disabled="isLoading || !meta.valid"
+            :class="[
+              isLoading
+                ? 'bg-gray1 text-gray'
+                : !meta.valid
+                  ? 'bg-gray1 text-gray'
+                  : 'brand-primary'
+            ]"
           >
-          <i-icon v-if="isLoading" icon="eos-icons:three-dots-loading" class="text-xl text-gray2" />
-          <span v-else> Update </span>
+            <i-icon
+              v-if="isLoading"
+              icon="eos-icons:three-dots-loading"
+              class="text-xl text-gray2"
+            />
+            <span v-else> Update </span>
           </button>
         </div>
         <div class="mt-3"></div>
-      </form>
+      </vForm>
+      <!-- </form> -->
 
       <h4 class="font-semibold mt-3">Verification</h4>
       <span
@@ -120,15 +166,14 @@ export default {
         mobile: '',
         address: '',
         image: '',
-        state: "",
-        city: ""
+        state: '',
+        city: ''
       },
       states: [],
-        lgas: [],
+      lgas: [],
       isLoading: false,
       isUploading: false,
-      image,
-      
+      image
     }
   },
 
@@ -136,7 +181,7 @@ export default {
     editProfile() {
       this.isLoading = true
       const formdata = new FormData()
-      formdata.append("_method", "PUT");
+      formdata.append('_method', 'PUT')
       formdata.append('firstname', this.form.firstname)
       formdata.append('lastname', this.form.lastname)
       formdata.append('email', this.form.email)
@@ -144,23 +189,25 @@ export default {
       formdata.append('address', this.form.address)
       formdata.append('state', this.form.state)
       formdata.append('city', this.form.city)
-      formdata.append('country', "Nigeria")
+      formdata.append('country', 'Nigeria')
 
-      this.$auth.updateProfile(formdata, this.user.id).then((res) => {
-        console.log('register res:', res)
-        this.getUser()
-      })
-      .finally(()=> {
-        this.isLoading = false
-      })
+      this.$auth
+        .updateProfile(formdata, this.user.id)
+        .then((res) => {
+          console.log('register res:', res)
+          this.getUser()
+        })
+        .finally(() => {
+          this.isLoading = false
+        })
     },
 
     uploadPhoto() {
       const input = event.target
       let image = input.files[0]
-    this.isUploading = true
+      this.isUploading = true
       const formdata = new FormData()
-      formdata.append("_method", "PUT");
+      formdata.append('_method', 'PUT')
       formdata.append('firstname', this.form.firstname)
       formdata.append('lastname', this.form.lastname)
       formdata.append('email', this.form.email)
@@ -170,18 +217,19 @@ export default {
       formdata.append('city', this.form.city)
       formdata.append('image', image)
 
-      this.$auth.updateProfile(formdata, this.user.id).then((res) => {
-        console.log('register res:', res)
-        this.getUser()
-      })
-      .finally(()=> {
-        this.isUploading = false
-      })
+      this.$auth
+        .updateProfile(formdata, this.user.id)
+        .then((res) => {
+          console.log('register res:', res)
+          this.getUser()
+        })
+        .finally(() => {
+          this.isUploading = false
+        })
     },
 
-    getUser(){
-      this.$auth.getProfile()
-      .then((res)=> {
+    getUser() {
+      this.$auth.getProfile().then((res) => {
         console.log(res.profile)
         this.$store.commit('auth/setUser', res.profile)
       })
@@ -207,12 +255,15 @@ export default {
       } catch (res) {
         console.log(res)
       }
-    },
+    }
   },
 
-  beforeMount(){
+  beforeMount() {
     this.getStates()
     this.getUser()
+    if(this.form.state) {
+      this.getLGA()
+    }
   },
 
   watch: {
@@ -229,10 +280,11 @@ export default {
       },
       immediate: true
     },
-    "form.state": {
+
+    'form.state': {
       handler: debounce(function () {
         this.getLGA()
-      }, 500)
+      }, 300)
     }
   },
 

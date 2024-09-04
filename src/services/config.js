@@ -148,9 +148,64 @@ export default {
     }
   },
 
+  async getTickets() {
+    try {
+      let res = await $request.get(`/support`)
+      // catchAxiosSuccess(res.data.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data.data)
+      throw error
+    }
+  },
+
   async getWithdrawalMethods() {
     try {
-      let res = await $request.get(`/withdrawal-method`)
+      let res = await $request.get(`/bank_accounts`)
+      // catchAxiosSuccess(res.data.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data.data)
+      throw error
+    }
+  },
+
+  async createBank(payload) {
+    try {
+      let res = await $request.post(`/bank_accounts`, payload)
+      catchAxiosSuccess(res.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data)
+      throw error
+    }
+  },
+
+  async removeBank(id) {
+    try {
+      let res = await $request.delete(`/bank_accounts/${id}`)
+      catchAxiosSuccess(res.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data)
+      throw error
+    }
+  },
+
+  async listBanks() {
+    try {
+      let res = await $request.get(`/banks`)
+      // catchAxiosSuccess(res.data.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data.data)
+      throw error
+    }
+  },
+
+  async verifyDetails(payload) {
+    try {
+      let res = await $request.post(`/verify-account-number`, payload)
       // catchAxiosSuccess(res.data.data)
       return res.data
     } catch (error) {

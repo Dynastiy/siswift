@@ -16,38 +16,45 @@
               isFilterOpen ? 'lg:grid-cols-3 md:grid-cols-3' : 'lg:grid-cols-4 md:grid-cols-3'
             ]"
           >
-            <div v-for="(item, idx) in products" :key="idx" class="hover:shadow bg-white">
+            <div v-for="(item, idx) in products" :key="idx" class="hover:shadow-lg bg-white flex flex-col">
               <div>
                 <div class="relative" @click="viewProduct(item)">
                   <img
                     :src="imgUrl + 'product/' + item?.main_image"
                     alt=""
                     role="button"
-                    class="w-full h-[150px] object-cover object-top"
+                    class="w-full h-[150px] object-cover  object-top"
                   />
-                  
-                  <span v-if="item?.shop?.user?.kv" class="bg-secondary text-white shadow flex text-[12px] items-center text-primary rounded-[4px] absolute top-1 right-1 gap-[3px] px-[6px] py-[2px] w-fit">
+
+                  <span
+                    v-if="item?.shop?.user?.kv"
+                    class="bg-secondary text-white shadow flex text-[12px] items-center text-primary rounded-[4px] absolute top-1 right-1 gap-[3px] px-[6px] py-[2px] w-fit"
+                  >
                     <i-icon icon="mdi:user-tick" />
                     verified
                   </span>
 
-                  <span v-if="item?.is_featured" class="bg-white flex text-[10px] items-center text-primary rounded-[4px] absolute bottom-1 left-1 gap-[3px] px-[6px] py-[2px] w-fit">
+                  <span
+                    v-if="item?.is_featured"
+                    class="bg-white flex text-[10px] items-center text-primary rounded-[4px] absolute bottom-1 left-1 gap-[3px] px-[6px] py-[2px] w-fit"
+                  >
                     <i-icon icon="mdi:fire" />
                     sponsored
                   </span>
                 </div>
               </div>
-              <div class="mt-2 flex flex-col justify-between px-4 p-3">
-                <div class="flex justify-between items-center">
-                  <h6
-                    role="button"
-                    class="text-black1 capitalize text-md font-semibold"
-                    @click="viewProduct(item)"
-                  >
-                    {{ item?.name }}
-                  </h6>
+              <div class="mt-2 flex flex-1 flex-col justify-between px-4 p-3">
+                <div class="flex-1">
+                  <div class="flex justify-between items-center">
+                    <h6
+                      role="button"
+                      class="text-black1 capitalize text-md font-semibold leading-tight"
+                      @click="viewProduct(item)"
+                    >
+                      {{ item?.name }}
+                    </h6>
 
-                  <!-- <el-dropdown
+                    <!-- <el-dropdown
                     trigger="click"
                     placement="bottom-end"
                     v-if="user.id === item?.shop.user_id"
@@ -63,18 +70,19 @@
                       </div>
                     </template>
                   </el-dropdown> -->
+                  </div>
+
+                  <small class="text-xs block text-gray-500" v-if="item?.shop">
+                    Seller: {{ item?.shop?.user?.firstname + ' ' + item?.shop?.user?.lastname }}
+                  </small>
+
+                  <span
+                    v-if="item?.condition"
+                    class="text-[12px] block mt-2 bg-primary text-white w-fit rounded-sm px-[6px] py-[2px] block"
+                  >
+                    {{ item?.condition.split('-').join(' ') }}</span
+                  >
                 </div>
-
-                <small class="text-xs block text-gray-500" v-if="item?.shop">
-                  Seller: {{ item?.shop?.user?.firstname + ' ' + item?.shop?.user?.lastname }}
-                </small>
-
-                <span
-                v-if="item?.condition"
-                  class="text-[12px] block mt-2 bg-primary text-white w-fit rounded-sm px-[6px] py-[2px] block"
-                >
-                  {{ item?.condition.split('-').join(' ') }}</span
-                >
 
                 <div class="flex justify-between items-center mt-3">
                   <div class="flex flex-col">
@@ -85,7 +93,7 @@
                       {{ $currencyFormat(item?.base_price) }}
                     </span>
                     <span
-                    v-if="item?.offer_price"
+                      v-if="item?.offer_price"
                       class="text-primary font-bold lg:text-sm md:text-sm text-xs block leading-tight"
                     >
                       {{ $currencyFormat(item?.offer_price) }}
@@ -104,7 +112,7 @@
               <span
                 class="bg-accent block h-[200px] w-[200px] text-primary rounded-full flex justify-center items-center"
               >
-                <i-icon :icon="iconType" class="text-[100px] " />
+                <i-icon :icon="iconType" class="text-[100px]" />
               </span>
               <h5>{{ emptyText }}</h5>
               <div>
@@ -248,7 +256,7 @@ export default {
     },
 
     avgRating(item) {
-      let ratings = item.reviews
+      let ratings = item.seller.review
       let allRates = []
       ratings.forEach((item) => {
         allRates.push(item.rating)

@@ -11,7 +11,7 @@
         <div class="flex flex-col gap-4">
           <div>
             <label for="">Amount</label>
-            <vField name="amount" v-slot="{ field }" rules="required">
+            <vField name="amount" v-slot="{ field }" rules="required|integer">
               <input
                 type="tel"
                 name="amount"
@@ -78,13 +78,6 @@ export default {
       })
     },
 
-    getMethods(){
-      this.$config.getWithdrawalMethods()
-      .then((res)=> {
-        console.log(res);
-      })
-    },
-
     getUser() {
       this.$auth.getProfile().then((res) => {
         console.log(res.profile)
@@ -95,7 +88,7 @@ export default {
 
   mounted() {
     console.log(window.location)
-    this.getMethods()
+    // this.getMethods()
   }
 }
 </script>

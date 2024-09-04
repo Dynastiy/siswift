@@ -74,6 +74,20 @@ app.component('FormWizard', FormWizard)
 app.component('TabContent', TabContent)
 
 import { defineRule } from 'vee-validate'
+import { all } from '@vee-validate/rules';
+
+import { configure } from 'vee-validate';
+// Default values
+configure({
+  validateOnBlur: true, // controls if `blur` events should trigger validation with `handleChange` handler
+  validateOnChange: true, // controls if `change` events should trigger validation with `handleChange` handler
+  validateOnInput: true, // controls if `input` events should trigger validation with `handleChange` handler
+  validateOnModelUpdate: true, // controls if `update:modelValue` events should trigger validation with `handleChange` handler
+});
+
+Object.entries(all).forEach(([name, rule]) => {
+  defineRule(name, rule);
+});
 
 defineRule('required', (value) => {
   if (!value || !value.length) {
@@ -100,17 +114,18 @@ defineRule('termsValidation', (value) => {
     return true
   }
   return 'You have to accept the tems and conditions to continue'
-}),
-  defineRule('minLength', (value, [limit]) => {
-    // The field is empty so it should pass
-    if (!value || !value.length) {
-      return true
-    }
-    if (value.length < limit) {
-      return `This field must be at least ${limit} characters`
-    }
+})
+
+defineRule('minLength', (value, [limit]) => {
+  // The field is empty so it should pass
+  if (!value || !value.length) {
     return true
-  })
+  }
+  if (value.length < limit) {
+    return `This field must be at least ${limit} characters`
+  }
+  return true
+})
 
 import image from '@/assets/img/no-user.png'
 import cover from '@/assets/img/no-cover.png'
@@ -152,7 +167,7 @@ app.component('wxBreadcrumb', wxBreadcrumb)
 import Avatar from 'primevue/avatar'
 app.component('Avatar', Avatar)
 
-import Slider from 'primevue/slider';
+import Slider from 'primevue/slider'
 import Accordion from 'primevue/accordion'
 import AccordionTab from 'primevue/accordiontab'
 import Rating from 'primevue/rating'
@@ -165,7 +180,7 @@ import Editor from 'primevue/editor'
 import ProgressBar from 'primevue/progressbar'
 import Dropdown from 'primevue/dropdown'
 import Dialog from 'primevue/dialog'
-import MultiSelect from 'primevue/multiselect';
+import MultiSelect from 'primevue/multiselect'
 
 app.component('MultiSelect', MultiSelect)
 app.component('Dropdown', Dropdown)
@@ -199,8 +214,8 @@ import 'vue-toastification/dist/index.css'
 // const options = {
 // };
 
-import Tooltip from 'primevue/tooltip';
-app.directive('tooltip', Tooltip);
+import Tooltip from 'primevue/tooltip'
+app.directive('tooltip', Tooltip)
 
 import { services } from '@/services/services'
 // Register all services globally
@@ -235,9 +250,17 @@ app.use(VueClipboard, {
 app.use(QrReader)
 
 // Plugins
-import { currencyFormat, formatDate, getID, formatRelativeTime, formatTime } from './plugins/filters'
+import {
+  currencyFormat,
+  formatDate,
+  getID,
+  formatRelativeTime,
+  formatTime,
+  formatShortDate
+} from './plugins/filters'
 app.config.globalProperties.$currencyFormat = currencyFormat
 app.config.globalProperties.$formatDate = formatDate
+app.config.globalProperties.$formatShortDate = formatShortDate
 app.config.globalProperties.$getID = getID
 app.config.globalProperties.$formatRelativeTime = formatRelativeTime
 app.config.globalProperties.$formatTime = formatTime

@@ -1,5 +1,6 @@
 <template>
   <div class="main grid grid-cols-5 gap-2 mt-4">
+    <!-- {{subscription}} -->
     <div>
       <div
         class="dropzone-container flex flex-col items-center justify-center rounded-md text-center h-12 bg-white"
@@ -59,27 +60,28 @@ export default {
     return {
       isDragging: false,
       photos: [],
-      hasPreview: false
+      hasPreview: false,
+      maxFiles: 4
     }
   },
   methods: {
-    onChange2() {
-      // console.log()
+    upload(newFiles) {
       const toast = useToast()
-      if (this.$refs.file2.files.length > 4) {
-        // alert()
-        toast.error('Cannot upload more than four photos, upgrade plan to upload more', {
+      if (this.photos.length + newFiles.length > this.maxFiles) {
+        toast.error(`Cannot upload more than ${this.maxFiles} photos, upgrade plan to upload more`, {
           timeout: 4000
         })
-        let newArray = []
-        newArray.push(...this.$refs.file2.files)
-        let slicedArray = newArray.slice(0, 4)
-        this.photos.push(...slicedArray)
-      } else {
-        this.photos.push(...this.$refs.file2.files)
+        return
       }
+      const updatedFiles = Array.from(newFiles)
+      this.photos = [...this.photos, ...updatedFiles]
       console.log(this.photos, 'from:photo Upload')
       this.$emit('uploadImage', this.photos)
+    },
+
+    onChange2(e) {
+      const selectedFiles = e.target.files
+      this.upload(selectedFiles)
     },
 
     dragover(e) {
@@ -93,8 +95,8 @@ export default {
 
     drop(e) {
       e.preventDefault()
-      this.$refs.file2.files = e.dataTransfer.photos
-      this.onChange()
+      let newFiles = e.dataTransfer.photos
+      this.upload(newFiles)
       this.isDragging = false
     },
 
@@ -106,10 +108,41 @@ export default {
       return fileSrc
     },
 
+    getCurrentSubscription() {
+      this.$config.getSubscription().then((res) => {
+        console.log(res.subscription)
+        this.$store.commit('auth/setSubscription', res.subscription)
+      })
+    },
+
     removePhoto(value) {
       if (this.photos.length !== 0) {
         this.photos.splice(value, 1)
       }
+    }
+  },
+
+  beforeMount() {
+    this.getCurrentSubscription()
+  },
+
+  watch: {
+    subscription: {
+      handler(val) {
+        if (val.plan_id !== 1) {
+          this.maxFiles = 8
+        } else {
+          this.maxFiles = 4
+        }
+      },
+      immediate: true,
+      deep: true
+    }
+  },
+
+  computed: {
+    subscription() {
+      return this.$store.getters['auth/getSubscription']
     }
   }
 }

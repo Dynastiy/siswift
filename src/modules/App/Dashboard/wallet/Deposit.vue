@@ -16,7 +16,7 @@
         <div class="flex flex-col gap-4">
           <div>
             <label for="">Amount</label>
-            <vField name="amount" v-slot="{ field }" rules="required">
+            <vField name="amount" v-slot="{ field }" rules="required|integer">
               <input
                 type="tel"
                 name="amount"
@@ -24,6 +24,7 @@
                 id="input"
                 placeholder="300000"
                 v-bind="field"
+                
               />
             </vField>
             <ErrorMessage name="amount" class="text-xs text-error"></ErrorMessage>

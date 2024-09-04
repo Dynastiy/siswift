@@ -2,7 +2,7 @@
   <div class="main">
     <div>
       <div
-        class="dropzone-container flex flex-col items-center justify-center text-center"
+        class="dropzone-container group relative flex flex-col items-center justify-center text-center"
         @dragover="dragover"
         @dragleave="dragleave"
         @drop="drop"
@@ -20,7 +20,7 @@
         <label
           for="fileInput"
           class="file-label mb-0 flex flex-col items-center"
-          v-if="Object.keys(files).length <= 0 "
+          v-if="Object.keys(files).length <= 0"
         >
           <i-icon icon="ph:upload-simple-fill" class="text-[30px]" />
           <div v-if="isDragging">Release to drop files here.</div>
@@ -29,11 +29,63 @@
           </div>
         </label>
 
-        <div v-else class="dropzone-container flex flex-col items-center justify-center" :style="generateURL">
-          <!-- <img :src="generateURL" alt="" class="h-[180px] w-full rounded-[12px] object-fit object-center object-cover" /> -->
+        <!-- <div
+          v-else
+          class="dropzone-container flex flex-col items-center justify-center"
+          :style="generateURL"
+        >
+          <img :src="generateURL" alt="" class="h-[180px] w-full rounded-[12px] object-fit object-center object-cover" />
           <div class="flex flex-col gap-2">
-            <label class="bg-white py-2 px-4 font-semibold shadow text-primary capitalize text-sm block w-fit rounded-md" for="fileInput" role="button"> replace </label>
-            <button class="bg-white py-2 px-4 font-semibold shadow text-red-600 capitalize text-sm block w-fit rounded-md" @click="removePhoto">remove</button>
+            <label
+              class="bg-white py-2 px-4 font-semibold shadow text-primary capitalize text-sm block w-fit rounded-md"
+              for="fileInput"
+              role="button"
+            >
+              replace
+            </label>
+            <button
+              class="bg-white py-2 px-4 font-semibold shadow text-red-600 capitalize text-sm block w-fit rounded-md"
+              @click="removePhoto"
+            >
+              remove
+            </button>
+          </div>
+        </div> -->
+
+        <div class="" v-else>
+          <img
+            class="h-[180px] w-full object-cover object-top"
+            :src="generateURL()"
+            alt=""
+          />
+          <div
+            class="absolute inset-0 bg-primary opacity-0 group-hover:opacity-20 transition-opacity duration-300"
+          ></div>
+          <div
+            class="absolute inset-0 flex flex-col gap-2 px-12 items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            <!-- <button class="btn-brand-md w-full uppercase py-1 border border-primary-500">
+              Edit Blog
+            </button>
+            <button
+              class="btn-brand-md uppercase w-full bg-white text-red-600 border border-red-600 py-1"
+            >
+              Delete Blog
+            </button> -->
+
+            <label
+              class="bg-white py-2 px-4 font-semibold shadow text-primary capitalize text-sm block w-fit rounded-md"
+              for="fileInput"
+              role="button"
+            >
+              replace
+            </label>
+            <button
+              class="bg-white py-2 px-4 font-semibold shadow text-red-600 capitalize text-sm block w-fit rounded-md"
+              @click="removePhoto"
+            >
+              remove
+            </button>
           </div>
         </div>
       </div>
@@ -95,29 +147,21 @@ export default {
       this.isDragging = false
     },
 
-    // generateURL() {
-    //   let fileSrc = URL.createObjectURL(this.files[0])
-    //   setTimeout(() => {
-    //     URL.revokeObjectURL(fileSrc)
-    //   }, 1000)
-    //   return fileSrc
-    // },
-
     removePhoto() {
       if (Object.keys(this.files).length !== 0) {
         this.files = {}
       }
+    },
+
+    generateURL() {
+      let fileSrc = URL.createObjectURL(this.files[0])
+      // return { backgroundImage: `url(${fileSrc})` }
+      return fileSrc
     }
   },
 
   computed: {
-    generateURL() {
-      let fileSrc =  URL.createObjectURL(this.files[0])
-      // setTimeout(() => {
-      //   URL.revokeObjectURL(fileSrc)
-      // }, 1000)
-      return { backgroundImage: `url(${fileSrc})` }
-    }
+    
   }
 }
 </script>
@@ -141,7 +185,6 @@ export default {
   background-size: cover;
   background-position: center;
 }
-
 
 .hidden-input {
   opacity: 0;

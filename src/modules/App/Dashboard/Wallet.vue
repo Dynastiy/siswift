@@ -3,12 +3,11 @@
     <div class="p-6 flex flex-col justify-between rounded-md h-[200px] bg-white wallet lg:w-5/12 md:w-6/12 w-full">
       <div class="flex flex-col gap-2">
         <span class="text-gray-400 text-sm font-medium">Wallet Balance</span>
-        <!-- <span>{{ user?.wallet.balance }}</span> -->
         <h4 class="font-bold lg:text-4xl md:text-3xl text-2xl" v-if="user">{{ $currencyFormat(user?.wallet?.balance)}}</h4>
       </div>
       <div class="flex items-center gap-1">
         <span class="text-gray-400 text-xs font-regular">Pending Transaction: </span>
-        <h4 class="font-bold text-sm" v-if="user">{{ $currencyFormat(user?.escrow_wallet?.balance)}}</h4>
+        <h4 class="font-bold text-sm text-gray-400" v-if="user">{{ $currencyFormat(user?.escrow_wallet?.balance)}}</h4>
       </div>
       <div class="flex gap-4">
         <button class="brand-btn-md brand-primary flex gap-1 items-center" @click="$router.push('/app/wallet/deposit')">
@@ -21,13 +20,6 @@
         </button>
       </div>
     </div>
-
-    <!-- <div class="p-6 flex flex-col justify-between rounded-md bg-white wallet lg:w-5/12 md:w-6/12 w-full mt-3">
-      <div class="flex flex-col gap-[6px]">
-        <span class="text-gray-400 text-sm font-medium">Pending Transaction</span>
-        <h4 class="font-bold lg:text-4xl md:text-3xl text-2xl" v-if="user">{{ $currencyFormat(user?.escrow_wallet?.balance)}}</h4>
-      </div>
-    </div> -->
 
     <div class="bg-white p-6 mt-6">
       <h4 class="mb-3 font-semibold">Latest Transactions</h4>
@@ -44,8 +36,7 @@ export default {
       { field: 'txn_amount', header: 'Amount' },
       { field: 'hash', header: 'Hash' },
         { field: 'txn_type', header: 'Type' },
-        { field: 'created_at', header: 'Date' },
-        // { field: 'status', header: 'Status' }
+        { field: 'created_at', header: 'Date' }
       ],
       items: []
     }
@@ -55,7 +46,6 @@ export default {
     listTxns(){
       this.$user.getTransactions()
       .then((res)=> {
-        console.log(res);
         this.items = res.data
       })
     },
@@ -63,11 +53,9 @@ export default {
     getUser(){
       this.$auth.getProfile()
       .then((res)=> {
-        console.log(res.profile)
         this.$store.commit('auth/setUser', res.profile)
       })
-    },
-
+    }
   },
 
   beforeMount(){

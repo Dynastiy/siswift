@@ -12,9 +12,12 @@
         {{ item.label.split('_').join(' ') }}
       </span>
     </span>
-    <div class="lg:page-bg md:page-bg mt-6">
+    <div class=" mt-6">
       <all v-if="activeTab == '0'" />
-      <orders v-else :currentTab="activeTab" />
+      <div v-else  class="lg:page-bg md:page-bg">
+        <orders :currentTab="activeTab" />
+      </div>
+      
     </div>
   </div>
 </template>

@@ -52,15 +52,16 @@
             >
               <div class="relative">
                 <img
+                  role="button"
+                  @click="$router.push(`/app/product/${item?.id}`)"
                   :src="imgUrl + 'product/' + item?.main_image"
                   alt=""
-                  role="button"
                   class="w-full h-[100px] w-[100px] object-cover object-top"
                 />
 
                 <span
                   v-if="item?.shop?.user?.kv"
-                  class="bg-secondary text-white shadow  flex text-[12px] items-center rounded-[4px] absolute top-1 right-1 gap-[3px] px-[6px] py-[2px] w-fit"
+                  class="bg-secondary text-white shadow flex text-[12px] items-center rounded-[4px] absolute top-1 right-1 gap-[3px] px-[6px] py-[2px] w-fit"
                 >
                   <i-icon icon="mdi:user-tick" />
                   verified
@@ -76,8 +77,9 @@
               </div>
               <span class="tw-h-[250px] flex flex-col gap-2 justify-between">
                 <div>
-                  <h5 class="font-medium text-md">{{ item.name }}</h5>
+                  <h5 class="font-medium text-md" @click="$router.push(`/app/product/${item?.id}`)" role="button">{{ item.name }}</h5>
                   <span
+                    v-if="item?.condition"
                     class="text-[12px] block bg-primary text-white w-fit rounded-sm px-[6px] py-[2px] block"
                   >
                     {{ item?.condition.split('-').join(' ') }}</span
@@ -85,7 +87,7 @@
                 </div>
 
                 <span class="flex gap-6 items-center">
-                  <span class="text-green-600 text-[13px] flex font-regular items-center gap-1">
+                  <span class="text-green-600 text-[13px] flex font-regular items-center gap-1" role="button" @click="goToSeller(item)">
                     <i-icon icon="material-symbols:store-outline" />
                     {{ item.shop.user.firstname + ' ' + item.shop.user.lastname }}
                   </span>
@@ -118,20 +120,20 @@
                 <input
                   type="number"
                   v-model="item.quantity"
-                  :disabled="item.quantity >= item.track_inventory"
+                  disabled
                   @keyup="handleChangeQty(item)"
                   class="rounded-lg text-[14px] outline-none text-center w-[30px] font-medium"
                 />
                 <button
                   class="p-1 rounded-[5px] text-[12px]"
                   :class="[
-                    item.track_inventory >= item.quantity
+                     item.quantity >= item.track_inventory
                       ? 'text-gray-500 border-gray-300 border'
                       : 'border border-primary text-primary bg-transparent'
                   ]"
                   role="button"
                   @click="quantityFunc('increase', item)"
-                  :disabled="item.track_inventory >= item.quantity"
+                  :disabled=" item.quantity >= item.track_inventory"
                 >
                   <i-icon icon="ic:sharp-plus" />
                 </button>
@@ -173,8 +175,9 @@ export default {
         .cartList()
         .then((res) => {
           console.log('data from products list:', res.data)
+          let vreq = res.data.filter((item) => item.status)
           let req = []
-          res.data.forEach((item) => {
+          vreq.forEach((item) => {
             console.log(item)
             let dataInfo = {
               ...item.product,
@@ -246,6 +249,13 @@ export default {
       //   console.log('You are using a desktop device')
       //   this.openProductDetails(e.id)
       // }
+    },
+
+    goToSeller(item) {
+      let sellerName = item.shop
+      let name = `${sellerName?.user.firstname}-${sellerName?.user.lastname}`
+      let editedName = name.toLowerCase()
+      this.$router.push(`/app/product/${editedName}/seller/${sellerName.user_id}`)
     },
 
     openProductDetails(e) {

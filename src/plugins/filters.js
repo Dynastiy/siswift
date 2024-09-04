@@ -29,6 +29,18 @@ export function formatDate(value) {
     return currentDate.toLocaleDateString('en-US', options)
 }
 
+export function formatShortDate(value) {
+  let currentDate = new Date(value)
+    
+    // Extract hours, minutes, and seconds
+    const hours = currentDate.getHours().toString().padStart(2, '0');
+    const minutes = currentDate.getMinutes().toString().padStart(2, '0');
+    // const seconds = currentDate.getSeconds().toString().padStart(2, '0');
+    
+    // Format the time as HH:MM:SS
+    return `${hours}:${minutes}`;
+}
+
 export function formatTime(value) {
   let currentDate = new Date(value)
   const options = { year: 'numeric', month: 'short', day: 'numeric' }

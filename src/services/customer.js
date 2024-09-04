@@ -49,7 +49,7 @@ export default {
 
   async messages() {
     try {
-      let res = await $request.get(`/messages`)
+      let res = await $request.get(`/conversations`)
       // catchAxiosSuccess(res)
       return res.data
     } catch (error) {
@@ -58,9 +58,20 @@ export default {
     }
   },
 
-  async sendMessage(formData) {
+  async startConversation(payload) {
     try {
-      let res = await $request.post(`/messages`, formData)
+      let res = await $request.post(`/conversations`, payload)
+      catchAxiosSuccess(res)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error)
+      throw error
+    }
+  },
+
+  async sendMessage(formData, ID) {
+    try {
+      let res = await $request.post(`/conversations/${ID}`, formData)
       // catchAxiosSuccess(res)
       return res.data
     } catch (error) {
@@ -72,7 +83,7 @@ export default {
 
   async getMessages(ID) {
     try {
-      let res = await $request.get(`/messages/${ID}`)
+      let res = await $request.get(`/conversations/${ID}`)
       // catchAxiosSuccess(res)
       return res.data
     } catch (error) {
@@ -202,6 +213,17 @@ export default {
       // catchAxiosError(error)
       return error
       // throw error
+    }
+  },
+
+  async makeWithdrawal() {
+    try {
+      let res = await $request.get(`/withdrawal-method`)
+      // catchAxiosSuccess(res.data.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data.data)
+      throw error
     }
   },
   

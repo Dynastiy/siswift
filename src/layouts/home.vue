@@ -15,7 +15,7 @@ export default {
     return {
       menu: [
         { label: 'home', url: '/' },
-        { label: 'products', url: '/login' },
+        { label: 'Marketplace', url: '/login' },
         { label: 'store', url: '/login' },
         // { label: 'FAQ', url: '/login' },
         { label: 'cart', url: '/login' },

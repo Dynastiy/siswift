@@ -62,7 +62,7 @@
               </div> -->
               <span class="flex gap-2 items-center justify-end">
                 <span
-                @click="$router.push(`/app/product/${ID}/sponsor-listing`)"
+                  @click="$router.push(`/app/product/${ID}/sponsor-listing`)"
                   v-if="isMyProduct"
                   role="button"
                   class="bg-accent p-2 rounded-md whitespace-nowrap block text-primary text-xs font-semibold"
@@ -97,25 +97,21 @@
 
             <div class="mt-4 flex flex-col gap-1">
               <span class="text-[13px] block"><b>Brand:</b> {{ item?.brand?.name }}</span>
-              <h4 class="font-semibold">{{ `${item?.name} ${item?.model}` }}</h4>
+              <h4 class="font-semibold">{{ `${item?.name}` }}</h4>
 
               <h4 class="font-bold text-xl text-primary">
-                {{ `${$currencyFormat(item?.base_price)}` }}
+                {{ `${$currencyFormat(amount)}` }}
               </h4>
 
               <div class="flex flex-col gap-[5px]">
-                <div
-                  class="bg-accent p-[6px] w-fit"
-                  v-for="(obj, i) in bulk"
-                  :key="i"
-                >
+                <div class="bg-accent p-[6px] w-fit" v-for="(obj, i) in bulk" :key="i">
                   <span class="text-[12px] block w-fit">
                     <b>{{ `From ${obj.qty} pieces:` }}</b>
                     {{ `${$currencyFormat(obj.price)}/piece` }}</span
                   >
                 </div>
               </div>
-              <div class="flex flex-col gap-2">
+              <div class="flex flex-col gap-2 mt-2">
                 <span
                   class="text-[11px] block bg-primary text-white w-fit rounded-sm px-[6px] py-[2px] block"
                   v-if="item?.condition"
@@ -123,6 +119,7 @@
                   {{ item?.condition.split('-').join(' ') }}</span
                 >
                 <span class="text-[13px] block"><b>RAM:</b> {{ item?.ram }}</span>
+                <span class="text-[13px] block" v-if="item?.sim"><b>SIM:</b> {{ item?.sim.split('_').join(' ') }}</span>
                 <span class="flex gap-[7px] text-sm items-center">
                   <b>Color:</b>
                   <span
@@ -142,7 +139,7 @@
               </div>
 
               <div>
-                <span class="border-b border-b-gray-400 w-full flex gap-4 justify-center">
+                <!-- <span class="border-b border-b-gray-400 w-full flex gap-4 justify-center">
                   <span
                     v-for="(item, idx) in ['description', 'reviews']"
                     :key="idx"
@@ -162,8 +159,8 @@
                       <h4 class="font-semibold text-[13px]">Description</h4>
                       <div class="text-xs" v-html="item?.description"></div>
                     </span>
-                  </div>
-                  <div v-if="activeTab == 'reviews'">
+                  </div> -->
+                <!-- <div v-if="activeTab == 'reviews'">
                     <div class="flex flex-col gap-3">
                       <div v-for="obj in item?.reviews" :key="obj?.id">
                         <h6 class="text-[14px] font-semibold">
@@ -190,14 +187,18 @@
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
+                  </div> -->
+                <!-- </div> -->
+                <span>
+                  <h4 class="font-semibold text-[13px]">Description</h4>
+                  <div class="text-xs" v-html="item?.description"></div>
+                </span>
               </div>
 
               <hr class="my-[4px]" />
 
               <div>
-                <span class="text-[13px] block">Address: {{ item?.location }}</span>
+                <!-- <span class="text-[13px] block">Address: {{ item?.location }}</span> -->
                 <span class="text-[13px] flex gap-[3px] items-center"
                   ><i-icon icon="tabler:location-filled" class="text-secondary text-sm" />
                   {{
@@ -302,7 +303,8 @@ export default {
       image,
       quantity: 1,
       displayContact: false,
-      wishlistItems: []
+      wishlistItems: [],
+      amount: 1
     }
   },
 
@@ -315,7 +317,7 @@ export default {
       this.displayContact = !this.displayContact
     },
 
-    startChat() {
+    redirectToMessages(e){
       let url = ''
       // this.$router.push(`/app/messages/?user=${this.item?.shop?.user_id}`)
       function isMobileDevice() {
@@ -323,16 +325,23 @@ export default {
       }
       if (isMobileDevice()) {
         console.log('You are using a mobile device')
-        url = `/app/message/m?user=${this.item?.shop?.user_id}&userData=${JSON.stringify(
-          this.item?.shop?.user
-        )}`
+        url = `/app/message/m?chatId=${e}`
       } else {
         console.log('You are using a desktop device')
-        url = `/app/messages/?user=${this.item?.shop?.user_id}&userData=${JSON.stringify(
-          this.item?.shop?.user
-        )}`
+        url = `/app/messages/?chatId=${e}`
       }
       this.$router.push(url)
+    },
+
+    startChat() {
+      let payload = {
+        product_id: this.ID
+      }
+      this.$user.startConversation(payload)
+      .then((res)=> {
+        let chatID = res.conversation.id
+        this.redirectToMessages(chatID)
+      })
     },
 
     getWishlist() {
@@ -340,10 +349,9 @@ export default {
       this.$user
         .wishList()
         .then((res) => {
-          console.log('data from products list:', res)
+          let vreq = res.wishlist
           let req = []
-          res.forEach((item) => {
-            console.log(item)
+          vreq.forEach((item) => {
             let dataInfo = {
               ...item.product,
               cart_id: item.id,
@@ -378,8 +386,8 @@ export default {
       this.$products
         .getRecord(this.ID)
         .then((res) => {
-          console.log('data from products list:', res)
           this.item = res.data
+          this.amount = this.item?.base_price * this.quantity
         })
         .finally(() => {
           this.loading = false
@@ -388,7 +396,7 @@ export default {
 
     getUser() {
       this.$auth.getProfile().then((res) => {
-        console.log(res)
+        return res
       })
     },
 
@@ -403,8 +411,8 @@ export default {
         offer_price: this.item.base_price
       }
       this.$user.addToCart(payload).then((res) => {
-        console.log(res)
         this.$router.push('/app/my-cart')
+        return res
       })
       console.log(payload)
     },
@@ -416,21 +424,19 @@ export default {
         offer_price: this.item.base_price
       }
       this.$user.addToWishlist(payload).then((res) => {
-        console.log(res)
         this.$router.push('/app/my-favourites')
+        return res
       })
-      console.log(payload)
     },
 
     removeFromCart(id) {
       this.$user.removeFromCart(id).then((res) => {
-        console.log(res)
+        return res
       })
     },
 
     goToSeller() {
       let sellerName = this.item?.shop
-      console.log(sellerName)
       let name = `${sellerName?.user.firstname}-${sellerName?.user.lastname}`
       let editedName = name.toLowerCase()
       this.$router.push(`/app/product/${editedName}/seller/${sellerName.user_id}`)
@@ -451,11 +457,25 @@ export default {
     '$route.params.id': {
       handler(val) {
         // if (newVal !== oldVal) {
-        this.ID = val
+        // this.ID = val
         this.getProduct()
         // }
       },
       immediate: true
+    },
+
+    quantity: {
+      handler(val) {
+        this.amount = this.item?.base_price * val
+        if(val > this.item.track_inventory) {
+          // alert('Quantity cannot be above quantity available')
+          this.$toast.error('Quantity cannot be above quantity available', {
+            timeout: 4000
+          })
+          this.quantity = 1
+        }
+      },
+      immediate: false,
     },
 
     productID: {
@@ -496,17 +516,21 @@ export default {
       return result
     },
 
-    bulk(){
-      return this.item.bulk_price == null ? [] : JSON.parse(this.item.bulk_price).length  === 0 ? [] : JSON.parse(this.item?.bulk_price)
+    bulk() {
+      return this.item.bulk_price == null
+        ? []
+        : JSON.parse(this.item.bulk_price).length === 0
+          ? []
+          : JSON.parse(this.item?.bulk_price)
     },
 
-    images(){
+    images() {
       let otherImages = []
       let allImages = this.item ? this.item?.product_images : []
-      for(let i = 0; i < allImages.length; i++) {
+      for (let i = 0; i < allImages.length; i++) {
         otherImages.push({
-          id: i+1,
-          src:this.imgUrl + 'product/' + this.item?.product_images[i].image,
+          id: i + 1,
+          src: this.imgUrl + 'product/' + this.item?.product_images[i].image,
           isLink: false
         })
       }
@@ -518,7 +542,7 @@ export default {
         },
         ...otherImages
       ]
-      
+
       return images
     }
   }

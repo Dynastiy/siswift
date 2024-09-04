@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@chenfengyuan/vue-countdown": "^2.1.2",
+    "@vee-validate/rules": "^4.13.2",
     "axios": "^1.6.4",
     "crypto-js": "^4.2.0",
     "date-fns": "^3.6.0",
