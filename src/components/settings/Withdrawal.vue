@@ -1,13 +1,18 @@
 <template>
   <div>
-    <div class="grid lg:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-4">
-      <div v-for="item in items" :key="item?.id" class="bg-white p-3 ">
-        <span role="button" class="text-red-600 text-xs mb-2 font-semibold text-right block" @click="removeRecord(item)">Delete</span>
+    <div class="flex flex-col gap-4">
+      <div v-for="item in items" :key="item?.id" class="bg-white shadow p-3 rounded-md">
+        <span
+          role="button"
+          class="text-red-600 text-xs mb-2 font-semibold text-right block"
+          @click="removeRecord(item)"
+          >Delete</span
+        >
         <div class="rounded-lg grid lg:grid-cols-2 md:grid-cols-2 gap-4">
-            <span v-for="(value, name) in item" :key="name">
-          <span class="block text-[11px] uppercase"> {{ name.split('_').join(' ') }} </span>
-          <span class="font-semibold text-sm block">{{ value }}</span>
-        </span>
+          <span v-for="(value, name) in item" :key="name">
+            <span class="block text-[11px] uppercase"> {{ name.split('_').join(' ') }} </span>
+            <span class="font-semibold text-sm block">{{ value }}</span>
+          </span>
         </div>
       </div>
     </div>
@@ -20,10 +25,20 @@
       <form @submit.prevent="onSubmit">
         <div class="flex flex-col gap-4 mb-6">
           <select name="" id="" class="input" v-model="bank">
+            <option disabled selected :value="{}">--Select Bank--</option>
             <option v-for="item in banks" :key="item.id" :value="item">{{ item.name }}</option>
           </select>
           <input type="tel" class="input" v-model="account_number" placeholder="Account Number" />
-          <input type="text" class="input" v-model="account_name" placeholder="Account Name" />
+          <div>
+            <span class="block text-right" v-if="isChecking">...</span>
+            <input
+              type="text"
+              readonly
+              class="input"
+              v-model="account_name"
+              placeholder="Account Name"
+            />
+          </div>
         </div>
         <div class="text-center">
           <button type="submit" class="brand-btn-md brand-primary w-7/12">Submit</button>
@@ -34,18 +49,18 @@
 </template>
 
 <script>
-import {debounce} from 'lodash'
+import { debounce } from 'lodash'
 export default {
   data() {
     return {
       visible: false,
       items: [],
 
-      
       banks: [],
       bank: {},
       account_number: '',
       account_name: '',
+      isChecking: false
     }
   },
   methods: {
@@ -55,36 +70,47 @@ export default {
       formdata.append('bank_code', this.bank.code)
       formdata.append('account_name', this.account_name)
       formdata.append('account_number', this.account_number)
-      this.$config.createBank(formdata).then(() => {
-        this.visible = false
-        this.getMethods()
-      })
+      this.$config
+        .createBank(formdata)
+        .then(() => {
+          this.visible = false
+          this.getMethods()
+        })
+        .finally(() => {
+          this.bank = {}
+          this.account_name = ''
+          this.account_number = ''
+        })
     },
 
     removeRecord(item) {
-        this.$config.removeBank(item.id).then(() => {
+      this.$config.removeBank(item.id).then(() => {
         this.getMethods()
       })
     },
 
-    fetchBankRecords(){
-      this.$config.listBanks()
-      .then((res)=> {
-        console.log('Banks:', res.data.data);
-        this.banks = res.data.data      
+    fetchBankRecords() {
+      this.$config.listBanks().then((res) => {
+        console.log('Banks:', res.data.data)
+        this.banks = res.data.data
       })
     },
 
-    fetchAccountDetails(){
+    fetchAccountDetails() {
+      this.isChecking = true
       let payload = {
         account_number: this.account_number,
         bank_code: this.bank.code
       }
-      this.$config.verifyDetails(payload)
-      .then((res)=> {
-        console.log('Banks:', res.data.data);
-        // this.banks = res.data.data      
-      })
+      this.$config
+        .verifyDetails(payload)
+        .then((res) => {
+          console.log('Banks Details', res[0].data)
+          this.account_name = res[0].data.account_name
+        })
+        .finally(() => {
+          this.isChecking = false
+        })
     },
 
     // getMethods() {
@@ -96,23 +122,19 @@ export default {
     getMethods() {
       this.$config.getWithdrawalMethods().then((res) => {
         console.log(res)
-        // let resData = res.data
-        // let req = []
-        // resData.forEach((item) => {
-        //   let dataList = {
-        //     id: item.id,
-        //     bank_name: item.bank_name,
-        //     bank_code: item.bank_code,
-        //     recipient_name: item.recipient_name,
-        //     account_number: item.account_number,
-        //     mobile_agent_name: item.mobile_agent_name,
-        //     mobile_agent_number: item.mobile_agent_number,
-        //     paypal_id: item.paypal_id,
-        //     upi_id: item.upi_id
-        //   }
-        //   req.push(dataList)
-        // })
-        // this.items = req
+        let resData = res.data
+        let req = []
+        resData.forEach((item) => {
+          let dataList = {
+            id: item.id,
+            bank_name: item.bank_name,
+            bank_code: item.bank_code,
+            account_name: item.account_name,
+            account_number: item.account_number
+          }
+          req.push(dataList)
+        })
+        this.items = req
       })
     },
 
@@ -124,13 +146,13 @@ export default {
   watch: {
     bank: {
       handler: debounce(function () {
-        console.log(this.bank);
+        console.log(this.bank)
         this.fetchAccountDetails()
       }, 500)
     },
     account_number: {
       handler: debounce(function () {
-        console.log(this.bank);
+        console.log(this.bank)
         this.fetchAccountDetails()
       }, 500)
     }
@@ -144,7 +166,3 @@ export default {
 </script>
 
 <style></style>
-
-
-
-

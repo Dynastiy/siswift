@@ -74,7 +74,7 @@
 
           <div>
             <label for="">Confirm Password</label>
-            <vField name="password_confirmation" v-slot="{ field }" rules="required">
+            <vField name="password_confirmation" v-slot="{ field }" rules="required|confirmed:@password">
               <div class="input-field">
                 <span class="w-full flex gap-2 items-center">
                   <span class="password-iccon">

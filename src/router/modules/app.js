@@ -67,6 +67,19 @@ const routes = [
     }
   },
 
+
+  {
+    path: '/app/product/:id/edit',
+    name: 'editProduct',
+    component: () => import('@/modules/App/Dashboard/product/create.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'marketplace',
+      name: 'Edit Product'
+    }
+  },
+
   {
     path: '/app/product/:id/sponsor-listing',
     name: 'sponsor-listing',
@@ -74,8 +87,20 @@ const routes = [
     meta: {
       layout: 'Dashboard',
       requiresAuth: true,
-      parent: 'my-store',
-      name: 'home'
+      parent: 'my-listings',
+      name: 'Sponsor Listing'
+    }
+  },
+
+  {
+    path: '/app/product/:id/sponsored-analysis',
+    name: 'sponsored-analysis',
+    component: () => import('@/modules/App/Dashboard/product/SponsoredProduct.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'my-listings',
+      name: 'Sponsored Analysis'
     }
   },
 
@@ -87,7 +112,7 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'marketplace',
-      name: 'home'
+      name: 'View seller'
     }
   },
 
@@ -99,7 +124,7 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'my-store',
-      name: 'home'
+      name: 'Create Product'
     }
   },
 
@@ -111,7 +136,7 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'my-cart',
-      name: 'home'
+      name: 'My Cart'
     }
   },
 
@@ -123,7 +148,7 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'my-favourites',
-      name: 'home'
+      name: 'My Favourites'
     }
   },
 
@@ -135,7 +160,7 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'my-cart',
-      name: 'home'
+      name: 'Checkout'
     }
   },
 
@@ -147,7 +172,7 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'marketplace',
-      name: 'home'
+      name: 'Make Offer'
     }
   },
 
@@ -159,7 +184,7 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'marketplace',
-      name: 'home'
+      name: 'Review User'
     }
   },
 
@@ -171,7 +196,7 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'marketplace',
-      name: 'home'
+      name: 'Review Product'
     }
   },
 
@@ -195,7 +220,7 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'orders',
-      name: 'home'
+      name: 'Order Details'
     }
   },
 
@@ -207,7 +232,7 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'my-listings',
-      name: 'home'
+      name: 'My Listings'
     }
   },
 
@@ -219,7 +244,7 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'my-orders',
-      name: 'home'
+      name: 'My Orders'
     }
   },
 
@@ -231,7 +256,7 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'my-store',
-      name: 'home'
+      name: 'My Store'
     }
   },
 
@@ -243,7 +268,7 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'store-new',
-      name: 'home'
+      name: 'Create Store'
     }
   },
 
@@ -255,7 +280,7 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'store-edit',
-      name: 'home'
+      name: 'Edit Store'
     }
   },
 
@@ -279,19 +304,19 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'app-messages',
-      name: 'home'
+      name: 'Messages'
     }
   },
 
   {
     path: '/app/message/m',
     name: 'app-messages-m',
-    component: () => import('@/components/chat/mobileMessages.vue'),
+    component: () => import('@/components/chat/Discussions.vue'),
     meta: {
       layout: 'Default',
       requiresAuth: true,
       parent: 'app-messages',
-      name: 'home'
+      name: 'Messages'
     }
   },
 
@@ -303,7 +328,7 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'app-wallet',
-      name: 'home'
+      name: 'Wallet'
     }
   },
 
@@ -315,7 +340,7 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'app-wallet',
-      name: 'deposit'
+      name: 'Deposit'
     }
   },
 
@@ -352,7 +377,7 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'setting',
-      name: 'home'
+      name: 'Settings'
     }
   },
 
@@ -364,7 +389,7 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'setting',
-      name: 'home'
+      name: 'Upgrade'
     }
   },
 
@@ -400,7 +425,7 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'support',
-      name: 'home'
+      name: 'Support'
     }
   },
 
@@ -438,7 +463,7 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'legal',
-      name: 'home'
+      name: 'Legal'
     }
   },
 
@@ -450,7 +475,7 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'kyc',
-      name: 'home'
+      name: 'KYC'
     }
   },
 
@@ -462,7 +487,7 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'kyc',
-      name: 'home'
+      name: 'Select Document Type'
     }
   },
 
@@ -474,7 +499,58 @@ const routes = [
       layout: 'Dashboard',
       requiresAuth: true,
       parent: 'kyc',
-      name: 'home'
+      name: 'Upload Documents'
+    }
+  },
+
+  {
+    path: '/app/search-results',
+    name: 'app-search-results',
+    component: () => import('@/modules/App/Dashboard/utility_pages/SearchResults.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'marketplace',
+      name: 'Marketplace'
+    }
+  },
+
+  {
+    path: '/app/support/dispute',
+    name: 'app-support-dispute',
+    component: () => import('@/modules/App/Dashboard/support/Dispute.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'support',
+      name: 'dispute',
+      subName: 'dispute'
+    }
+  },
+
+  {
+    path: '/app/dispute/:ID/submit',
+    name: 'app-submit-dispute',
+    component: () => import('@/modules/App/Dashboard/disputes/Create.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'support',
+      name: 'dispute',
+      subName: 'dispute'
+    }
+  },
+
+  {
+    path: '/app/dispute/:disputeID/view/:ID',
+    name: 'app-dispute-details',
+    component: () => import('@/modules/App/Dashboard/disputes/ID.vue'),
+    meta: {
+      layout: 'Dashboard',
+      requiresAuth: true,
+      parent: 'support',
+      name: 'dispute',
+      subName: 'dispute'
     }
   }
 ]

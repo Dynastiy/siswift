@@ -54,7 +54,7 @@ export default {
 
     uploadDocument() {
       const formdata = new FormData()
-      let keyType = this.type === 'document' ? 'nin_upload' : "selfie"
+      let keyType = this.type === 'document' ? 'id_back' : "selfie"
       formdata.append(keyType, this.mainImage)
       console.log();
       this.$auth.uploadDocument(formdata).then((res) => {

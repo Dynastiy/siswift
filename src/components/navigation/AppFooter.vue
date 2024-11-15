@@ -7,22 +7,22 @@ const thisYear = new Date().getFullYear()
   <footer class="bg-black2 mt-0 py-[72px] flex flex-col gap-[54px] lg:gap-[54px] text-white">
     <div class="container">
       <div class="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
-        <div class="lg:col-span-1 md:col-span-0 col-span-0">
+        <!-- <div class="lg:col-span-1 md:col-span-0 col-span-0">
           <ul class="flex flex-col lg:gap-[12px]">
-            <!-- <li class="text-[14px] font-normal lg:leading-[21.602px]">
+            <li class="text-[14px] font-normal lg:leading-[21.602px]">
               <router-link to=""> info@croxxtalent.com </router-link>
             </li>
             <li class="text-[14px] font-normal lg:leading-[21.602px]">
               <router-link to="">+1 888-301-0737 </router-link>
-            </li> -->
+            </li>
             <li class="text-[14px] font-normal lg:leading-[21.602px]">
               <a> 10, ADAMASIGBA, MOKOLA, IBADAN, OYO STATE, NIGERIA </a>
             </li>
-            <!-- <li class="text-[14px] font-normal lg:leading-[21.602px]">
+            <li class="text-[14px] font-normal lg:leading-[21.602px]">
               <router-link to="">USA 20310 </router-link>
-            </li> -->
+            </li>
           </ul>
-        </div>
+        </div> -->
 
         <!-- <div class="flex justify-between lg:flex-row flex-col">
           <div class="flex flex-col lg:flex-row gap-[58px] text-left justify-start w-full">
@@ -54,9 +54,7 @@ const thisYear = new Date().getFullYear()
               <li class="text-[14px] font-normal lg:leading-[21.602px]">
                 <router-link to=""> Resources </router-link>
               </li> -->
-                <li class="text-[14px] font-normal lg:leading-[21.602px]">
-                  <router-link to="/contact"> Contact Us</router-link>
-                </li>
+                
                 <li class="text-[14px] font-normal lg:leading-[21.602px]">
                   <router-link to="/terms"> Terms and Conditons </router-link>
                 </li>
@@ -84,6 +82,31 @@ const thisYear = new Date().getFullYear()
                 </li>
                 <li class="text-[14px] font-normal lg:leading-[21.602px]">
                   <a href="https://x.com/siswiftng" target="_blank"> Twitter </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-between lg:flex-row flex-col">
+          <div class="flex flex-col lg:flex-row gap-[58px] text-left justify-start w-full">
+            <div>
+              <h5 class="font-bold text-primary text-[16px] mb-[10px]">Support</h5>
+              <ul class="flex flex-col lg:gap-[12px]">
+                <!-- support@siswift.com, Contact Us, Safety Tips, How it Works, FAQ -->
+                <li class="text-[14px] font-normal lg:leading-[21.602px] underline">
+                  <a href="mailto:support@siswift.com" > support@siswift.com </a>
+                </li>
+                <li class="text-[14px] font-normal lg:leading-[21.602px]">
+                  <router-link to="/contact"> Contact Us</router-link>
+                </li>
+                <li class="text-[14px] font-normal lg:leading-[21.602px]">
+                  <a href="/src/assets/documents/policies.pdf" download> Safety Tips </a>
+                </li>
+                <li class="text-[14px] font-normal lg:leading-[21.602px]">
+                  <a href="/src/assets/documents/policies.pdf" download> FAQ </a>
+                </li>
+                <li class="text-[14px] font-normal lg:leading-[21.602px]">
+                  <a href="/src/assets/documents/policies.pdf" download> How it works </a>
                 </li>
               </ul>
             </div>

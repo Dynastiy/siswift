@@ -1,5 +1,5 @@
 <template>
-    <div class="lg:page-bg md:page-bg body-content w-full">
+    <div class="">
       <div class="">
         <wxProductCard
           :products="items"
@@ -45,7 +45,7 @@
           .then((res) => {
             console.log('data from products list:', res)
             let req = []
-            res.forEach((item) => {
+            res.wishlist.forEach((item) => {
               console.log(item)
               let dataInfo = {
                 ...item.product,

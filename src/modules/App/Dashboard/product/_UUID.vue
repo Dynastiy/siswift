@@ -1,12 +1,12 @@
 <template>
   <!-- bg-white rounded-md p-6 -->
-  <div class="body-content w-full lg:page-bg md:page-bg">
+  <div class="body-content w-full">
     <!-- <div>
       {{ loading }}
     </div> -->
     <el-skeleton :loading="loading" animated>
       <template #template>
-        <div>
+        <div class="lg:page-bg md:page-bg">
           <el-skeleton-item
             variant="image"
             style="height: 200px; margin-bottom: 20px; border-radius: 10px"
@@ -41,7 +41,7 @@
       </template>
       <template #default>
         <div>
-          <div>
+          <div class="lg:page-bg md:page-bg">
             <!-- <img
               :src="imgUrl + 'product/' + item?.main_image"
               alt=""
@@ -62,23 +62,24 @@
               </div> -->
               <span class="flex gap-2 items-center justify-end">
                 <span
-                  @click="$router.push(`/app/product/${ID}/sponsor-listing`)"
+                  @click="sponsorFunction"
                   v-if="isMyProduct"
                   role="button"
                   class="bg-accent p-2 rounded-md whitespace-nowrap block text-primary text-xs font-semibold"
                 >
-                  {{ item?.isfeatured ? 'Check Sponsored Analysis' : 'Sponsor Listing' }}
+                  {{ item?.is_featured ? 'Check Sponsored Analysis' : 'Sponsor Listing' }}
                 </span>
 
                 <button
                   v-if="!isMyProduct"
-                  @click="addToWishlist"
+                  @click="wishlistFunc"
                   :class="[
                     'p-2 rounded-md  text-lg',
-                    wishlist_item ? 'bg-gray-200 text-gray-700' : 'bg-accent text-primary'
+                    wishlist_item.length !== 0 ? 'bg-gray-200 text-gray-700' : 'bg-accent text-primary'
                   ]"
-                  :disabled="wishlist_item"
+                  
                 >
+                <!-- :disabled="wishlist_item" -->
                   <i-icon icon="ph:heart-fill" />
                 </button>
                 <span
@@ -119,7 +120,9 @@
                   {{ item?.condition.split('-').join(' ') }}</span
                 >
                 <span class="text-[13px] block"><b>RAM:</b> {{ item?.ram }}</span>
-                <span class="text-[13px] block" v-if="item?.sim"><b>SIM:</b> {{ item?.sim.split('_').join(' ') }}</span>
+                <span class="text-[13px] block" v-if="item?.sim"
+                  ><b>SIM:</b> {{ item?.sim.split('_').join(' ') }}</span
+                >
                 <span class="flex gap-[7px] text-sm items-center">
                   <b>Color:</b>
                   <span
@@ -211,10 +214,10 @@
                   >Store Name: {{ item?.shop?.name }}</span
                 > -->
                 <hr class="my-4" />
-                <!-- <div v-if="isMyProduct" class="flex justi fy-between items-center">
+                <div v-if="isMyProduct" class="flex justify-between items-center">
                   <h4 class="font-bold text-primary">{{ $currencyFormat(item?.base_price) }}</h4>
-                  <button class="brand-btn-md brand-primary">Edit</button>
-                </div> -->
+                  <button class="brand-btn-md brand-primary px-8" @click="editItem">Edit</button>
+                </div>
                 <div
                   v-if="!isMyProduct"
                   class="flex lg:flex-row md:flex-row flex-col items-start justify-between gap-3"
@@ -238,7 +241,7 @@
                         }}</span>
                       </span>
                     </div>
-                    <span class="flex lg:flex-row md:flex-row flex-col gap-3 items-center">
+                    <span class="flex  gap-3 items-center">
                       <span v-if="displayContact">
                         <a
                           class="flex items-center gap-[5px] text-sm font-semibold"
@@ -260,12 +263,12 @@
                       </button>
                     </span>
                   </div>
-                  <div class="flex lg:flex-row md:flex-row flex-col gap-2">
+                  <div class="flex lg:flex-row md:flex-row flex-col lg:w-fit md:w-fit w-full gap-2">
                     <input
                       type="text"
                       v-model="quantity"
                       :disabled="item?.track_inventory <= 1"
-                      class="input lg:w-[80px] md:w-[100px]"
+                      class="input lg:w-[80px] md:w-[100px] w-full"
                     />
                     <button class="brand-btn-md brand-primary whitespace-nowrap" @click="addToCart">
                       Add to Cart
@@ -276,6 +279,20 @@
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+          <div class="mt-4">
+            <h4 class="font-semibold text-lg">Similar Listings</h4>
+            <div class="mt-4">
+              <!-- {{ suggest }} -->
+              <wxProductCard
+                :loading="loading"
+                :products="suggest"
+                :hasButton="false"
+                iconType="mdi:marketplace-outline"
+                emptyText="No product Found, try again 😥"
+                @viewProduct="showProduct"
+              />
             </div>
           </div>
         </div>
@@ -304,7 +321,8 @@ export default {
       quantity: 1,
       displayContact: false,
       wishlistItems: [],
-      amount: 1
+      amount: 1,
+      suggest: []
     }
   },
 
@@ -313,11 +331,23 @@ export default {
       this.isFilterOpen = !this.isFilterOpen
     },
 
+    showProduct(e) {
+      this.$router.push(`/app/product/${e?.id}`)
+    },
+
     showContact() {
       this.displayContact = !this.displayContact
     },
 
-    redirectToMessages(e){
+    sponsorFunction() {
+      if (this.item.is_featured) {
+        this.$router.push(`/app/product/${this.ID}/sponsored-analysis`)
+      } else {
+        this.$router.push(`/app/product/${this.ID}/sponsor-listing`)
+      }
+    },
+
+    redirectToMessages(e) {
       let url = ''
       // this.$router.push(`/app/messages/?user=${this.item?.shop?.user_id}`)
       function isMobileDevice() {
@@ -337,8 +367,7 @@ export default {
       let payload = {
         product_id: this.ID
       }
-      this.$user.startConversation(payload)
-      .then((res)=> {
+      this.$user.startConversation(payload).then((res) => {
         let chatID = res.conversation.id
         this.redirectToMessages(chatID)
       })
@@ -354,7 +383,7 @@ export default {
           vreq.forEach((item) => {
             let dataInfo = {
               ...item.product,
-              cart_id: item.id,
+              wishlist_id: item.id,
               offer_price: item.offer_price,
               quantity: item.quantity,
               session_id: item.session_id,
@@ -387,6 +416,7 @@ export default {
         .getRecord(this.ID)
         .then((res) => {
           this.item = res.data
+          this.suggest = res.suggest
           this.amount = this.item?.base_price * this.quantity
         })
         .finally(() => {
@@ -417,6 +447,22 @@ export default {
       console.log(payload)
     },
 
+    wishlistFunc(){
+      this.wishlist_item.length !== 0 ? this.removeWishlistItem() : this.addToWishlist()
+    },
+
+    removeWishlistItem(){
+      console.log(this.wishlist_item[0]);
+      this.$user.removeFromWishlist(this.wishlist_item[0].wishlist_id)
+      .then((res)=> {
+        console.log(res)
+        this.getWishlist()
+        this.getProduct()
+      })
+    },
+
+    // addToWishlist
+
     addToWishlist() {
       let payload = {
         product_id: this.ID,
@@ -440,6 +486,10 @@ export default {
       let name = `${sellerName?.user.firstname}-${sellerName?.user.lastname}`
       let editedName = name.toLowerCase()
       this.$router.push(`/app/product/${editedName}/seller/${sellerName.user_id}`)
+    },
+
+    editItem() {
+      this.$router.push(`/app/product/${this.ID}/edit`)
     }
   },
 
@@ -455,11 +505,11 @@ export default {
 
   watch: {
     '$route.params.id': {
-      handler(val) {
-        // if (newVal !== oldVal) {
-        // this.ID = val
-        this.getProduct()
-        // }
+      handler(newVal, oldVal) {
+        if (newVal !== oldVal) {
+          this.ID = newVal
+          this.getProduct()
+        }
       },
       immediate: true
     },
@@ -467,7 +517,7 @@ export default {
     quantity: {
       handler(val) {
         this.amount = this.item?.base_price * val
-        if(val > this.item.track_inventory) {
+        if (val > this.item.track_inventory) {
           // alert('Quantity cannot be above quantity available')
           this.$toast.error('Quantity cannot be above quantity available', {
             timeout: 4000
@@ -475,7 +525,7 @@ export default {
           this.quantity = 1
         }
       },
-      immediate: false,
+      immediate: false
     },
 
     productID: {
@@ -512,7 +562,7 @@ export default {
 
     wishlist_item() {
       const val = this.wishlistItems.filter((elem) => this.ID == elem.id)
-      const result = val.length !== 0
+      const result = val
       return result
     },
 
@@ -525,24 +575,25 @@ export default {
     },
 
     images() {
-      let otherImages = []
-      let allImages = this.item ? this.item?.product_images : []
-      for (let i = 0; i < allImages.length; i++) {
-        otherImages.push({
-          id: i + 1,
-          src: this.imgUrl + 'product/' + this.item?.product_images[i].image,
-          isLink: false
-        })
+      if (Object.keys(this.item).length > 0) {
+        let otherImages = []
+        let allImages = this.item ? this.item?.product_images : []
+        for (let i = 0; i < allImages.length; i++) {
+          otherImages.push({
+            id: i + 1,
+            src: this.imgUrl + 'product/' + this.item?.product_images[i].image,
+            isLink: false
+          })
+        }
+        var images = [
+          {
+            id: 0,
+            src: this.imgUrl + 'product/' + this.item?.main_image,
+            isLink: false
+          },
+          ...otherImages
+        ]
       }
-      let images = [
-        {
-          id: 1,
-          src: this.imgUrl + 'product/' + this.item?.main_image,
-          isLink: false
-        },
-        ...otherImages
-      ]
-
       return images
     }
   }

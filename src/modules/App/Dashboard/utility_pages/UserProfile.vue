@@ -39,29 +39,8 @@
       <div class="bg-white p-6 lg:col-span-2 md:col-span-2 col-span-1">
         <h4 class="font-semibold text-lg">Reviews</h4>
         <hr class="my-2" />
-        <div class="flex flex-col gap-3">
-          <div v-for="obj in user?.review" :key="obj?.id">
-            <h6 class="text-[14px] font-semibold" v-if="obj">
-              {{
-                obj.seller ? `${obj?.seller?.firstname} ${obj?.seller?.lastname}` : 'User not found'
-              }}
-            </h6>
-            <div class="flex items-start gap-2">
-              <span>
-                <img
-                  :src="obj?.seller?.image ? imgUrl + 'user/profile/' + obj?.seller?.image : image"
-                  class="w-[35px] h-[35px] border-2 p-[2px] border-gray-100 rounded-full object-fit object-top"
-                />
-              </span>
-              <div>
-                <p class="text-sm">{{ obj?.content }}</p>
-                <span class="text-xs flex gap-[2px]">
-                  <i-icon icon="mingcute:star-fill" class="text-secondary text-xs" />
-                  {{ obj?.rating }}
-                </span>
-              </div>
-            </div>
-          </div>
+        <div class="flex flex-col gap-4">
+          <review-card :items="user.review"  />
         </div>
       </div>
     </div>
@@ -70,13 +49,15 @@
 
 <script>
 import image from '@/assets/img/no-user.png'
+import ReviewCard from '@/components/UI/ReviewCard.vue'
 export default {
+  components: { ReviewCard },
   data() {
     return {
       isLoading: false,
       image,
       ID: this.$route.params.id,
-      user: {}
+      user: {},
     }
   },
 
@@ -95,7 +76,8 @@ export default {
     getReviewer(item) {
       this.$config.getUserData(item).then((res) => {
         console.log(res)
-        return res.user
+        let info = res.user
+        return info
       })
     },
 
@@ -115,6 +97,7 @@ export default {
 
   beforeMount() {
     this.getUser()
+    
   },
 
   computed: {}

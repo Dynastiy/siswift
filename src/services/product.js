@@ -25,6 +25,29 @@ export default {
     }
   },
 
+  async getProducts() {
+    try {
+      let res = await $request.get(`all-products`)
+      // catchAxiosSuccess(res)
+      return res.data
+    } catch (error) {
+      catchAxiosError('products not found')
+      throw error
+    }
+  },
+
+  async listByLocation(params) {
+    try {
+      let res = await $request.post(`search`, params)
+      // catchAxiosSuccess(res)
+      return res.data
+    } catch (error) {
+      catchAxiosError('products not found')
+      throw error
+    }
+  },
+
+
   async create(formdata) {
     try {
       let res = await $request.post(`products`, formdata)
@@ -45,5 +68,51 @@ export default {
       catchAxiosError(error.data)
       throw error
     }
-  }
+  },
+
+  async productAction(action, id) {
+    try {
+      let res = await $request.get(`/${action}/${id}`)
+      catchAxiosSuccess(res.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data)
+      throw error
+    }
+  },
+
+  async delete(id) {
+    try {
+      let res = await $request.delete(`/products/${id}`)
+      catchAxiosSuccess(res.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data)
+      throw error
+    }
+  },
+
+  async sponsorListing(payload) {
+    try {
+      let res = await $request.post(`/campaigns`, payload)
+      catchAxiosSuccess(res.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data)
+      throw error
+    }
+  },
+
+  async getProductAnalysis(ID) {
+    try {
+      let res = await $request.get(`/stats/${ID}`)
+      // catchAxiosSuccess(res.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data)
+      throw error
+    }
+  },
+
+  
 }

@@ -30,75 +30,147 @@
           </div>
         </div>
       </div>
-      <div>
-        <!-- <div>
-          {{ items }}
-        </div> -->
-        <h4 class="mb-3 font-medium text-primary text-sm">{{ `Within ${location}` }}</h4>
+      <div v-if="searching">
+        <h4 class="mb-3 font-bold text-[15px]">{{ `Search Results` }}</h4>
         <div>
-          <!-- class="grid grid-cols-2 gap-4" :class="[isFilterOpen ? 'lg:grid-cols-3 md:grid-cols-3' : 'lg:grid-cols-4 md:grid-cols-4' ]"  -->
+          <h4 class="mb-3 font-medium text-primary text-[15px]">Promoted Ads</h4>
           <wxProductCard
             :loading="loading"
-            :products="items"
+            :products="promotedItems"
             :isFilterOpen="isFilterOpen"
             :hasButton="false"
             iconType="mdi:marketplace-outline"
-            emptyText="No product Found, try again 😥"
+            emptyText="No product in your area😥"
             @viewProduct="showProduct"
+            @refresh="getLocationProducts"
           />
-          <!-- mdi:marketplace-outline -->
+        </div>
+        <div class="mt-3">
+          <h4 class="mb-3 font-medium text-primary text-[15px]">More Suggestions</h4>
+          <wxProductCard
+            :loading="loading"
+            :products="locationItems"
+            :isFilterOpen="isFilterOpen"
+            :hasButton="false"
+            iconType="mdi:marketplace-outline"
+            emptyText="No product in your area😥"
+            @viewProduct="showProduct"
+            @refresh="getLocationProducts"
+          />
         </div>
       </div>
-
-      <!-- <div class="mt-4">
-        <h4 class="mb-3 font-semibold">Popular Uploads</h4>
-        <div class="grid grid-cols-2 gap-4" :class="[isFilterOpen ? 'lg:grid-cols-3 md:grid-cols-3' : 'lg:grid-cols-4 md:grid-cols-4' ]">
-          <wxProductCard v-for="(item, idx) in 4" :key="idx" />
+      <div v-else>
+        <div>
+          <h4 class="mb-3 font-medium text-primary capitalize text-[15px]">
+            {{ `Within ${payload.state}` }}
+          </h4>
+          <div>
+            <wxProductCard
+              :loading="loading"
+              :products="locationItems"
+              :isFilterOpen="isFilterOpen"
+              :hasButton="false"
+              iconType="mdi:marketplace-outline"
+              emptyText="No product in your area😥"
+              @viewProduct="showProduct"
+              @refresh="getLocationProducts"
+            />
+          </div>
         </div>
-      </div> -->
+
+        <div class="mt-6">
+          <h4 class="mb-3 font-medium text-primary text-[15px]">{{ `More Suggestions` }}</h4>
+          <div>
+            <wxProductCard
+              :loading="loading"
+              :products="items"
+              :isFilterOpen="isFilterOpen"
+              :hasButton="false"
+              iconType="mdi:marketplace-outline"
+              emptyText="No product Found😥"
+              @viewProduct="showProduct"
+              @refresh="getProducts"
+            />
+          </div>
+        </div>
+      </div>
     </div>
 
     <div
       class="bg-white rounded-md filter-container min-h-[80vh]"
       :class="[isFilterOpen ? 'w-[400px] p-6' : 'w-0 overflow-x-hidden hidden']"
     >
-      <ProductFilter @close="filterFunc" />
+      <ProductFilter @close="closeFilter" />
     </div>
 
-    <div
-      v-if="isProductDetails"
-      class="bg-white rounded-md filter-container min-h-[80vh]"
-      :class="[isProductDetails ? 'w-[400px]' : 'w-0 overflow-x-hidden hidden']"
-    >
-      <!-- <ProductFilter @close="filterFunc"/> -->
-      <ProductDetails :productID="isProductDetails" />
-    </div>
+    <!-- Filter for Mobile -->
+    <Sidebar v-model:visible="drawer" position="right" style="width: 100%">
+      <template #container="{ closeCallback }">
+        <div class="p-6">
+          <ProductFilter @close="closeFilter" />
+          <div class="mt-4 text-center">
+            <button
+              class="brand-btn-md text-sm brand-primary flex gap-1 items-center"
+              @click="closeCallback"
+            >
+              View Results
+            </button>
+          </div>
+        </div>
+      </template>
+    </Sidebar>
   </div>
 </template>
 
 <script>
 import ProductFilter from '@/components/filters/ProductFilter.vue'
-import ProductDetails from '@/modules/App/Dashboard/product/_UUID.vue'
 export default {
-  components: { ProductFilter, ProductDetails },
+  components: { ProductFilter },
   data() {
     return {
       isFilterOpen: false,
       isProductDetails: null,
       items: [],
+      locationItems: [],
+      promotedItems: [],
       loading: false,
       lat: '',
       long: '',
-      location: ''
+      payload: {
+        state: ''
+      },
+      search: {},
+      searching: false,
+      drawer: false,
+      is_featured: '1'
     }
   },
 
   methods: {
     filterFunc() {
-      this.isFilterOpen = !this.isFilterOpen
+      function isMobileDevice() {
+        return window.matchMedia('(max-width: 767px)').matches
+      }
+
+      if (isMobileDevice()) {
+        console.log('You are using a mobile device')
+        this.drawer = !this.drawer
+      } else {
+        console.log('You are using a desktop device')
+        this.isFilterOpen = !this.isFilterOpen
+      }
     },
 
-    async getUserLocation() {
+    closeFilter() {
+      this.isFilterOpen = false
+      this.searching = false
+      this.drawer = false
+      // if (Object.keys(this.payload).length > 0) {
+        this.getUserLocation('refresh')
+      // }
+    },
+
+    async getUserLocation(value) {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
@@ -119,7 +191,12 @@ export default {
               })
               .then((res) => {
                 console.log(res, 'citry')
-                this.location = res.data.address.state.split(' ').length > 2 ? res.data.address.state.split(' ').slice(0,2).join(' ') : res.data.address.state.split(' ')[0]
+                let locat =
+                  res.data.address.state.split(' ').length > 2
+                    ? res.data.address.state.split(' ').slice(0, 2).join(' ')
+                    : res.data.address.state.split(' ')[0]
+                this.payload.state = locat.toLowerCase()
+                this.getLocationProducts(value)
               })
           },
           (error) => {
@@ -151,6 +228,35 @@ export default {
         .finally(() => {
           this.loading = false
         })
+    },
+
+    getLocationProducts(value) {
+      if(!value) this.loading = true
+      this.$products
+        .listByLocation(this.payload)
+        .then((res) => {
+          this.locationItems = res.data
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    },
+
+    getPromotedItems(value) {
+      let payload = {
+        ...this.payload, 
+        is_featured: this.is_featured
+      }
+      if(!value) this.loading = true
+      this.$products
+        .listByLocation(payload)
+        .then((res) => {
+          console.log(res, 'promoted Items')
+          this.promotedItems = res.ads
+        })
+        .finally(() => {
+          this.loading = false
+        })
     }
   },
 
@@ -160,6 +266,24 @@ export default {
 
   mounted() {
     this.getUserLocation()
+  },
+
+  watch: {
+    '$route.query': {
+      handler(val) {
+        if (Object.keys(val).length > 0) {
+          console.log(val)
+          this.payload = val
+          this.getLocationProducts()
+          this.getPromotedItems()
+          this.searching = true
+          return
+        }
+      },
+
+      immediate: false,
+      deep: true
+    }
   }
 }
 </script>

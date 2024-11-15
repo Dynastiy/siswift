@@ -81,9 +81,33 @@ export default {
     }
   },
 
+  async deleteMessage(ID) {
+    try {
+      let res = await $request.delete(`/conversations/${ID}`)
+      catchAxiosSuccess(res.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data)
+      throw error
+      
+    }
+  },
+
   async getMessages(ID) {
     try {
       let res = await $request.get(`/conversations/${ID}`)
+      // catchAxiosSuccess(res)
+      return res.data
+    } catch (error) {
+      catchAxiosError("user not gotten")
+      throw error
+    }
+  },
+
+  async updateMessage(id){
+    
+    try {
+      let res = await $request.get(`/conversations/message/${id}`)
       // catchAxiosSuccess(res)
       return res.data
     } catch (error) {
@@ -105,7 +129,7 @@ export default {
 
   async readNotification(params){
     try {
-      let res = await $request.get(`/notifications`, params)
+      let res = await $request.post(`/notifications`, {}, { params})
       // catchAxiosSuccess(res)
       return res.data
     } catch (error) {
@@ -216,17 +240,82 @@ export default {
     }
   },
 
-  async makeWithdrawal() {
+  async withdraw(payload) {
     try {
-      let res = await $request.get(`/withdrawal-method`)
-      // catchAxiosSuccess(res.data.data)
+      let res = await $request.post(`/withdraw`, payload)
+      catchAxiosSuccess(res.data)
       return res.data
     } catch (error) {
-      catchAxiosError(error.data.data)
+      catchAxiosError(error.data)
       throw error
     }
   },
   
+
+  async getKYC() {
+    try {
+      let res = await $request.get(`/kyc`)
+      // catchAxiosSuccess(res.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data)
+      throw error
+    }
+  },
+
+  async getReviews() {
+    try {
+      let res = await $request.get(`/review`)
+      // catchAxiosSuccess(res.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data)
+      throw error
+    }
+  },
+
+  async replyReview(payload) {
+    try {
+      let res = await $request.post(`/reply`, payload)
+      catchAxiosSuccess(res.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data)
+      throw error
+    }
+  },
+  async deleteReview(ID) {
+    try {
+      let res = await $request.delete(`/reply/${ID}`)
+      catchAxiosSuccess(res.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data)
+      throw error
+    }
+  },
+
+  async editReviewReply(payload, ID) {
+    try {
+      let res = await $request.put(`/reply/${ID}`, payload)
+      catchAxiosSuccess(res.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data)
+      throw error
+    }
+  },
+
+  async deleteReviewReply(ID) {
+    try {
+      let res = await $request.delete(`/reply/${ID}`)
+      catchAxiosSuccess(res.data)
+      return res.data
+    } catch (error) {
+      catchAxiosError(error.data)
+      throw error
+    }
+  },
 }
 
 

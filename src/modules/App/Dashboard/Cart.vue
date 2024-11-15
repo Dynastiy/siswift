@@ -15,9 +15,9 @@
 
     <el-skeleton :loading="loading" animated>
       <template #template>
-        <div class="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4 mt-4">
-          <div v-for="item in 8" :key="item">
-            <el-skeleton-item variant="image" style="height: 200px; border-radius: 10px" />
+        <div class="flex flex-col gap-4 mt-4">
+          <div v-for="item in 4" :key="item">
+            <el-skeleton-item variant="image" style="height: 100px; border-radius: 10px" />
           </div>
         </div>
       </template>
@@ -206,9 +206,9 @@ export default {
       }
     },
 
-    handleChangeQty(item) {
-      this.updateCart(item)
-    },
+    // handleChangeQty(item) {
+    //   this.updateCart(item)
+    // },
 
     updateCart(item) {
       const payload = {
@@ -218,7 +218,8 @@ export default {
         _method: 'put'
       }
 
-      this.$user.updateCart({ id: item.id, payload }).then(() => {
+      console.log(payload)
+      this.$user.updateCart({ id: item.cart_id, payload }).then(() => {
         return
       })
     },

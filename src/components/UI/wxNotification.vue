@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex items-center justify-between" role="button" v-for="item in notifications" :key="item?.id">
+    <div class="flex items-center justify-between" role="button" v-for="item in items" :key="item?.id">
       <!-- {{notifications}} -->
       <div class="flex gap-3 items-center">
         <span class="block bg-accent text-primary text-xl p-2 rounded-md w-fit">
@@ -11,8 +11,8 @@
 
       <span class="flex flex-col items-end">
         <div class="flex gap-3 items-center">
-          <span class="block w-2 h-2 bg-red-600 rounded-full" ></span>
-          <span role="button" class="text-[12px] underline" @click="markAsRead(item)">Mark as Read</span>
+          <span :class="['block w-2 h-2 rounded-full', { 'bg-red-600': item.read_status == '0' } ]" ></span>
+          <span role="button" class="text-[12px] underline" v-if="item.read_status == '0'" @click="markAsRead(item)">Mark as Read</span>
         </div>
         <span class="text-gray-500 text-xs">{{ $formatRelativeTime(item?.created_at) }}</span>
       </span>
@@ -22,21 +22,16 @@
 
 <script>
 export default {
+  props: {
+    items: null
+  },
   data(){
     return {
-      notifications: []
+      // notifications: []
     }
   },
 
   methods: {
-    list(){
-      this.$user.getNotifications()
-      .then((res)=> {
-        console.log(res);
-        this.notifications = res.notifications
-      })
-    },
-
     markAsRead(e){
       let payload = {
         read_status: "1",
@@ -45,13 +40,13 @@ export default {
       this.$user.readNotification(payload)
       .then((res)=> {
         console.log(res);
-        this.list()
+        this.$emit('refresh:notifications')
       })
     }
   },
 
   beforeMount(){
-    this.list()
+    // this.list()
   }
 }
 </script>

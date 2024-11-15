@@ -16,14 +16,18 @@
               isFilterOpen ? 'lg:grid-cols-3 md:grid-cols-3' : 'lg:grid-cols-4 md:grid-cols-3'
             ]"
           >
-            <div v-for="(item, idx) in products" :key="idx" class="hover:shadow-lg bg-white flex flex-col">
+            <div
+              v-for="(item, idx) in products"
+              :key="idx"
+              class="hover:shadow-lg bg-white flex flex-col"
+            >
               <div>
                 <div class="relative" @click="viewProduct(item)">
                   <img
                     :src="imgUrl + 'product/' + item?.main_image"
                     alt=""
                     role="button"
-                    class="w-full h-[150px] object-cover  object-top"
+                    class="w-full h-[150px] object-cover object-top"
                   />
 
                   <span
@@ -43,9 +47,22 @@
                   </span>
                 </div>
               </div>
-              <div class="mt-2 flex flex-1 flex-col justify-between px-4 p-3">
+              <div class="flex flex-1 flex-col justify-between px-4 p-3">
                 <div class="flex-1">
-                  <div class="flex justify-between items-center">
+                  <!-- <div>
+                    {{  }}
+                  </div> -->
+                  <span
+                    v-if="getStatus(item)"
+                    :class="[
+                      'text-[10px] rounded-[4px] gap-[3px] px-[6px] py-[2px] w-fit',
+                      getStatus(item)
+                    ]"
+                  >
+                    <!-- Hello World -->
+                    {{ getStatus(item) }}
+                  </span>
+                  <div class="flex justify-between">
                     <h6
                       role="button"
                       class="text-black1 capitalize text-md font-semibold leading-tight"
@@ -54,22 +71,28 @@
                       {{ item?.name }}
                     </h6>
 
-                    <!-- <el-dropdown
-                    trigger="click"
-                    placement="bottom-end"
-                    v-if="user.id === item?.shop.user_id"
-                  >
-                    <span class="el-dropdown-link flex items-center">
-                      <i-icon icon="pepicons-pencil:dots-y" width="20px" />
-                    </span>
-                    <template #dropdown>
-                      <div class="p-4 w-[150px]">
-                        <div class="mt-3 flex flex-col gap-4">
-                          <span>Hello</span>
-                        </div>
-                      </div>
-                    </template>
-                  </el-dropdown> -->
+                    <div v-if="isMyProduct(item)">
+                      <el-dropdown
+                        trigger="click"
+                        placement="bottom-end"
+                        @command="handleCommand($event, item)"
+                      >
+                        <span class="el-dropdown-link flex items-center">
+                          <i-icon icon="pepicons-pencil:dots-y" width="20px" />
+                        </span>
+                        <template #dropdown>
+                          <el-dropdown-menu class="w-[150px]">
+                            <el-dropdown-item
+                              v-for="item in dropdownItems"
+                              :key="item"
+                              :command="item"
+                              class="capitalize block hover:bg-accent py-[5px] px-[8px] rounded-sm text-black"
+                              >{{ item }}</el-dropdown-item
+                            >
+                          </el-dropdown-menu>
+                        </template>
+                      </el-dropdown>
+                    </div>
                   </div>
 
                   <small class="text-xs block text-gray-500" v-if="item?.shop">
@@ -139,6 +162,9 @@
 </template>
 
 <script>
+// import { useConfirm } from 'primevue/useconfirm'
+// import { ConfirmationService } from 'primevue/api'; // Ensure correct import path
+import { ElMessageBox } from 'element-plus'
 export default {
   props: {
     products: {
@@ -177,28 +203,65 @@ export default {
     }
   },
 
+  data() {
+    return {
+      dropdownItems: ['edit', 'delist', 'relist', 'delete']
+    }
+  },
+
   methods: {
-    viewProduct(item) {
-      this.$emit('viewProduct', item)
+    handleCommand(command, value) {
+      ElMessageBox.confirm(
+        'Are you sure you want to ' + command + ' this product. Continue?',
+        'Warning',
+        {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }
+      )
+        .then(() => {
+          let action =
+            command == 'relist'
+              ? this.changeListStatus(value, command)
+              : command == 'delist'
+                ? this.changeListStatus(value, command)
+                : command == 'delete'
+                  ? this.deleteItem(value)
+                  : this.editItem(value)
+          return action
+        })
+        .catch(() => {
+          this.$toast.error(`${command} operation cancelled`, {
+            timeout: 4000
+          })
+        })
     },
 
-    cartFunc(e, value) {
-      const payload = {
-        product_id: e.id,
-        quantity: 1
-      }
-      if (value === 'add') {
-        this.$customer.addToCart(payload).then(() => {
-          this.getUser()
-        })
-      } else {
-        const cartItems = this.user.cart
-        const val = cartItems.find((elem) => e.id === elem.product_id)
-        console.log(val, 'omooo')
-        this.$customer.removeFromCart(val.id).then(() => {
-          this.getUser()
-        })
-      }
+    changeListStatus(value, e) {
+      console.log(value, e)
+      this.$products.productAction(e, value.id).then((res) => {
+        console.log(res)
+        this.$emit('refresh')
+        return res
+      })
+    },
+
+    deleteItem(value) {
+      console.log(value, 'delete')
+      this.$products.delete(value.id).then((res) => {
+        console.log(res)
+        this.$emit('refresh')
+        return res
+      })
+    },
+
+    editItem(value) {
+      this.$router.push(`/app/product/${value.id}/edit`)
+    },
+
+    viewProduct(item) {
+      this.$emit('viewProduct', item)
     },
 
     getUser() {
@@ -213,50 +276,8 @@ export default {
         })
     },
 
-    wishlistFunc(e, value) {
-      const payload = {
-        product_id: e.id
-      }
-      if (value === 'add') {
-        this.$customer.addToWishlist(payload).then(() => {
-          this.getUser()
-        })
-      } else {
-        const wishlist = this.user.wish_lists
-        const val = wishlist.find((elem) => e.id === elem.product_id)
-        console.log(val, 'omooo')
-        this.$customer.removeFromWishlist(val.id).then(() => {
-          this.getUser()
-        })
-      }
-    },
-
-    cart_item(item) {
-      const token = this.$store.getters['auth/getAuthenticated']
-      if (token) {
-        const cartItems = this.user.cart
-        const val = cartItems.filter((elem) => item.id === elem.product_id)
-        const result = val.length !== 0
-        return result
-      } else {
-        return false
-      }
-    },
-
-    wishlist_item(item) {
-      const token = this.$store.getters['auth/getAuthenticated']
-      if (token) {
-        const wishlistItems = this.user.wish_lists
-        const val = wishlistItems.filter((elem) => item.id === elem.product_id)
-        const result = val.length !== 0
-        return result
-      } else {
-        return false
-      }
-    },
-
     avgRating(item) {
-      let ratings = item.seller.review
+      let ratings = item.seller ? item.seller.review : []
       let allRates = []
       ratings.forEach((item) => {
         allRates.push(item.rating)
@@ -264,6 +285,28 @@ export default {
       let rateSum = allRates.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
       let avg = rateSum / allRates.length
       return avg || 0
+    },
+
+    isMyProduct(item) {
+      let info = ''
+      if (item.shop) {
+        info = this.user.id == item.shop.user_id
+      }
+      return info
+    },
+
+    getStatus(item) {
+      let status =
+        item.status == 0 && item.track_inventory == 0
+          ? 'pending'
+          : item.status == 1 && item.track_inventory == 0
+            ? 'sold'
+            : item.status == 0 && item.track_inventory > 0
+              ? 'pending'
+              : item.status == 2 && item.track_inventory > 0
+                ? 'delisted'
+                  : null
+      return status
     }
   },
 

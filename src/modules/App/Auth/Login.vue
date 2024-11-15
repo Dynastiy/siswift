@@ -124,12 +124,12 @@ export default {
     }
   },
 
-  // mounted() {
-  //   const isLoggedIn = this.$store.getters['auth/getAuthenticated']
-  //   if (isLoggedIn) {
-  //     this.$router.push('/app/marketplace')
-  //   }
-  // },
+  mounted() {
+    const isLoggedIn = this.$store.getters['auth/getAuthenticated']
+    if (isLoggedIn) {
+      this.$router.push('/app/marketplace')
+    }
+  },
 
   methods: {
     async onSubmit(values) {

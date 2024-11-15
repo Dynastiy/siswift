@@ -29,6 +29,20 @@ export function formatDate(value) {
     return currentDate.toLocaleDateString('en-US', options)
 }
 
+export function dateFormat(value) {
+  let currentDate = new Date(value)
+  const options = { 
+    weekday: 'short', 
+    year: 'numeric', 
+    month: 'short', 
+    day: 'numeric',
+    hour: '2-digit', 
+    minute: '2-digit', 
+    hour12: true // Set to false for 24-hour format
+};
+  return currentDate.toLocaleDateString('en-US', options)
+}
+
 export function formatShortDate(value) {
   let currentDate = new Date(value)
     

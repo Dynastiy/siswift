@@ -31,7 +31,7 @@
 
             <div class="w-full">
               <label for="">Product Categories</label>
-              <MultiSelect
+              <!-- <MultiSelect
                 v-model="category_id"
                 display="chip"
                 :options="categories"
@@ -39,7 +39,17 @@
                 class="input text-[13px] py-[4px]"
                 placeholder="Select Categories"
                 :maxSelectedLabels="3"
-              />
+              /> -->
+              <vField name="category_id" as="select" class="input">
+                <option selected disabled value="">--Select Category--</option>
+                <option
+                  v-for="item in categories"
+                  :key="item.id"
+                  :value="item.id"
+                >
+                  {{ item.name }}
+                </option>
+              </vField>
             </div>
 
             <div class="flex lg:flex-row md:flex-row flex-col gap-3">
@@ -355,14 +365,17 @@ export default {
             .required()
             .matches(/^[0-9]+$/, 'Must be numeric'),
           brand_id: yup.string(),
-          quantity: yup.string().required().matches(/^[0-9]+$/, 'Must be numeric'),
+          quantity: yup
+            .string()
+            .required()
+            .matches(/^[0-9]+$/, 'Must be numeric')
         }),
         yup.object({
           ram_size: yup.string(),
           condition: yup.string().required(),
           sim: yup.string(),
           state: yup.string().required(),
-          city: yup.string().required(),
+          city: yup.string().required()
         })
 
         // yup.object({
@@ -376,7 +389,7 @@ export default {
         //   terms: yup.bool().required().equals([true])
         // })
       ],
-      category_id: [],
+      category_id: "",
       categories: [],
       brands: [],
       states: [],
@@ -395,27 +408,27 @@ export default {
 
   methods: {
     async create(values) {
-      if(!this.mainImage) {
+      if (!this.mainImage) {
         this.$toast.error('Please, add product image', {
-            timeout: 4000
-          })
-          return
+          timeout: 4000
+        })
+        return
       }
 
-      if(this.photos.length === 0 ) {
+      if (this.photos.length === 0) {
         this.$toast.error('Please, please add at least one image', {
-            timeout: 4000
-          })
-          return
+          timeout: 4000
+        })
+        return
       }
 
       const formdata = new FormData()
       formdata.append('name', values.product_name)
       formdata.append('brand_id', values.brand_id)
       formdata.append('base_price', values.product_price)
-      this.category_id.forEach((elem) => {
-        formdata.append('categories[]', elem.id)
-      })
+      // this.category_id.forEach((elem) => {
+        formdata.append('categories[]', values.category_id)
+      // })
       this.photos.forEach((elem) => {
         formdata.append('photos[]', elem)
       })

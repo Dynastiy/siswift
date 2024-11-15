@@ -1,15 +1,15 @@
 <template>
-  <div class="lg:page-bg md:page-bg ">
-    <span class=" flex justify-between items-center">
-      <h4 class="font-bold text-xl">Chats</h4>
+  <div class="lg:bg-white md:bg-white rounded-lg">
+    <span class="flex justify-between items-center">
+      <h4 class="font-bold text-xl px-3 pt-3">Chats</h4>
       <!-- <span>
         <i-icon icon="ri:search-2-line" class="form-icon text-gray-400" />
       </span> -->
     </span>
-    <hr class=" my-3" />
+    <hr class="mt-3" />
     <el-skeleton :loading="loading" animated>
       <template #template>
-        <div class="px-4 py-4">
+        <div class="py-4">
           <div class="flex gap-4 items-center">
             <el-skeleton-item
               variant="image"
@@ -24,11 +24,13 @@
       </template>
       <template #default>
         <div>
-          <div class="overflow-y-auto">
-            <div class="flex flex-col gap-5">
+          <div class="p-3">
+            <div class="flex flex-col">
               <div
-                class="flex items-center justify-between"
-                @click="$emit('selectMessage', item)"
+                :class="[
+                  'flex items-center justify-between py-3',
+                  { 'border-l border-l-primary border-l-2 bg-accent': item?.id == chatId }
+                ]"
                 role="button"
                 v-for="item in messages"
                 :key="item?.id"
@@ -42,14 +44,16 @@
                     {{ item?.userInfo?.firstname.charAt(0) }}
                   </span> -->
                   <img
-                    :src="imgUrl + 'product/' + item.product?.main_image
-                      
-                    "
+                    @click="$emit('selectMessage', item)"
+                    :src="imgUrl + 'product/' + item.product?.main_image"
                     class="w-[38px] h-[38px] border-2 p-[2px] border-gray-100 rounded-full object-fit object-top"
                   />
                   <div class="flex flex-col">
                     <!-- {{JSON.parse(item?.message).title}} -->
-                    <span class="text-[13px] text-black1 font-semibold">
+                    <span
+                      class="text-[13px] text-black1 font-semibold"
+                      @click="$emit('selectMessage', item)"
+                    >
                       {{ `${item?.product?.name}` }}
                     </span>
                     <!-- <span class="text-[12px] text-gray-500">
@@ -59,9 +63,37 @@
                   </div>
                 </div>
 
-                <span class="flex flex-col items-end gap-1">
+                <span class="flex gap-1">
                   <!-- <span class="text-gray-500 text-[11px]">12:05</span> -->
-                  <span class="text-gray-500 text-[11px]">{{ $formatShortDate(item?.created_at) }}</span>
+                  <span class="text-gray-500 text-[11px]">{{
+                    $formatShortDate(item?.created_at)
+                  }}</span>
+                  <el-dropdown
+                    trigger="click"
+                    placement="bottom-end"
+                    @command="handleCommand(item)"
+                  >
+                    <span class="el-dropdown-link flex items-center">
+                      <i-icon icon="pepicons-pencil:dots-y" width="20px" />
+                    </span>
+                    <template #dropdown>
+                      <el-dropdown-menu class="w-[150px]">
+                        <!-- <el-dropdown-item
+                              v-for="item in []"
+                              :key="item"
+                              :command="item"
+                              class="capitalize block hover:bg-accent py-[5px] px-[8px] rounded-sm text-black"
+                              >{{ item }}</el-dropdown-item
+                            > -->
+
+                        <el-dropdown-item
+                          command="deleteRecord"
+                          class="capitalize block hover:bg-accent py-[5px] px-[8px] rounded-sm text-red-600"
+                          >Delete</el-dropdown-item
+                        >
+                      </el-dropdown-menu>
+                    </template>
+                  </el-dropdown>
                   <!-- <span class="block text-xs px-1 font-semibold bg-accent rounded-sm">2</span> -->
                 </span>
               </div>
@@ -88,21 +120,52 @@
 
 <script>
 import image from '@/assets/img/no-user.png'
+import { ElMessageBox } from 'element-plus'
 export default {
   props: {
     allMessages: Array,
-    isLoading: Boolean,
+    isLoading: Boolean
   },
   data() {
     return {
       image,
       messages: [],
-      loading: false
+      loading: false,
+      chatId: null
     }
   },
 
   methods: {
-   
+    handleCommand(value) {
+      console.log('test')
+      ElMessageBox.confirm(
+        'Are you sure you want to delete this conversation. Continue?',
+        'Warning',
+        {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }
+      )
+        .then(() => {
+          this.deleteConversation(value)
+        })
+        .catch(() => {
+          this.$toast.error(`Delete operation cancelled`, {
+            timeout: 4000
+          })
+        })
+    },
+
+    deleteConversation(value) {
+      console.log(value, 'delete')
+      this.$user.deleteMessage(value.id).then((res) => {
+        console.log(res)
+        this.$emit('refresh')
+        return res
+      })
+    },
+
   },
 
   watch: {
@@ -115,6 +178,12 @@ export default {
     isLoading: {
       handler(val) {
         this.loading = val
+      },
+      immediate: true
+    },
+    '$route.query': {
+      handler(val) {
+        this.chatId = val.chatId
       },
       immediate: true
     }
@@ -132,4 +201,9 @@ export default {
 }
 </script>
 
-<style></style>
+<style scoped>
+.chat-screen {
+  height: calc(100vh - 225px);
+  /* height: 100vh; */
+}
+</style>

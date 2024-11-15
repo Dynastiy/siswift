@@ -36,20 +36,19 @@
     </div>
     <div class="mt-3">
       <select v-model="escrow" name="" id="" class="input">
-        <option value="">--Select payment Method--</option>
+        <option :value="null">--Select payment Method--</option>
         <option :value="1">Pay with Wallet</option>
-        <option :value="0">Pay Directly</option>
+        <option :value="0">Pay Online</option>
       </select>
     </div>
     <div class="bg-accent p-3 mt-4">
       <p class="text-[13px]">
         For your protection, your payment will be held in a secure account until you've received
-        your order and confirm.
+        your order and confirmed it's condition.
       </p>
 
       <p class="text-[13px] mt-2">
-        To confirm it go to cart and click on the menu of the item, then click to view product
-        details and confirm it
+       <b>Important:</b> We strongly advise arranging to meet the seller in a public place to inspect item before confirming receipt
       </p>
     </div>
     <div class="text-center mt-4">
@@ -61,13 +60,14 @@
 </template>
 
 <script>
+import { useToast } from 'vue-toastification'
 export default {
   data() {
     return {
       items: [],
       loading: false,
       isProductDetails: null,
-      escrow: ''
+      escrow: null
     }
   },
 
@@ -126,6 +126,10 @@ export default {
     },
 
     checkOut() {
+      const toast = useToast()
+      if(this.escrow == null) return toast.error(`Select a payment method`, {
+          timeout: 4000
+        })
       let paystack = {
         callback_url: window.location.origin + '/app/success',
         gateway: 'paystack'

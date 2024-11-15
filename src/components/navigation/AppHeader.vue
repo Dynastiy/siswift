@@ -1,6 +1,6 @@
 <template>
   <div class="" id="mobile-drawer">
-    <div class="py-4 bg-white px-6 w-full lg:z-10 md:z-10">
+    <div class="py-3 bg-white px-6 w-full lg:z-10 md:z-10">
       <div class="flex justify-between items-center">
         <!-- <span class="font-bold" role="button" @click="$router.push('/')">Top Header</span> -->
         <span role="button" class="lg:hidden md:hidden" @click="drawer = !drawer">
@@ -11,7 +11,7 @@
         </span> -->
 
         <div class="flex justify-center items-center">
-          <div class="flex lg:w-[250px] md:w-[250px] justify-center w-full">
+          <div class="flex lg:w-[250px] md:w-[250px] lg:hidden md:hidden block justify-center w-full">
             <img
               src="@/assets/BrandLogos/logo.png"
               class="lg:w-28 md:w-28 w-24"
@@ -36,7 +36,8 @@
           />
           <div class="lg:block md:block hidden">
             <el-dropdown trigger="click" placement="bottom-end">
-              <span class="el-dropdown-link flex items-center">
+              <span class="el-dropdown-link flex items-center relative">
+                <span class="bg-red-600 block w-fit p-[3px] text-white absolute top-0 right-0 text-[8px] rounded-full">{{notifications.length}}</span>
                 <i-icon icon="mingcute:notification-line" width="22px" />
               </span>
               <template #dropdown>
@@ -51,7 +52,7 @@
                     >
                   </span>
                   <div class="mt-3 flex flex-col gap-4">
-                    <wx-notification />
+                    <wx-notification :items="notifications" @refresh:notifications="listNotifications" class="mt-3 flex flex-col gap-4" />
                   </div>
                 </div>
               </template>
@@ -207,13 +208,21 @@ export default {
     return {
       drawer: false,
       image,
-      isSearching: false
+      isSearching: false,
+      notifications: []
     }
   },
 
   
 
   methods: {
+    listNotifications(){
+      this.$user.getNotifications()
+      .then((res)=> {
+        this.notifications = res.notifications ? res.notifications.filter((item) => item.read_status == '0') : []
+      })
+    },
+
     ...mapActions('drawer', ['setSubMenu']),
     goToLink(item) {
       if (item.parent === 'sign-out') {
@@ -227,7 +236,6 @@ export default {
 
     getCurrentSubscription() {
       this.$config.getSubscription().then((res) => {
-        console.log(res.subscription)
         this.$store.commit('auth/setSubscription', res.subscription)
       })
     },
@@ -280,6 +288,7 @@ export default {
 
   beforeMount(){
     this.getCurrentSubscription()
+    this.listNotifications()
   },
 
   computed: {

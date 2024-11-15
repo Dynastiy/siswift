@@ -1,118 +1,173 @@
 <template>
-  <div class="lg:bg-white md:bg-white rounded-md h-[100vh] flex flex-col pb-5 overflow-y-hidden">
-    <span
-      class="lg:px-4 py-3 md:px-4 flex justify-between items-center w-full bg-white px-5 py-[12px]"
-    >
-      <div class="flex gap-2 items-center" v-if="Object.keys(userData).length > 0">
-        <span role="button" @click="$router.go(-1)">
-          <i-icon icon="ion:arrow-back" class="" />
-        </span>
+  <div class="lg:bg-accent md:bg-accent pb-3 rounded-md flex overflow-hidden flex-col rounded-lg">
+    <div class="flex-1">
+      <div v-if="Object.keys(messageData).length > 0 && userData">
         <span
-          class="h-[30px] w-[30px] flex items-center justify-center rounded-full font-bold"
-          v-if="!userData.image"
-          :class="userData?.firstname.charAt(0)"
+          class="lg:px-4 py-3 md:px-4 flex justify-between items-center w-full bg-white px-5 py-[12px] border-b border-gray-300"
         >
-          {{ userData?.firstname.charAt(0) }}
+          <div class="flex gap-2 items-center">
+            <span
+              class="h-[30px] w-[30px] flex items-center justify-center rounded-full font-bold"
+              v-if="!userData.image"
+              :class="userData?.firstname.charAt(0)"
+            >
+              {{ userData?.firstname.charAt(0) }}
+            </span>
+            <img
+              v-else
+              :src="userData?.image ? imgUrl + 'user/profile/' + userData?.image : image"
+              alt=""
+              class="w-[38px] h-[38px] border-2 p-[2px] border-gray-100 rounded-full object-fit object-top"
+            />
+            <h4 class="font-semibold">
+              {{ `${userData?.firstname} ${userData?.lastname}` }}
+            </h4>
+          </div>
+          <span class="flex gap-2 items-center">
+            <a :href="`tel:${userData.mobile}`"
+              ><i-icon icon="solar:phone-bold" class="form-icon text-gray-600" role="button"
+            /></a>
+          </span>
         </span>
-        <img
-          v-else
-          :src="userData?.image ? imgUrl + 'user/profile/' + userData?.image : image"
-          alt=""
-          class="w-[38px] h-[38px] border-2 p-[2px] border-gray-100 rounded-full object-fit object-top"
-        />
-
-        <!-- <div>
-            {{ userData }}
-          </div> -->
-        <h4 class="font-semibold">
-          {{ `${userData?.firstname} ${userData?.lastname}` }}
-        </h4>
-      </div>
-      <span class="flex gap-2 items-center">
-        <a :href="`tel:${userData.mobile}`"
-          ><i-icon icon="solar:phone-bold" class="form-icon text-gray-600" role="button"
-        /></a>
-        <!-- <i-icon icon="pajamas:ellipsis-v" class="form-icon text-gray-600" role="button" /> -->
-      </span>
-    </span>
-    <div class="grow px-5 py-3 overflow-y-auto" ref="messagesContainer">
-      <div class="flex flex-col gap-2">
-        <!-- {{messages}} -->
         <span
-          class="p-3 text-[13px] w-fit shadow"
+          class="lg:px-4 py-3 md:px-4 flex justify-between items-center w-full bg-white px-5 py-[12px]"
+        >
+          <div class="flex items-end gap-2">
+            <img
+              :src="imgUrl + 'product/' + messageData?.product?.main_image"
+              class="w-[50px] h-[35px] p-[2px] border-gray-100 rounded-[6px] object-fit object-top"
+            />
+            <span class="flex flex-col">
+              <span class="text-[12px] block leading-tightest">
+                {{ messageData.product.name }}
+              </span>
+              <span class="font-bold block leading-tightest">
+                {{ $currencyFormat(messageData.product.base_price) }}
+              </span>
+            </span>
+          </div>
+          <span class="text-[12px] block leading-tightest">
+            Location: {{ `${messageData.product?.lga}, ${messageData.product?.state}` }}
+          </span>
+        </span>
+      </div>
+      <div class="px-5 py-4 overflow-y-auto chat-screen custom-scroll" ref="messagesContainer">
+        <div
+          class="p-3 text-[13px] w-6/12 shadow mb-3"
           :class="[
-            item.user_id == user.id
-              ? 'ml-auto bg-accent rounded-tr-[15px] rounded-bl-[15px] rounded-br-[15px]'
+            item.user_id === user.id
+              ? 'ml-auto bg-gray-100 rounded-tr-[15px] rounded-bl-[15px] rounded-br-[15px]'
               : 'rounded-tr-[15px] rounded-tl-[15px] rounded- rounded-bl-[15px] bg-white'
           ]"
           v-for="item in messages"
           :key="item?.id"
         >
-        <span v-if="item?.message.title">
-          <span class="text-[12px]">{{
-            item.sender_id === user.id
-              ? `Offer of ${$currencyFormat(item?.message?.amount)} for ${
-                  item?.message?.product?.name
-                } sent to ${userData?.firstname} ${userData?.lastname}`
-              : `Offer of ${$currencyFormat(item?.message?.amount)} for ${
-                  item?.message?.product?.name
-                } received from ${userData?.firstname} ${userData?.lastname}`
-          }}</span>
-          <span v-if="item.sender_id !== user.id" class="flex gap-4 mt-2 justify-end w-full">
-            <span class="text-green-500" role="button" @click="offerFunc('accept', item?.message)">Accept</span>
-            <span class="text-red-500" role="button" @click="offerFunc('reject', item?.message)">Reject</span>
+          <span v-if="isValidJSON(item?.message)">
+            {{}}
+            <span class="text-[12px]">{{
+              item.user_id === user.id
+                ? `Offer of ${$currencyFormat(isValidJSON(item?.message).amount)} for ${
+                    isValidJSON(item?.message).product?.name
+                  } sent to ${userData?.firstname} ${userData?.lastname}`
+                : `Offer of ${$currencyFormat(isValidJSON(item?.message).amount)} for ${
+                    isValidJSON(item?.message).product?.name
+                  } received from ${userData?.firstname} ${userData?.lastname}`
+            }}</span>
+
+            <div class="flex justify-between items-center mt-2">
+              <!-- <div>
+                {{isValidJSON(item?.message).cart}}
+              </div> -->
+              <!-- <div v-if="isValidJSON(item?.message).cart.status"> -->
+                <div v-if="isValidJSON(item?.message).cart.status == '0'">
+                  <span v-if="item.user_id !== user.id" class="flex gap-4 justify-end">
+                    <span class="text-green-500" role="button" @click="offerFunc('accept', item)"
+                      >Accept</span
+                    >
+                    <span class="text-red-500" role="button" @click="offerFunc('reject', item)"
+                      >Reject</span
+                    >
+                  </span>
+                  <span v-else class="text-amber-500">Pending</span>
+                </div>
+                <span
+                  v-else
+                  :class="[
+                    'text-[12px] block',
+                    isValidJSON(item?.message).cart.status == '1'
+                      ? 'text-green-500'
+                      : 'text-red-500'
+                  ]"
+                  >{{
+                    isValidJSON(item?.message).cart.status == '1'
+                      ? 'Offer Accepted'
+                      : 'Offer Rejected'
+                  }}</span
+                >
+              <!-- </div> -->
+              <span class="text-xs block ml-auto">{{ $formatShortDate(item?.created_at) }}</span>
+            </div>
           </span>
-        </span>
           <span v-else class="flex flex-col">
             <span>{{ item?.message }}</span>
-            <!-- <span class="text-[10px] text-right text-gray-500">{{ $formatTime(item?.created_at) }}</span> -->
+            <span class="text-[11px] mt-1 text-gray-400 block text-right">{{
+              $formatShortDate(item?.created_at)
+            }}</span>
           </span>
-        </span>
+        </div>
+        <div>Attachments Preview</div>
       </div>
     </div>
-
-    <span class="flex gap-4 items-center mt-4 px-2">
-      <div class="input-field message-field bg-white border-none w-full">
-        <span class="w-full flex gap-2 items-center">
-          <div class="relative">
-            <span class="password-iccon" role="button" @click="emojiBox = !emojiBox">
-              <i-icon
-                :icon="emojiBox ? 'solar:keyboard-outline' : 'mingcute:emoji-line'"
-                class="form-icon text-black2"
-              />
-            </span>
-            <transition name="fade">
-              <EmojiPicker
-                v-if="emojiBox"
-                class="absolute bottom-7 left-0"
-                :native="true"
-                @select="addEmoji"
-              />
-            </transition>
-          </div>
-          <input
-            ref="textInput"
-            type="text"
-            name="password"
+    <div v-if="chatID && messageData.is_active">
+      <span class="flex gap-4 items-center mt-4 px-5">
+        <div class="input-field message-field bg-white border-none w-full">
+          <span class="w-full flex gap-2 items-center">
+            <div class="relative">
+              <span class="password-iccon" role="button" @click="emojiBox = !emojiBox">
+                <i-icon
+                  :icon="emojiBox ? 'solar:keyboard-outline' : 'mingcute:emoji-line'"
+                  class="form-icon text-black2"
+                />
+              </span>
+              <transition name="fade">
+                <EmojiPicker
+                  v-if="emojiBox"
+                  class="absolute bottom-7 left-0"
+                  :native="true"
+                  @select="addEmoji"
+                />
+              </transition>
+            </div>
+            <input
+              ref="textInput"
+              type="text"
+              name="password"
+              class="w-full"
+              id="enter-message"
+              placeholder="Enter Message"
+              v-model="content"
+              @keyup.enter="sendMessage"
+            />
+            <!-- <textarea
             class="w-full"
-            id="enter-message"
-            placeholder="Enter Message"
-            v-model="content"
-            @keyup.enter="sendMessage"
-          />
+      :rows="rows"
+      @keydown="handleKeydown"
+      placeholder="Type here and press Enter to increase rows"
+    ></textarea> -->
+            <span class="password-iccon" role="button">
+              <i-icon icon="mi:attachment" class="form-icon text-black2" />
+            </span>
+          </span>
+        </div>
+        <span
+          class="password-iccon bg-primary p-2 text-white rounded-full"
+          role="button"
+          @click="sendMessage"
+        >
+          <i-icon icon="lets-icons:send" class="form-icon text-2xl" />
         </span>
-        <!-- <span class="password-iccon" role="button">
-              <i-icon icon="icomoon-free:attachment" class="form-icon text-black2" />
-            </span> -->
-      </div>
-      <span
-        class="password-iccon bg-primary p-2 text-white rounded-full"
-        role="button"
-        @click="sendMessage"
-      >
-        <i-icon icon="lets-icons:send" class="form-icon text-2xl" />
       </span>
-    </span>
+    </div>
   </div>
 </template>
 
@@ -134,14 +189,29 @@ export default {
       messages: [],
       userData: {},
       dynamicLink: '',
+      userID: null,
+      image,
+      // ID: this.$route.query.chatId,
+      attachments: [],
       chatID: null,
-      image
+      messageData: {},
+      rows: 1
     }
   },
 
   methods: {
+    handleKeydown(event) {
+      // Check if the pressed key is Enter (key code 13)
+      if (event.key === 'Enter') {
+        // Prevent the default behavior of the Enter key (which is to add a newline)
+        event.preventDefault()
+
+        // Increase the number of rows
+        this.rows += 1
+      }
+    },
+
     addEmoji(emoji) {
-      console.log(emoji)
       let text = this.content
       var curPos = document.getElementById('enter-message').selectionStart
       let text_to_insert = emoji.i
@@ -150,10 +220,18 @@ export default {
 
     getMessages() {
       if (this.ID) {
-        this.$user.getMessages(this.chatID).then((res) => {
+        this.$user.getMessages(this.ID).then((res) => {
           this.messages = res.conversation.messages
-          this.messageData = res.conversation
+          let resData = res.conversation
+          this.messageData = resData
           console.log(res)
+          let userData =
+            resData.buyer.id === this.user.id
+              ? resData.seller
+              : resData.seller.id === this.user.id
+                ? resData.buyer
+                : {}
+          this.userData = userData
           this.$nextTick(() => {
             this.scrollToEnd()
           })
@@ -161,29 +239,49 @@ export default {
       }
     },
 
-    offerFunc(e, value) {
-      console.log(e, value);
-      let payload = {
-        cat_id: value.cart_id
+    scrollToEnd() {
+      const container = this.$refs.messagesContainer
+      container.scrollTop = container.scrollHeight
+    },
+
+    isValidJSON(str) {
+      try {
+        let data = JSON.parse(str)
+        return data
+      } catch (e) {
+        return false
       }
-      this.$orders.modifyOffer(payload, e)
-      .then((res)=> {
-        console.log(res);
+    },
+
+    getCartItems() {
+      this.$user.cartList().then((res) => {
+        console.log(res)
       })
     },
 
-
-    scrollToEnd() {
-      const container = this.$refs.messagesContainer;
-      container.scrollTop = container.scrollHeight;
+    updateCartInMessage(e) {
+      this.$user
+        .updateMessage(e.id)
+        .then(() => {
+          return
+        })
+        .finally(() => {
+          this.getMessages()
+        })
     },
 
-    // refreshMessages(){
-    //     this.$user.getMessages(this.userID).then((res) => {
-    //     console.log(res.data)
-    //     this.messages.push(res.data) res.data
-    //   })
-    // },
+    offerFunc(e, value) {
+      console.log(e, value)
+      let payload = {
+        cat_id: this.isValidJSON(value.message).cart.id,
+        id: value.id
+      }
+      this.$orders.modifyOffer(payload, e).then((res) => {
+        console.log(res)
+        // isValidJSON(item?.message).cart
+        // this.updateCartInMessage(value)
+      })
+    },
 
     groupByAndKeepLast(array) {
       return Object.values(
@@ -202,43 +300,44 @@ export default {
     },
 
     sendMessage() {
-      let formData = {
-        receiver_id: this.ID,
-        message: this.content
+      // let formData = {
+      //   receiver_id: this.ID,
+      //   message: this.content
+      // }
+      let formData = new FormData()
+      formData.append('message', this.content)
+      formData.append('_method', 'PUT')
+      if (this.attachments.length > 0) {
+        this.attachments.forEach((elem) => {
+          formData.append('files[]', elem)
+        })
       }
-      this.$user.sendMessage(formData).then((res) => {
+      // else {
+      //   formData.append('files[]', null)
+      // }
+      this.$user.sendMessage(formData, this.ID).then((res) => {
         this.getMessages()
         this.content = ''
         this.$emit('refresh')
         this.$nextTick(() => {
-          this.scrollToEnd();
-        });
+          this.scrollToEnd()
+        })
         return res
       })
     }
   },
 
   mounted() {
-    this.intervalId = setInterval(this.getMessages, 10000);
+    this.intervalId = setInterval(this.getMessages, 10000)
     // Poll every 10 seconds
   },
 
   beforeUnmount() {
-    clearInterval(this.intervalId);
+    clearInterval(this.intervalId)
+    this.getCartItems()
   },
 
   watch: {
-    // userMessage: {
-    //   handler(val) {
-    //     if (Object.keys(val).length > 0) {
-    //       this.userData = val
-    //       this.getMessages()
-    //       this.dynamicLink = `tel:${val.sender.mobile}`
-    //     }
-    //   },
-    //   immediate: true
-    // },
-
     ID: {
       handler(val) {
         if (val) {
@@ -249,9 +348,9 @@ export default {
       },
       immediate: true
     },
-    "$route.query.userData": {
+    '$route.query.userData': {
       handler(val) {
-        if(val) {
+        if (val) {
           this.userData = JSON.parse(val)
         }
       },
@@ -281,5 +380,17 @@ export default {
 .fade-leave-to {
   opacity: 0;
   transition: opacity 0.5s;
+}
+.custom-scroll {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.custom-scroll::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+.chat-screen {
+  height: calc(100vh - 320px);
 }
 </style>

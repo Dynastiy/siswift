@@ -1,0 +1,54 @@
+[
+  {
+    "subject": "Defective or Not Working",
+    "desc": [
+      "Phone won't turn on",
+      "Screen cracked or unresponsive",
+      "Battery drains quickly or doesn't charge",
+      "Buttons not working (e.g., power, volume)",
+      "Speaker or microphone not functioning",
+      "Camera issues (blurry or not working)",
+      "Charging port not working",
+      "Phone shuts off randomly",
+      "Poor sound quality (distorted or unclear)"
+    ]
+  },
+
+  {
+    "subject": "Wrong Item Received",
+    "desc": [
+      "Received a different phone model than ordered",
+      "Wrong color or size",
+      "Incorrect storage capacity (e.g., 64GB instead of 128GB)",
+      "Wrong brand"
+    ]
+  },
+
+  {
+    "subject": "Condition Not as Advertised",
+    "desc": [
+      "Phone is more damaged than described",
+      "Water damage not mentioned in the listing",
+      "Heavy scratches, dents, or wear"
+    ]
+  },
+
+  {
+    "subject": "Problem with Functionality",
+    "desc": [
+      "SIM card not recognized",
+      "Issues with network connectivity",
+      "Apps or operating system crashing"
+    ]
+  },
+
+  {
+    "subject": "Visible Damage or Cosmetic Issues",
+    "desc": ["Scratches, dents, or visible damage not described", "Screen damage (e.g., cracks)"]
+  },
+
+  {
+    "subject": "Battery Problems",
+    "desc": ["Phone won't charge", "Physical damaged Battery", "Swollen battery"]
+  }
+]

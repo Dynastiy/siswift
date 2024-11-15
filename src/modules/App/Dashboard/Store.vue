@@ -1,23 +1,23 @@
 <template>
   <div class="body flex lg:flex-row md:flex-row flex-col-reverse gap-6 items-start">
-    <div class="lg:page-bg md:page-bg body-content w-full">
+    <div class="body-content w-full">
       <!-- Dashboard -->
       <div>
-        <div class="flex justify-between items-center mb-6">
+        <div class="flex justify-between lg:items-center md:items-center items-start mb-6">
           <h4 class="font-semibold text-lg">My Store Ads</h4>
-          <div class="flex justify-end gap-4" v-if="shop && shop.status">
+          <div class="flex lg:flex-row md:flex-rol flex-col justify-end gap-4" v-if="shop && shop.status">
             <button
               class="brand-btn-md text-sm brand-primary flex gap-1 items-center"
               @click="$router.push('/app/product/new')"
             >
               Create Ad
             </button>
-            <!-- <button
+            <button
               class="brand-btn-md text-sm brand-primary flex gap-1 items-center"
               @click="$router.push('/app/my-store/analysis')"
             >
               Store Analysis
-            </button> -->
+            </button>
           </div>
         </div>
         <div>

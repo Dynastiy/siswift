@@ -1,22 +1,24 @@
 <template>
   <div>
-    <div class="grid md:grid-cols-3 lg:grid-cols-3 grid-cols-1 gap-4">
+    <div class="chat-page flex gap-4">
       <chatlist
+        class="lg:w-64 md:w-64 w-full"
         :isLoading="loading"
         @selectMessage="selectMessage($event)"
         :allMessages="messages"
+        @refresh="getList('refresh')"
       />
       <pane
         :userMessage="message"
         @refresh="getList('refresh')"
-        class="col-span-2 lg:block md:block hidden"
+        class="lg:block md:block hidden flex-1"
       />
     </div>
   </div>
 </template>
 
 <script>
-import Pane from '@/components/chat/pane.vue'
+import Pane from '@/components/chat/Discussions.vue'
 import Chatlist from '@/components/chat/chatlist.vue'
 export default {
   components: {
@@ -55,7 +57,6 @@ export default {
       this.$user
         .messages()
         .then((res) => {
-          console.log(res.conversations)
           this.messages = res.conversations
           // let messages = res.data
         })
@@ -94,4 +95,8 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.chat-page {
+  height: calc(100vh - 100px);
+}
+</style>

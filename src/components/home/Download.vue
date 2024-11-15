@@ -7,6 +7,10 @@
           <h6 class="text-[15px] text-gray-500 font-medium">
             Buy, sell, and upgrade seamlessly on your mobile device
           </h6>
+          <div class="flex gap-3 mt-3">
+            <img src="@/assets/img/playstore.svg" class="w-32" alt="">
+            <img src="@/assets/img/appstore.png" class="w-32" alt="">
+          </div>
         </div>
         <div>
           <img src="@/assets/img/downloadImg.png" alt="" />

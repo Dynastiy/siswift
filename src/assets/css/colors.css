@@ -86,7 +86,7 @@
 .activated,
 .in-stock,
 .registered,
-.published, .confirmed, .deposit {
+.published, .confirmed, .deposit, .open {
     color: green;
     background-color: rgba(0, 128, 0, 0.175);
     font-size: 0.7rem;
@@ -109,7 +109,7 @@
 .rejected,
 .banned,
 .out-of-stock,
-.not-registered, .withdraw {
+.not-registered, .withdraw, .delisted, .closed {
     color: red;
     background-color: rgba(255, 0, 0, 0.175);
     font-size: 0.7rem;
@@ -124,6 +124,15 @@
     font-size: 0.7rem;
     padding: 3px 8px;
     border: 1px solid rgba(128, 0, 128, 0.175);
+    border-radius: 4px;
+}
+
+.sold {
+    color: var(---gray4);
+    background-color: rgba(0, 0, 0, 0.1);
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border: 1px solid var(---gray4);
     border-radius: 4px;
 }
 

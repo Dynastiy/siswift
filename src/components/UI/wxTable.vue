@@ -84,6 +84,21 @@
               {{ data.seller ? `${data.seller.firstname} ${data.seller.lastname}` : 'Seller no longer exists' }}
             </span>
           </template>
+          <template v-else-if="field === 'disputeUser'">
+            <span>
+              {{ data.buyer.id == user.id ? `${data.seller.firstname} ${data.seller.lastname}` : `${data.buyer.firstname} ${data.buyer.lastname}` }}
+            </span>
+            <!-- <div>
+              {{ data.buyer.id == user.id ? data.seller : data.buyer }}
+            </div> -->
+          </template>
+          
+          <template v-else-if="field === 'desc'">
+            <span>
+              {{ data.meta.description }}
+            </span>
+          </template>
+
           <template v-else-if="field === 'availability'">
             <span class=" w-fit" :class="data.availability">
               {{ data.availability.split('-').join(' ') }}
@@ -119,12 +134,19 @@
           </template>
           <template v-else-if="field === 'created_at'">
             <span class="break-keep block w-full">
-              {{ $formatDate(data.created_at) }}
+              {{ $dateFormat(data.created_at) }}
             </span>
           </template>
+
+          <template v-else-if="field === 'dispute_status'">
+            <span :class="['break-keep block w-fit status', data.status == 0 ? 'open' : 'closed']">
+              {{ data.status == 0 ? 'open' : 'closed' }}
+            </span>
+          </template>
+          
           <template v-else-if="field === 'updated_at'">
             <span class="break-keep block w-full">
-              {{ $formatDate(data.created_at) }}
+              {{ $dateFormat(data.created_at) }}
             </span>
           </template>
           <template v-else>
@@ -159,6 +181,12 @@ export default {
     dropdownItems: {
       type: Array,
       default: () => []
+    }
+  },
+
+  computed: {
+    user(){
+      return this.$store.getters['auth/getUser']
     }
   }
 }

@@ -1,9 +1,18 @@
 <template>
   <div
     id="app-drawer"
-    class="lg:z-2 pb-8 mb-8 bg-white md:z-2 lg:fixed md:fixed absolute lg:left-0 md:left-0 top-16 h-screen overflow-y-auto w-[250px] gap-24"
+    class="lg:z-2 pb-8 mb-8 bg-white md:z-2 lg:fixed md:fixed absolute lg:left-0 md:left-0 top-0 h-screen overflow-y-auto w-[250px] gap-24"
   >
     <div>
+      <div class="flex lg:w-[250px] pt-4 md:w-[250px] justify-center w-full">
+        <img
+          src="@/assets/BrandLogos/logo.png"
+          class="lg:w-28 md:w-28 w-24"
+          alt="Siswift logo"
+          @click="$router.push('/app/marketplace')"
+          role="button"
+        />
+      </div>
       <ul class="p-0 pt-6 px-8 flex flex-col min-h-[75vh] justify-between">
         <menu-item
           :menuItems="menuItems"

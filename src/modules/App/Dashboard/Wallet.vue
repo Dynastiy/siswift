@@ -36,6 +36,7 @@ export default {
       { field: 'txn_amount', header: 'Amount' },
       { field: 'hash', header: 'Hash' },
         { field: 'txn_type', header: 'Type' },
+        { field: 'desc', header: 'Description' },
         { field: 'created_at', header: 'Date' }
       ],
       items: []

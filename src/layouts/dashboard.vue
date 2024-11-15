@@ -1,12 +1,13 @@
 <template>
   <div class="">
-    <app-header :menu="menu" class="sticky top-0 z-10" />
+    
     <!-- <top-header :menu="menu" class="lg:hidden md:hidden sticky top-0 block z-10" /> -->
     <div class="lg:block md:block hidden">
       <app-drawer :menu="menu" />
     </div>
-    <div id="main" class="lg:ml-[250px] md:ml-[250px]">
-      <div class="pb-6 px-5 mt-6">
+    <div id="main" class="lg:ml-[250px] md:ml-[250px] h-[100vh] flex flex-col gap-4">
+      <app-header :menu="menu" class="sticky top-0 z-10" />
+      <div class="pb-6 px-4 flex-1">
         <div v-if="isSubPage" class="flex items-center gap-2 mb-4">
           <span class="back-button bg-gray-100" role="button" @click="$router.go(-1)">
             <i-icon icon="ic:baseline-arrow-back" width="20px" />
@@ -117,13 +118,13 @@ export default {
           isBottom: true,
           hasChildren: true,
           children: [
-            // {
-            //   title: 'Chat with Us',
-            //   icon: 'mingcute:settings-1-fill',
-            //   url: '/app/support/chat',
-            //   isLink: true,
-            //   subItem: 'chat'
-            // },
+            {
+              title: 'Refund & Dispute',
+              icon: 'mingcute:settings-1-fill',
+              url: '/app/support/dispute',
+              isLink: true,
+              subItem: 'dispute'
+            },
             {
               title: 'Call Us',
               icon: 'mingcute:settings-1-fill',

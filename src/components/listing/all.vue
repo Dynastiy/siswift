@@ -24,6 +24,7 @@
           helperText="or Create a Store"
           helperURL="/app/store/new"
           :hasHelper="true"
+          @refresh="list"
         />
         <!--  -->
       </div>

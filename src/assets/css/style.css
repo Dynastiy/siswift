@@ -42,7 +42,7 @@
 }
 
 /* INPUT  */
-.input-field, .message-field {
+.input-field, .message-field, .p-inputwrapper {
     border-width: 1px;
     border-color: var(---gray1);
     display: flex;
@@ -69,7 +69,7 @@
     border-color: var(---error) !important;
 }
 
-.input-field input, .message-field input {
+.input-field input, .message-field textarea, .p-dropdown .p-dropdown-label.p-placeholder, .p-inputtext, .p-dropdown-panel .p-dropdown-items .p-dropdown-empty-message {
     width: 100%;
     padding: 12px 0;
     font-weight: 500;

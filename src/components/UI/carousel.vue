@@ -8,7 +8,7 @@
             :class="{ 'card-img-sm': size === 'sm' }"
             :role="currentImage.isLink ? 'button' : ''"
           >
-            <img :src="currentImage.src" alt="" />
+            <img :src="currentImage.src" @click="viewImage" role="button" alt="" />
             <!-- <div class="indicator">
               <div class="flex gap-2">
                 <span v-for="item in images" :key="item.id">
@@ -38,6 +38,8 @@
           </div>
         </div>
       </div>
+
+      <ImageFullScreen v-if="imageView" :imgSrc="imageView" @closeFullScreen="closeFullScreen"/> 
     </div>
   </div>
 </template>
@@ -49,7 +51,7 @@ export default {
   props: {
     startingImage: {
       type: Number,
-      default: 1
+      default: 0
     },
     imagesProps: {
       type: Array,
@@ -86,7 +88,8 @@ export default {
       countdownInterval: 10,
       currentImage: null,
       images: [],
-      loading: false
+      loading: false,
+      imageView: null
     }
   },
 
@@ -105,6 +108,15 @@ export default {
   },
 
   methods: {
+    closeFullScreen() {
+      this.imageView = null
+    },
+    
+    viewImage() {
+      this.imageView = this.currentImage.src
+      console.log(this.imageView);
+      
+    },
     // Go forward on the images array
     // or go at the first image if you can't go forward
     nextImage() {

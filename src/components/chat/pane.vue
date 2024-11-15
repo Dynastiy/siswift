@@ -1,22 +1,12 @@
 <template>
-  <div
-    class="lg:bg-accent md:bg-accent pb-3 rounded-md flex overflow-hidden flex-col rounded-lg"
-  >
+  <div class="lg:bg-accent md:bg-accent pb-3 rounded-md flex overflow-y-auto flex-col rounded-lg">
     <div class="flex-1">
-      <div v-if="Object.keys(messageData).length > 0">
+      <div v-if="Object.keys(messageData).length > 0 && userData">
         <span
           class="lg:px-4 py-3 md:px-4 flex justify-between items-center w-full bg-white px-5 py-[12px] border-b border-gray-300"
         >
           <div class="flex gap-2 items-center">
-            <span
-              class="h-[30px] w-[30px] flex items-center justify-center rounded-full font-bold"
-              v-if="!userData.image"
-              :class="userData?.firstname.charAt(0)"
-            >
-              {{ userData?.firstname.charAt(0) }}
-            </span>
             <img
-              v-else
               :src="userData?.image ? imgUrl + 'user/profile/' + userData?.image : image"
               alt=""
               class="w-[38px] h-[38px] border-2 p-[2px] border-gray-100 rounded-full object-fit object-top"
@@ -53,7 +43,7 @@
           </span>
         </span>
       </div>
-      <div class="px-5 py-4 overflow-auto chat-screen custom-scroll" ref="messagesContainer">
+      <div class="px-5 py-4 overflow-y-auto chat-screen custom-scroll" ref="messagesContainer">
         <div
           class="p-3 text-[13px] w-6/12 shadow mb-3"
           :class="[
@@ -64,83 +54,112 @@
           v-for="item in messages"
           :key="item?.id"
         >
-          <!-- <div>
-          {{ JSON.parse(item?.message) }}
-        </div> -->
-          <!-- <span>
-          <span class="text-[12px]">{{
-            item.sender_id === user.id
-              ? `Offer of ${$currencyFormat(item?.message?.amount)} for ${
-                  item?.message?.product?.name
-                } sent to ${userData?.firstname} ${userData?.lastname}`
-              : `Offer of ${$currencyFormat(item?.message?.amount)} for ${
-                  item?.message?.product?.name
-                } received from ${userData?.firstname} ${userData?.lastname}`
-          }}</span>
-          <div>
-            <span class="text-xs block">{{ $formatShortDate(item?.created_at) }}</span>
-            <span v-if="item.sender_id !== user.id" class="flex gap-4 mt-2 justify-end">
-              <span class="text-green-500" role="button" @click="offerFunc('accept', item?.message)"
-                >Accept</span
-              >
-              <span class="text-red-500" role="button" @click="offerFunc('reject', item?.message)"
-                >Reject</span
-              >
-            </span>
-          </div>
-        </span> -->
-          <span class="flex flex-col">
+          <span v-if="isValidJSON(item?.message)">
+            {{}}
+            <span class="text-[12px]">{{
+              item.user_id === user.id
+                ? `Offer of ${$currencyFormat(isValidJSON(item?.message).amount)} for ${
+                    isValidJSON(item?.message).product?.name
+                  } sent to ${userData?.firstname} ${userData?.lastname}`
+                : `Offer of ${$currencyFormat(isValidJSON(item?.message).amount)} for ${
+                    isValidJSON(item?.message).product?.name
+                  } received from ${userData?.firstname} ${userData?.lastname}`
+            }}</span>
+
+            <div class="flex justify-between items-center mt-2">
+              <!-- <div>
+                {{isValidJSON(item?.message).cart}}
+              </div> -->
+              <!-- <div v-if="isValidJSON(item?.message).cart.status"> -->
+                <div v-if="isValidJSON(item?.message).cart.status == '0'">
+                  <span v-if="item.user_id !== user.id" class="flex gap-4 justify-end">
+                    <span class="text-green-500" role="button" @click="offerFunc('accept', item)"
+                      >Accept</span
+                    >
+                    <span class="text-red-500" role="button" @click="offerFunc('reject', item)"
+                      >Reject</span
+                    >
+                  </span>
+                  <span v-else class="text-amber-500">Pending</span>
+                </div>
+                <span
+                  v-else
+                  :class="[
+                    'text-[12px] block',
+                    isValidJSON(item?.message).cart.status == '1'
+                      ? 'text-green-500'
+                      : 'text-red-500'
+                  ]"
+                  >{{
+                    isValidJSON(item?.message).cart.status == '1'
+                      ? 'Offer Accepted'
+                      : 'Offer Rejected'
+                  }}</span
+                >
+              <!-- </div> -->
+              <span class="text-xs block ml-auto">{{ $formatShortDate(item?.created_at) }}</span>
+            </div>
+          </span>
+          <span v-else class="flex flex-col">
             <span>{{ item?.message }}</span>
             <span class="text-[11px] mt-1 text-gray-400 block text-right">{{
               $formatShortDate(item?.created_at)
             }}</span>
           </span>
         </div>
-        <!-- </div> -->
+        <div>Attachments Preview</div>
       </div>
     </div>
-    <span class="flex gap-4 items-center mt-4 px-5">
-      <div class="input-field message-field bg-white border-none w-full">
-        <span class="w-full flex gap-2 items-center">
-          <div class="relative">
-            <span class="password-iccon" role="button" @click="emojiBox = !emojiBox">
-              <i-icon
-                :icon="emojiBox ? 'solar:keyboard-outline' : 'mingcute:emoji-line'"
-                class="form-icon text-black2"
-              />
-            </span>
-            <transition name="fade">
-              <EmojiPicker
-                v-if="emojiBox"
-                class="absolute bottom-7 left-0"
-                :native="true"
-                @select="addEmoji"
-              />
-            </transition>
-          </div>
-          <input
-            ref="textInput"
-            type="text"
-            name="password"
+    <div v-if="chatID && messageData.is_active && messageData.product !== null">
+      <span class="flex gap-4 items-center mt-4 px-5">
+        <div class="input-field message-field bg-white border-none w-full">
+          <span class="w-full flex gap-2 items-center">
+            <div class="relative">
+              <span class="password-iccon" role="button" @click="emojiBox = !emojiBox">
+                <i-icon
+                  :icon="emojiBox ? 'solar:keyboard-outline' : 'mingcute:emoji-line'"
+                  class="form-icon text-black2"
+                />
+              </span>
+              <transition name="fade">
+                <EmojiPicker
+                  v-if="emojiBox"
+                  class="absolute bottom-7 left-0"
+                  :native="true"
+                  @select="addEmoji"
+                />
+              </transition>
+            </div>
+            <input
+              ref="textInput"
+              type="text"
+              name="password"
+              class="w-full"
+              id="enter-message"
+              placeholder="Enter Message"
+              v-model="content"
+              @keyup.enter="sendMessage"
+            />
+            <!-- <textarea
             class="w-full"
-            id="enter-message"
-            placeholder="Enter Message"
-            v-model="content"
-            @keyup.enter="sendMessage"
-          />
-          <span class="password-iccon" role="button">
-            <i-icon icon="mi:attachment" class="form-icon text-black2" />
+      :rows="rows"
+      @keydown="handleKeydown"
+      placeholder="Type here and press Enter to increase rows"
+    ></textarea> -->
+            <span class="password-iccon" role="button">
+              <i-icon icon="mi:attachment" class="form-icon text-black2" />
+            </span>
           </span>
+        </div>
+        <span
+          class="password-iccon bg-primary p-2 text-white rounded-full"
+          role="button"
+          @click="sendMessage"
+        >
+          <i-icon icon="lets-icons:send" class="form-icon text-2xl" />
         </span>
-      </div>
-      <span
-        class="password-iccon bg-primary p-2 text-white rounded-full"
-        role="button"
-        @click="sendMessage"
-      >
-        <i-icon icon="lets-icons:send" class="form-icon text-2xl" />
       </span>
-    </span>
+    </div>
   </div>
 </template>
 
@@ -167,11 +186,23 @@ export default {
       // ID: this.$route.query.chatId,
       attachments: [],
       chatID: null,
-      messageData: {}
+      messageData: {},
+      rows: 1
     }
   },
 
   methods: {
+    handleKeydown(event) {
+      // Check if the pressed key is Enter (key code 13)
+      if (event.key === 'Enter') {
+        // Prevent the default behavior of the Enter key (which is to add a newline)
+        event.preventDefault()
+
+        // Increase the number of rows
+        this.rows += 1
+      }
+    },
+
     addEmoji(emoji) {
       let text = this.content
       var curPos = document.getElementById('enter-message').selectionStart
@@ -205,10 +236,37 @@ export default {
       container.scrollTop = container.scrollHeight
     },
 
+    isValidJSON(str) {
+      try {
+        let data = JSON.parse(str)
+        return data
+      } catch (e) {
+        return false
+      }
+    },
+
+    getCartItems() {
+      this.$user.cartList().then((res) => {
+        console.log(res)
+      })
+    },
+
+    updateCartInMessage(e) {
+      this.$user
+        .updateMessage(e.id)
+        .then(() => {
+          return
+        })
+        .finally(() => {
+          this.getMessages()
+        })
+    },
+
     offerFunc(e, value) {
       console.log(e, value)
       let payload = {
-        cat_id: value.cart_id
+        cat_id: this.isValidJSON(value.message).cart.id,
+        id: value.id
       }
       this.$orders.modifyOffer(payload, e).then((res) => {
         console.log(res)
@@ -321,7 +379,7 @@ export default {
   display: none; /* Safari and Chrome */
 }
 
-.chat-screen {
+/* .chat-screen {
   height: calc(100vh - 320px);
-}
+} */
 </style>

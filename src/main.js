@@ -109,6 +109,7 @@ defineRule('email', (value) => {
   return true
 })
 
+
 defineRule('termsValidation', (value) => {
   if (value) {
     return true
@@ -147,6 +148,8 @@ app.component('Sidebar', Sidebar)
 import Skeleton from 'primevue/skeleton'
 app.component('Skeleton', Skeleton)
 
+import OverlayPanel from 'primevue/overlaypanel';
+
 import wxDropdown from '@/components/UI/wxDropdown.vue'
 app.component('wxDropdown', wxDropdown)
 import wxProductCard from '@/components/UI/productCard.vue'
@@ -163,6 +166,9 @@ import statusFilters from '@/components/filters/statusFilters.vue'
 app.component('statusFilters', statusFilters)
 import wxBreadcrumb from '@/components/UI/breadcrumb.vue'
 app.component('wxBreadcrumb', wxBreadcrumb)
+
+import imageFullScreen from '@/components/UI/imageFullscreen.vue'
+app.component('ImageFullScreen', imageFullScreen)
 
 import Avatar from 'primevue/avatar'
 app.component('Avatar', Avatar)
@@ -181,6 +187,9 @@ import ProgressBar from 'primevue/progressbar'
 import Dropdown from 'primevue/dropdown'
 import Dialog from 'primevue/dialog'
 import MultiSelect from 'primevue/multiselect'
+import AutoComplete from 'primevue/autocomplete';
+
+import ConfirmDialog from 'primevue/confirmdialog';
 
 app.component('MultiSelect', MultiSelect)
 app.component('Dropdown', Dropdown)
@@ -196,6 +205,12 @@ app.component('Column', Column)
 app.component('Editor', Editor)
 app.component('vDialog', Dialog)
 app.component('vSlider', Slider)
+app.component('vConfirmDialog', ConfirmDialog)
+app.component('OverlayPanel', OverlayPanel)
+app.component('AutoComplete', AutoComplete)
+
+import Textarea from 'primevue/textarea';
+app.component('pxTextarea', Textarea)
 
 import Tree from 'primevue/tree'
 app.component('Tree', Tree)
@@ -249,6 +264,9 @@ app.use(VueClipboard, {
 })
 app.use(QrReader)
 
+import ConfirmationService from 'primevue/confirmationservice';
+app.use(ConfirmationService);
+
 // Plugins
 import {
   currencyFormat,
@@ -256,7 +274,8 @@ import {
   getID,
   formatRelativeTime,
   formatTime,
-  formatShortDate
+  formatShortDate,
+  dateFormat
 } from './plugins/filters'
 app.config.globalProperties.$currencyFormat = currencyFormat
 app.config.globalProperties.$formatDate = formatDate
@@ -264,5 +283,6 @@ app.config.globalProperties.$formatShortDate = formatShortDate
 app.config.globalProperties.$getID = getID
 app.config.globalProperties.$formatRelativeTime = formatRelativeTime
 app.config.globalProperties.$formatTime = formatTime
+app.config.globalProperties.$dateFormat = dateFormat
 
 app.mount('#app')
