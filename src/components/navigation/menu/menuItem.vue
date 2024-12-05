@@ -10,9 +10,12 @@
         >
           <div class="flex gap-2 items-center">
             <i-icon :icon="item.icon" v-if="item.icon" class="menu-item-icon" />
-            <span class="flex flex-column text-[13px] capitalize">
+            <span class="flex gap-1 text-[13px] capitalize">
               <span class="font-medium" :class="item.header ? 'menu-title-header' : 'menu-title'">
                 {{ item.title.split('-').join(' ') }}
+              </span>
+              <span v-if="item.count !== undefined" class="bg-red-600 block text-white h-3 w-3 flex items-center text-[9px] rounded-full justify-center">
+                {{ item.count }}
               </span>
             </span>
           </div>

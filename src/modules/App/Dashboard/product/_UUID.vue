@@ -441,6 +441,7 @@ export default {
         offer_price: this.item.base_price
       }
       this.$user.addToCart(payload).then((res) => {
+        this.$store.commit('auth/setCartCount')
         this.$router.push('/app/my-cart')
         return res
       })

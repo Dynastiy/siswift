@@ -40,7 +40,7 @@
             :isFilterOpen="isFilterOpen"
             :hasButton="false"
             iconType="mdi:marketplace-outline"
-            emptyText="No product in your area😥"
+            emptyText="No promoted product found😥"
             @viewProduct="showProduct"
             @refresh="getLocationProducts"
           />
@@ -53,7 +53,7 @@
             :isFilterOpen="isFilterOpen"
             :hasButton="false"
             iconType="mdi:marketplace-outline"
-            emptyText="No product in your area😥"
+            emptyText="No product found😥"
             @viewProduct="showProduct"
             @refresh="getLocationProducts"
           />

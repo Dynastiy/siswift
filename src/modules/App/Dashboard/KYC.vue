@@ -1,6 +1,6 @@
 <template>
   <div class="lg:page-bg md:page-bg lg:w-6/12 md:w-7/12 w-full mx-auto mt-6">
-    <img src="@/assets/img/kyc.svg" alt="" />
+    <img src="@/assets/img/kyc.svg" width="80%" class="mx-auto" alt="" />
     <div class="flex flex-col gap-4">
       <button
         class="border border-dashed border-primary bg-white block p-2 rounded-md flex justify-between items-center"
@@ -29,6 +29,16 @@
         </span>
         <i-icon icon="prime:angle-right" class="text-[25px]" />
       </button>
+
+      <div>
+        <h4 class="font-semibold">List of Acceptable IDs</h4>
+        <ul>
+          <li class="text-xs">1. Voter's Card</li>
+          <li class="text-xs">2. International Passport</li>
+          <li class="text-xs">3. NIN Card/Slip</li>
+          <li class="text-xs">4. National ID</li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>

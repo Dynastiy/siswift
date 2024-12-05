@@ -1,7 +1,7 @@
 <template>
   <div class="grid lg:grid-cols-3 md:grid-cols-3 gap-4">
     <div class="lg:page-bg md:page-bg h-fit w-full">
-      <main-photo @uploadMainImage="uploadMainImage" uploadLabel="Store Photo" />
+      <main-photo @uploadMainImage="uploadMainImage" :uploadLabel="'Store Photo'" />
     </div>
     <!-- <div>
       {{ shop }}
@@ -92,6 +92,7 @@
 <script>
 import * as yup from 'yup'
 import MainPhoto from '@/components/product/mainPhoto.vue'
+import { useToast } from 'vue-toastification'
 export default {
   components: { MainPhoto },
   data() {
@@ -118,6 +119,14 @@ export default {
 
   methods: {
     createShop(values) {
+      const toast = useToast()
+      if (!this.mainImage || Object.keys(this.mainImage).length == 0) {
+        // alert('No store Image found')
+        toast.error(`Add Store Image`, {
+          timeout: 4000
+        })
+        return
+      }
       const formdata = new FormData()
       let type = this.user.seller_id ? `/shops/${this.shop.id}` : '/shops'
       if (this.user.seller_id) {
@@ -146,7 +155,7 @@ export default {
         console.log(res)
         if (res.length > 0) {
           this.shop = res[0]
-          if(this.$route.name === 'app-store-edit') {
+          if (this.$route.name === 'app-store-edit') {
             this.form = {
               name: this.shop.name,
               phone: this.shop.phone,

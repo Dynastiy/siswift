@@ -11,7 +11,7 @@
         </span> -->
 
         <div class="flex justify-center items-center">
-          <div class="flex lg:w-[250px] md:w-[250px] lg:hidden md:hidden block justify-center w-full">
+          <div v-if="!isSearching" class="flex lg:w-[250px] md:w-[250px] lg:hidden md:hidden block justify-center w-full">
             <img
               src="@/assets/BrandLogos/logo.png"
               class="lg:w-28 md:w-28 w-24"
@@ -20,7 +20,7 @@
               role="button"
             />
           </div>
-          <menu-search v-if="isSearching" class="lg:block md:block hidden" />
+          <menu-search v-if="isSearching" class="mr-2" />
           <span v-else class="font-semibold text-lg capitalize lg:block md:block hidden">{{
             routeName.split('-').join(' ')
           }}</span>
@@ -29,12 +29,12 @@
         <div class="flex items-center gap-3">
           <i-icon
             icon="ri:search-2-line"
-            class="lg:block md:block hidden"
+            class=""
             width="20px"
             role="button"
             @click="isSearching = !isSearching"
           />
-          <div class="lg:block md:block hidden">
+          <div class="">
             <el-dropdown trigger="click" placement="bottom-end">
               <span class="el-dropdown-link flex items-center relative">
                 <span class="bg-red-600 block w-fit p-[3px] text-white absolute top-0 right-0 text-[8px] rounded-full">{{notifications.length}}</span>
@@ -115,13 +115,13 @@
     <div class="">
       <Sidebar v-model:visible="drawer" position="right" style="width: 80%">
         <template #container="{ closeCallback }">
-          <div class="h-screen bg-white pb-28 flex flex-col z-20">
+          <div class="h-[100dvh] bg-white flex flex-col z-20">
             <!-- <div class="bg-secondary">
               <span role="button" class="flex justify-end mt-4" @click="closeCallback">
                 <i-icon icon="gg:close-o" class="text-error text-2xl" />
               </span>
             </div> -->
-            <div class="flex flex-col justify-between h-[80vh]">
+            <div class="flex flex-col justify-between ">
               <div class="">
                 <div class="bg-primary px-4 pb-6 pt-4 rounded-bl-3xl rounded-br-3xl">
                   <!-- <router-link to="/"
@@ -158,7 +158,7 @@
 
                 <!-- <hr class="my-6 bg-gray-200" /> -->
 
-                <ul class="flex flex-col min-h-[75vh] justify-between px-4 mt-4">
+                <ul class="flex flex-col h-full justify-between px-4 mt-4">
                   <menu-item
                     :menuItems="menuItems"
                     @menuClick="$event.hasChildren ? openSubMenu($event) : goToLink($event)"
@@ -170,8 +170,8 @@
                 </ul>
               </div>
 
-              <div
-                class="flex gap-2 px-4 items-center text-white text-[13px]"
+              <!-- <div
+                class="flex gap-2 px-4 items-center text-[13px]"
                 role="button"
                 @click="logout"
               >
@@ -179,7 +179,7 @@
                 <span class="flex flex-column capitalize">
                   <span> Sign Out </span>
                 </span>
-              </div>
+              </div> -->
             </div>
           </div>
         </template>

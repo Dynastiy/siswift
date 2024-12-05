@@ -20,7 +20,7 @@
               />
             </span>
           </h4>
-          <span class="text-[12px] text-gray-400">{{ user?.email }}</span>
+          <!-- <span class="text-[12px] text-gray-400">{{ user?.email }}</span> -->
           <span class="text-[12px] text-gray-400">{{
             `joined Siswift ${$formatRelativeTime(user?.created_at)}`
           }}</span>
@@ -30,10 +30,10 @@
             ><i-icon icon="solar:phone-bold" class="form-icon text-gray-600" />
             {{ user?.mobile }}
           </a>
-          <span class="flex items-center text-black1 gap-[5px] text-sm font-semibold"
+          <!-- <span class="flex items-center text-black1 gap-[5px] text-sm font-semibold"
             ><i-icon icon="tabler:location-filled" class="form-icon text-gray-600" />
             {{ `${user?.address.city}, ${user?.address.state}` }}
-          </span>
+          </span> -->
         </div>
       </div>
       <div class="bg-white p-6 lg:col-span-2 md:col-span-2 col-span-1">

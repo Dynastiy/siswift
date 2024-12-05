@@ -69,7 +69,7 @@
                 <label for="">Product Brand</label>
                 <vField name="brand_id" as="select" class="input">
                   <option selected disabled value="">--Select Brand--</option>
-                  <option v-for="item in categories" :key="item?.id" :value="item?.id">
+                  <option v-for="item in brands" :key="item?.id" :value="item?.id">
                     {{ item?.name }}
                   </option>
                 </vField>
@@ -132,7 +132,9 @@
 
             <div>
               <label for="">Description</label>
-              <Editor v-model="product_description" editorStyle="height: 200px;">
+              <!-- {{ values }} -->
+              <vField v-slot="{ field }" name="product_description">
+              <Editor v-bind="field"  editorStyle="height: 200px;">
                 <template #toolbar>
                   <span class="ql-formats">
                     <button class="ql-bold"></button>
@@ -157,6 +159,7 @@
                   </span>
                 </template>
               </Editor>
+              </vField>
             </div>
           </div>
         </template>
@@ -359,7 +362,7 @@ export default {
       schemas: [
         yup.object({
           product_name: yup.string().required(),
-          // model: yup.string().required(),
+          product_description: yup.string().required(),
           product_price: yup
             .string()
             .required()
@@ -402,7 +405,7 @@ export default {
       new_color: '',
       add_color: false,
       color: '',
-      product_description: ''
+      // product_description: ''
     }
   },
 

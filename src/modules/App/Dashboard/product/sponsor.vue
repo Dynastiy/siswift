@@ -115,55 +115,40 @@ export default {
 
     getPlans() {
       this.$config.getPlans().then((res) => {
-        console.log(res)
         this.allPlans = res
-        if (this.activeTab == '1') {
+        if (this.activeTab == 1) {
           this.plans = this.allPlans.plans
         }
-        if (this.activeTab == '2') {
+        if (this.activeTab == 2) {
           this.plans = this.allPlans.booster
         }
-        if (this.activeTab == '0') {
+        if (this.activeTab == 0) {
           this.plans = this.allPlans.listing
         }
       })
     },
 
     activateMenu(i) {
-      this.$router.push({ name: 'sponsor-listing', query: { tab: i } })
+      this.activeTab = i
+      if (this.activeTab == 1) {
+          this.plans = this.allPlans.plans
+        }
+        if (this.activeTab == 2) {
+          this.plans = this.allPlans.booster
+        }
+        if (this.activeTab == 0) {
+          this.plans = this.allPlans.listing
+        }
+      // this.$router.push({ name: 'sponsor-listing', query: { tab: i } })
     }
   },
 
   mounted() {
-    console.log(this.$route.query.tab);
-    let tab = this.activeTab
-    if (!this.$route.query.tab) {
-      this.activateMenu(tab)
-      // this.$router.push({ name: 'sponsor-listing', query: { tab: this.activeTab } })
-    }
-    // if(this.)
+   
   },
 
   beforeMount() {
     this.getPlans()
-  },
-
-  watch: {
-    '$route.query.tab': {
-      handler(val) {
-        this.activeTab = val
-        if (this.activeTab == '1') {
-          this.plans = this.allPlans.plans
-        }
-        if (this.activeTab == '2') {
-          this.plans = this.allPlans.booster
-        }
-        if (this.activeTab == '0') {
-          this.plans = this.allPlans.listing
-        }
-      },
-      immediate: true
-    }
   }
 }
 </script>

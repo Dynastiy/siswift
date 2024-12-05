@@ -150,6 +150,7 @@ export default {
     removePhoto() {
       if (Object.keys(this.files).length !== 0) {
         this.files = {}
+        this.$emit('uploadMainImage', this.files)
       }
     },
 

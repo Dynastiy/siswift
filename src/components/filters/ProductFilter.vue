@@ -12,8 +12,8 @@
 
         <select name="" v-model="filterData.sort" class="input py-2 capitalize" id="">
           <option selected disabled value="">--Sort by--</option>
-          <option  v-for="item in ['latest', 'low_price', 'popular']" :key="item" :value="item">
-            {{ item.split('_').join(' ') }}
+          <option v-for="(item, idx) in sortOptions" :key="idx" :value="item.key">
+            {{ item.label }}
           </option>
         </select>
         <span class="text-primary font-medium text-[13px]" role="button" @click="close">Close</span>
@@ -71,6 +71,46 @@
             <label class="text-[13px]" for=""> {{ item?.name }}</label>
           </span>
         </span>
+      </div>
+
+      <div>
+        <h4 class="font-semibold text-[14px]">Condition</h4>
+        <select name="" v-model="filterData.condition" class="input py-2" id="">
+          <option selected disabled value="">---Select One---</option>
+          <option
+            v-for="item in [
+              'new',
+              'like-new',
+              'refurbished',
+              'used-good',
+              'used-fair',
+              'used-poor'
+            ]"
+            class="capitalize"
+            :key="item"
+            :value="item"
+          >
+            {{ item.split('_').join(' ') }}
+          </option>
+        </select>
+      </div>
+
+      <div>
+        <h4 class="font-semibold text-[14px]">Price</h4>
+        <!-- <Slider v-model="value" range class="w-14rem" /> -->
+        <el-slider v-model="value" range  :max="999999" />
+        <!-- <input type="range" min="0"
+        max="100" class="input" v-model="filterData.created_at" /> -->
+      </div>
+
+      <div>
+        <h4 class="font-semibold text-[14px]">Date Listed</h4>
+        <input type="date" class="input" v-model="filterData.created_at" />
+      </div>
+
+      <div>
+        <h4 class="font-semibold text-[14px]">Color</h4>
+        <input type="color" v-model="filterData.colour" />
       </div>
 
       <div>
@@ -146,11 +186,12 @@
 
 <script>
 // import menuSearch from './menuSearch.vue'
+// import Slider from 'primevue/slider'
 export default {
-  components: {},
+  // components: { Slider },
   data() {
     return {
-      value: [4, 40],
+      value: [10000, 100000],
       brands: [],
       categories: [],
       filterData: {
@@ -160,14 +201,31 @@ export default {
         search: '',
         sort: '',
 
-        condition: "",
-        date_listed: "",
-        min_price: "",
-        max_price: "",
-        color: "",
-
+        condition: '',
+        created_at: '',
+        min_price: '',
+        max_price: '',
+        colour: ''
       },
-      states: []
+      states: [],
+      sortOptions: [
+        {
+          label: 'Relevance',
+          key: 'popular'
+        },
+        {
+          label: 'Newest Listing First',
+          key: 'latest'
+        },
+        {
+          label: 'Price(High to Low)',
+          key: 'max_price'
+        },
+        {
+          label: 'Price (Low to High)',
+          key: 'low_price'
+        }
+      ]
     }
   },
 
@@ -186,7 +244,7 @@ export default {
         console.log(res)
       }
     },
-    
+
     getSetting() {
       this.$config.getSettings().then((res) => {
         console.log('settings:', res)
@@ -205,20 +263,27 @@ export default {
       deep: true
     },
 
-    searchData:{
+    searchData: {
       handler(val) {
-        if(val) {
+        if (val) {
           this.filterData.search = val
         }
       },
       immediate: true
+    },
+    value: {
+      handler(val) {
+        this.filterData.max_price = val[1]
+        this.filterData.min_price = val[0]
+      }
     }
   },
 
   computed: {
     searchData() {
       return this.$route.query.search
-    }
+    },
+
   },
 
   beforeMount() {

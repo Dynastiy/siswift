@@ -1,6 +1,5 @@
 <template>
   <div class="">
-    
     <!-- <top-header :menu="menu" class="lg:hidden md:hidden sticky top-0 block z-10" /> -->
     <div class="lg:block md:block hidden">
       <app-drawer :menu="menu" />
@@ -50,7 +49,8 @@ export default {
           url: '/app/my-cart',
           parent: 'my-cart',
           isLink: true,
-          isBottom: false
+          isBottom: false,
+          count: this.cartCount()
         },
         // {
         //   title: 'My Store',
@@ -84,14 +84,15 @@ export default {
           isLink: true,
           isBottom: false
         },
-        
+
         {
           title: 'Messages',
           icon: 'flowbite:messages-solid',
           url: '/app/messages',
           parent: 'app-messages',
           isLink: true,
-          isBottom: false
+          isBottom: false,
+          count: this.messagesCount()
         },
         {
           title: 'Wallet',
@@ -107,7 +108,7 @@ export default {
           url: '/app/setting',
           parent: 'setting',
           isLink: true,
-          isBottom: true,
+          isBottom: true
         },
         {
           title: 'Support',
@@ -164,18 +165,31 @@ export default {
         .catch((err) => {
           console.log(err)
         })
+    },
+
+    getCartCount() {
+      this.$store.commit('auth/setCartCount')
+    },
+
+    cartCount() {
+      return this.$store.getters['auth/getCartCount']
+    },
+
+    messagesCount() {
+      return this.$store.getters['auth/getMessagesCount']
     }
   },
 
   beforeMount() {},
 
   created() {},
-  
-  mounted(){
+
+  mounted() {
     let isEmailVerified = Boolean(this.user.ev)
-    if(!isEmailVerified) {
+    if (!isEmailVerified) {
       this.$router.push('/verify-email')
     }
+    this.getCartCount()
   },
 
   computed: {

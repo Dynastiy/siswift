@@ -58,7 +58,7 @@ export default {
         .messages()
         .then((res) => {
           this.messages = res.conversations
-          // let messages = res.data
+          this.$store.commit('auth/setMessagesCount', res.conversations.length)
         })
         .finally(() => {
           this.loading = false

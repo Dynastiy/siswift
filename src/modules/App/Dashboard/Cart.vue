@@ -189,6 +189,7 @@ export default {
             }
             req.push(dataInfo)
           })
+          this.$store.commit('auth/setCartCount')
           this.items = req
         })
         .finally(() => {

@@ -27,7 +27,7 @@
                     :src="imgUrl + 'product/' + item?.main_image"
                     alt=""
                     role="button"
-                    class="w-full h-[150px] object-cover object-top"
+                    class="w-full h-[150px] size-full object-top"
                   />
 
                   <span
